@@ -1,0 +1,7 @@
+.git
+.github
+.gitignore
+.env.example
+.env
+README.md
+docker-compose.yml

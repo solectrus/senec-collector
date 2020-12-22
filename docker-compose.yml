@@ -1,0 +1,14 @@
+version: "2"
+
+services:
+  collector:
+    image: ghcr.io/solectrus/senec-collector:latest
+    environment:
+      - SENEC_HOST
+      - INFLUX_HOST
+      - INFLUX_TOKEN
+      - INFLUX_ORG
+      - INFLUX_BUCKET
+      - TERM=xterm
+    command: bundle exec ruby collect.rb
+    restart: always

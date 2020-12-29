@@ -13,6 +13,7 @@ influx_host   = ENV.fetch('INFLUX_HOST')
 influx_token  = ENV.fetch('INFLUX_TOKEN')
 influx_org    = ENV.fetch('INFLUX_ORG')
 influx_bucket = ENV.fetch('INFLUX_BUCKET')
+interval      = ENV.fetch('INTERVAL', 5).to_i
 puts 'OK'
 
 # Setup InfluxDB
@@ -69,6 +70,6 @@ loop do
   puts 'OK'
 
   # Wait
-  puts 'Sleeping ...'
-  sleep 5
+  puts "Sleeping #{interval} seconds ..."
+  sleep interval
 end

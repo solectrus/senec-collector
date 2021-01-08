@@ -9,6 +9,6 @@ services:
       - INFLUX_TOKEN
       - INFLUX_ORG
       - INFLUX_BUCKET
-      - TERM=xterm
     command: bundle exec ruby collect.rb
-    restart: always
+    network_mode: host
+    restart: unless-stopped

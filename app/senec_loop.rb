@@ -1,6 +1,9 @@
 require 'senec'
+require_relative 'flux_writer'
 
 class SenecLoop
+  include FluxWriter
+
   def self.start
     new.start
   end
@@ -51,7 +54,7 @@ class SenecLoop
   end
 
   def push_to_influx(request)
-    point = InfluxDB2::Point.new(name: measurement)
+    point = InfluxDB2::Point.new(name: influx_measurement)
               .add_field('inverter_power',       request.inverter_power)
               .add_field('house_power',          request.house_power)
               .add_field('bat_power_plus',       request.bat_power.positive? ? request.bat_power : 0)
@@ -72,39 +75,11 @@ class SenecLoop
     @senec_host ||= ENV.fetch('SENEC_HOST')
   end
 
-  def influx_host
-    @influx_host ||= ENV.fetch('INFLUX_HOST')
-  end
-
-  def influx_token
-    @influx_token ||= ENV.fetch('INFLUX_TOKEN')
-  end
-
-  def influx_org
-    @influx_org ||= ENV.fetch('INFLUX_ORG')
-  end
-
-  def influx_bucket
-    @influx_bucket ||= ENV.fetch('INFLUX_BUCKET')
-  end
-
-  def measurement
+  def influx_measurement
     'SENEC'
   end
 
   def interval
-    @interval ||= ENV.fetch('INTERVAL', 5).to_i
-  end
-
-  def influx_client
-    @influx_client ||= InfluxDB2::Client.new(
-      influx_host,
-      influx_token,
-      precision: InfluxDB2::WritePrecision::SECOND
-    )
-  end
-
-  def write_api
-    @write_api ||= influx_client.create_write_api
+    @interval ||= ENV.fetch('SENEC_INTERVAL', 5).to_i
   end
 end

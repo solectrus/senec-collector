@@ -1,6 +1,7 @@
 # SENEC collector
 
 Collect data from SENEC photovoltaics and push it to InfluxDB 2
+Optionally adds forecast data from https://forecast.solar
 
 Tested with SENEC.Home V3 hybrid duo
 and Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster)

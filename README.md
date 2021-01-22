@@ -1,8 +1,9 @@
 # SENEC collector
 
-Collect data SENEC photovoltaics and push it to InfluxDB 2
+Collect data from SENEC photovoltaics and push it to InfluxDB 2
 
 Tested with SENEC.Home V3 hybrid duo
+and Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster)
 
 ## Build image for Raspberry Pi
 
@@ -12,7 +13,7 @@ docker buildx build --platform linux/arm/v7 -t senec-collector .
 
 ## Run container
 
-Prepare an `.env` file. Then:
+Prepare an `.env` file (see `.env.example`). Then:
 
 ```bash
 docker run --env-file .env senec-collector ruby collect.rb

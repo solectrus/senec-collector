@@ -1,3 +1,5 @@
+require 'senec'
+
 class SenecLoop
   def self.start
     new.start
@@ -61,7 +63,7 @@ class SenecLoop
               .add_field('grid_power_plus',      request.grid_power.positive? ? request.grid_power : 0)
               .add_field('grid_power_minus',     request.grid_power.negative? ? -request.grid_power : 0)
 
-    print 'Pushing to InfluxDB ... '
+    print 'Pushing SENEC data to InfluxDB ... '
     write_api.write(data: point, bucket: influx_bucket, org: influx_org)
     puts 'OK'
   end

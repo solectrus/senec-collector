@@ -16,7 +16,7 @@ docker buildx build --platform linux/arm/v7 -t senec-collector .
 Prepare an `.env` file (see `.env.example`). Then:
 
 ```bash
-docker run --env-file .env senec-collector ruby collect.rb
+docker run --env-file .env senec-collector app/main.rb
 ```
 
 Copyright (c) 2020-2021 Georg Ledermann, released under the MIT License

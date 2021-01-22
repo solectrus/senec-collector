@@ -9,6 +9,6 @@ services:
       - INFLUX_TOKEN
       - INFLUX_ORG
       - INFLUX_BUCKET
-    command: bundle exec ruby collect.rb
+    command: bundle exec app/main.rb
     network_mode: host
     restart: unless-stopped

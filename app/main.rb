@@ -1,7 +1,9 @@
+#!/usr/bin/env ruby
+
 require 'dotenv/load'
-require 'senec'
 require 'influxdb-client'
-require './senec_loop'
+
+require_relative 'senec_loop'
 
 # Flush output immediately
 $stdout.sync = true

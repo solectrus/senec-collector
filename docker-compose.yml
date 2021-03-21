@@ -10,12 +10,6 @@ services:
       - INFLUX_TOKEN
       - INFLUX_ORG
       - INFLUX_BUCKET
-      - FORECAST_LATITUDE
-      - FORECAST_LONGITUDE
-      - FORECAST_DECLINATION
-      - FORECAST_AZIMUTH
-      - FORECAST_KWP
-      - FORECAST_INTERVAL
     command: bundle exec app/main.rb
     network_mode: host
     privileged: true

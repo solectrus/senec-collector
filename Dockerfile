@@ -1,4 +1,4 @@
-FROM arm32v7/ruby:3.0.0-alpine
+FROM arm32v7/ruby:3.0.1-alpine
 LABEL maintainer="georg@ledermann.dev"
 
 WORKDIR /senec-collector

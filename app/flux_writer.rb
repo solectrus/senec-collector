@@ -11,14 +11,23 @@ module FluxWriter
     @influx_org ||= ENV.fetch('INFLUX_ORG')
   end
 
+  def influx_schema
+    @influx_schema ||= ENV.fetch('INFLUX_SCHEMA', 'http')
+  end
+
+  def influx_port
+    @influx_port ||= ENV.fetch('INFLUX_PORT', 8086)
+  end
+
   def influx_bucket
     @influx_bucket ||= ENV.fetch('INFLUX_BUCKET')
   end
 
   def influx_client
     @influx_client ||= InfluxDB2::Client.new(
-      influx_host,
+      "#{influx_schema}://#{influx_host}:#{influx_port}",
       influx_token,
+      use_ssl: influx_schema == 'https',
       precision: InfluxDB2::WritePrecision::SECOND
     )
   end

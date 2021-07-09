@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     dotenv (2.7.6)
-    influxdb-client (1.15.0)
+    influxdb-client (1.16.0)
     senec (0.3.0)
 
 PLATFORMS

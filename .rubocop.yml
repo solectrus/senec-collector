@@ -1,3 +1,7 @@
+require:
+  - rubocop-minitest
+  - rubocop-rake
+
 AllCops:
   TargetRubyVersion: 3.0
   Exclude:
@@ -13,6 +17,3 @@ Style/FrozenStringLiteralComment:
 
 Metrics/MethodLength:
   Max: 15
-
-Metrics/AbcSize:
-  Max: 40

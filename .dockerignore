@@ -1,6 +1,9 @@
 .git
 .github
 .gitignore
-.env.example
+.env.*
 .env
 docker-compose.yml
+test
+Rakefile
+Dockerfile

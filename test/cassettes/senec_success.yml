@@ -1,0 +1,27 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://<SENEC_HOST>/lala.cgi
+    body:
+      encoding: UTF-8
+      string: '{"STATISTIC":{"CURRENT_STATE":"","LIVE_BAT_CHARGE_MASTER":"","LIVE_BAT_DISCHARGE_MASTER":"","LIVE_GRID_EXPORT":"","LIVE_GRID_IMPORT":"","LIVE_HOUSE_CONS":"","LIVE_PV_GEN":"","MEASURE_TIME":""},"ENERGY":{"GUI_BAT_DATA_CURRENT":"","GUI_BAT_DATA_FUEL_CHARGE":"","GUI_BAT_DATA_POWER":"","GUI_BAT_DATA_VOLTAGE":"","GUI_GRID_POW":"","GUI_HOUSE_POW":"","GUI_INVERTER_POWER":"","STAT_HOURS_OF_OPERATION":""},"BMS":{"CHARGED_ENERGY":"","DISCHARGED_ENERGY":"","CYCLES":""},"PV1":{"POWER_RATIO":"","P_TOTAL":""},"WALLBOX":{"APPARENT_CHARGING_POWER":""}}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: '{"STATISTIC":{"CURRENT_STATE":"u1_0012","LIVE_BAT_CHARGE_MASTER":"fl_44A8CD96","LIVE_BAT_DISCHARGE_MASTER":"fl_44AA8E04","LIVE_GRID_EXPORT":"fl_45AC0A71","LIVE_GRID_IMPORT":"fl_4457EA18","LIVE_HOUSE_CONS":"fl_457680F1","LIVE_PV_GEN":"fl_461788B1","MEASURE_TIME":"i3_615C0881"},"ENERGY":{"GUI_BAT_DATA_CURRENT":"fl_C14B0A3D","GUI_BAT_DATA_FUEL_CHARGE":"fl_424E0F83","GUI_BAT_DATA_POWER":"fl_C4245DD3","GUI_BAT_DATA_VOLTAGE":"fl_424F3C6A","GUI_GRID_POW":"fl_469AC100","GUI_HOUSE_POW":"fl_4446AA5F","GUI_INVERTER_POWER":"fl_4452BFBF","STAT_HOURS_OF_OPERATION":"u3_00001D47"},"BMS":{"CHARGED_ENERGY":["u3_12EE033A","u3_12B2460D","u3_12850AC6","u3_146BD9B7"],"DISCHARGED_ENERGY":["u3_1301E5D8","u3_147F9647","u3_14DC4450","u3_1160FBCA"],"CYCLES":["u1_003F","u1_0041","u1_0042","u1_003F"]},"PV1":{"POWER_RATIO":"u3_00000064","P_TOTAL":"fl_C452BFBF"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_46A0449A","fl_00000000","fl_00000000","fl_00000000"]}}'
+  recorded_at: Tue, 05 Oct 2021 08:10:41 GMT
+recorded_with: VCR 6.0.0

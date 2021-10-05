@@ -1,4 +1,29 @@
-module FluxWriter
+require 'influxdb-client'
+
+class FluxWriter
+  def self.push(record)
+    new.push(record)
+  end
+
+  def push(record)
+    return unless record
+
+    write_api.write(
+      data: point(record),
+      bucket: influx_bucket,
+      org: influx_org
+    )
+  end
+
+  private
+
+  def point(record)
+    InfluxDB2::Point.new(
+      name: influx_measurement,
+      fields: record.to_hash
+    )
+  end
+
   def influx_host
     @influx_host ||= ENV.fetch('INFLUX_HOST')
   end
@@ -21,6 +46,10 @@ module FluxWriter
 
   def influx_bucket
     @influx_bucket ||= ENV.fetch('INFLUX_BUCKET')
+  end
+
+  def influx_measurement
+    'SENEC'
   end
 
   def influx_client

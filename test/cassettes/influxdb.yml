@@ -1,0 +1,31 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://<INFLUX_HOST>/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
+    body:
+      encoding: UTF-8
+      string: "<INFLUX_BUCKET> bat_charge_current=-12.7,bat_fuel_charge=51.5,bat_power_minus=658i,bat_power_plus=0i,bat_voltage=51.8,grid_power_minus=0i,grid_power_plus=19809i,house_power=795i,inverter_power=843i,wallbox_charge_power=20514i"
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - influxdb-client-ruby/2.0.0
+      Authorization:
+      - Token <INFLUX_TOKEN>
+      Content-Type:
+      - text/plain
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Date:
+      - Tue, 05 Oct 2021 08:36:20 GMT
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Tue, 05 Oct 2021 08:36:20 GMT
+recorded_with: VCR 6.0.0

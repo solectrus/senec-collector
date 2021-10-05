@@ -3,9 +3,9 @@
 require 'dotenv/load'
 require 'influxdb-client'
 
-require_relative 'senec_loop'
+require_relative 'loop'
 
 # Flush output immediately
 $stdout.sync = true
 
-SenecLoop.start
+Loop.start

@@ -18,6 +18,10 @@ class SolectrusRecord
     }
   end
 
+  def measure_time
+    @senec_data.measure_time
+  end
+
   def inverter_power
     @senec_data.inverter_power
   end

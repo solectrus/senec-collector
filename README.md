@@ -16,7 +16,7 @@ and Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster)
 4. Run the Docker container, preferably on an in-house Linux box:
 
    ```bash
-   docker run --env-file .env ghcr.io/solectrus/senec-collector:latest src/main.rb
+   docker run -d --env-file .env --restart on-failure ghcr.io/solectrus/senec-collector:latest src/main.rb
    ```
 
 The Docker image support multiple platforms: `linux/amd64`, `linux/arm64`, `linux/arm/v7`

@@ -9,7 +9,7 @@ GEM
     dotenv (2.7.6)
     hashdiff (1.0.1)
     influxdb-client (2.1.0)
-    minitest (5.14.4)
+    minitest (5.15.0)
     parallel (1.21.0)
     parser (3.0.3.2)
       ast (~> 2.4.1)

@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/vcr/vcr.git
+  revision: 8ced6c96e01737a418cd270e0382a8c2c6d85f7f
+  specs:
+    vcr (6.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -36,7 +42,6 @@ GEM
     ruby-progressbar (1.11.0)
     senec (0.4.0)
     unicode-display_width (2.1.0)
-    vcr (6.0.0)
     webmock (3.14.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -54,8 +59,8 @@ DEPENDENCIES
   rubocop-minitest
   rubocop-rake
   senec
-  vcr
+  vcr!
   webmock
 
 BUNDLED WITH
-   2.2.32
+   2.3.4

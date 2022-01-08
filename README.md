@@ -31,4 +31,4 @@ docker buildx build --platform linux/arm/v7 -t senec-collector .
 
 ## License
 
-Copyright (c) 2020-2021 Georg Ledermann, released under the MIT License
+Copyright (c) 2020,2022 Georg Ledermann, released under the MIT License

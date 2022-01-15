@@ -17,3 +17,6 @@ Style/FrozenStringLiteralComment:
 
 Metrics/MethodLength:
   Max: 15
+
+Minitest/MultipleAssertions:
+  Max: 10

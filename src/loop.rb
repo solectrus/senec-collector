@@ -2,20 +2,19 @@ require_relative 'flux_writer'
 require_relative 'senec_data'
 
 class Loop
-  attr_accessor :count
-
-  def self.start(max_count: nil)
-    new.start(max_count)
+  def self.start(config:, max_count: nil)
+    new(config:, max_count:).start
   end
 
-  def start(max_count)
-    unless interval.positive?
-      puts 'Interval missing, stopping.'
-      return
-    end
+  def initialize(config:, max_count:)
+    @config = config
+    @max_count = max_count
+  end
 
-    puts "Starting SENEC collector...\n\n"
+  attr_reader :config, :max_count
+  attr_accessor :count
 
+  def start
     self.count = 0
     loop do
       self.count += 1
@@ -24,18 +23,18 @@ class Loop
       push(solectrus_record)
       break if max_count && count >= max_count
 
-      puts "Sleeping #{interval} seconds ...\n\n"
-      sleep interval
+      puts "Sleeping #{config.senec_interval} seconds ...\n\n"
+      sleep config.senec_interval
     end
   end
 
   private
 
   def solectrus_record
-    print "Getting data from SENEC at #{senec_host} ... "
+    print "Getting data from SENEC at #{config.senec_host} ... "
 
     begin
-      record = SenecData.new(senec_host).solectrus_record
+      record = SenecData.new(config.senec_host).solectrus_record
       puts " PV #{record.inverter_power} W\n"
       record
     rescue StandardError => e
@@ -43,17 +42,9 @@ class Loop
     end
   end
 
-  def senec_host
-    @senec_host ||= ENV.fetch('SENEC_HOST')
-  end
-
-  def interval
-    @interval ||= ENV.fetch('SENEC_INTERVAL', 5).to_i
-  end
-
   def push(record)
     print 'Pushing SENEC data to InfluxDB ... '
-    FluxWriter.push(record)
+    FluxWriter.push(config:, record:)
     puts 'OK'
   end
 end

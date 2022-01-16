@@ -1,0 +1,102 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://<INFLUX_HOST>/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
+    body:
+      encoding: UTF-8
+      string: "<INFLUX_BUCKET> bat_charge_current=-0.3,bat_fuel_charge=0.0,bat_power_minus=13i,bat_power_plus=0i,bat_voltage=45.5,grid_power_minus=0i,grid_power_plus=411i,house_power=424i,inverter_power=0i,wallbox_charge_power=0i
+        1642316697"
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - influxdb-client-ruby/2.1.0
+      Authorization:
+      - Token <INFLUX_TOKEN>
+      Content-Type:
+      - text/plain
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Date:
+      - Sun, 16 Jan 2022 07:04:58 GMT
+      X-Influxdb-Build:
+      - OSS
+      X-Influxdb-Version:
+      - 2.1.1
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Sun, 16 Jan 2022 07:04:58 GMT
+- request:
+    method: post
+    uri: https://<INFLUX_HOST>/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
+    body:
+      encoding: UTF-8
+      string: "<INFLUX_BUCKET> bat_charge_current=-0.3,bat_fuel_charge=0.0,bat_power_minus=13i,bat_power_plus=0i,bat_voltage=45.5,grid_power_minus=0i,grid_power_plus=411i,house_power=424i,inverter_power=0i,wallbox_charge_power=0i
+        1642316697"
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - influxdb-client-ruby/2.1.0
+      Authorization:
+      - Token <INFLUX_TOKEN>
+      Content-Type:
+      - text/plain
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Date:
+      - Sun, 16 Jan 2022 07:04:58 GMT
+      X-Influxdb-Build:
+      - OSS
+      X-Influxdb-Version:
+      - 2.1.1
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Sun, 16 Jan 2022 07:04:58 GMT
+- request:
+    method: post
+    uri: https://<INFLUX_HOST>/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
+    body:
+      encoding: UTF-8
+      string: "<INFLUX_BUCKET> bat_charge_current=-0.3,bat_fuel_charge=0.0,bat_power_minus=13i,bat_power_plus=0i,bat_voltage=45.5,grid_power_minus=0i,grid_power_plus=411i,house_power=424i,inverter_power=0i,wallbox_charge_power=0i
+        1642316697"
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - influxdb-client-ruby/2.1.0
+      Authorization:
+      - Token <INFLUX_TOKEN>
+      Content-Type:
+      - text/plain
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Date:
+      - Sun, 16 Jan 2022 07:04:58 GMT
+      X-Influxdb-Build:
+      - OSS
+      X-Influxdb-Version:
+      - 2.1.1
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Sun, 16 Jan 2022 07:04:58 GMT
+recorded_with: VCR 6.0.0

@@ -3,6 +3,10 @@ class SolectrusRecord
     @senec_data = senec_data
   end
 
+  def valid?
+    !measure_time.nil?
+  end
+
   def to_hash
     {
       inverter_power: inverter_power,

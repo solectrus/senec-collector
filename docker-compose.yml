@@ -3,13 +3,7 @@ version: "2"
 services:
   collector:
     image: ghcr.io/solectrus/senec-collector:latest
-    environment:
-      - SENEC_HOST
-      - SENEC_INTERVAL
-      - INFLUX_HOST
-      - INFLUX_TOKEN
-      - INFLUX_ORG
-      - INFLUX_BUCKET
+    env_file: .env
     command: bundle exec src/main.rb
     network_mode: host
     privileged: true

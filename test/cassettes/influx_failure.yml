@@ -2,19 +2,22 @@
 http_interactions:
 - request:
     method: post
-    uri: http://example.com/lala.cgi
+    uri: https://example.com/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
     body:
       encoding: UTF-8
-      string: '{"STATISTIC":{"CURRENT_STATE":"","LIVE_BAT_CHARGE_MASTER":"","LIVE_BAT_DISCHARGE_MASTER":"","LIVE_GRID_EXPORT":"","LIVE_GRID_IMPORT":"","LIVE_HOUSE_CONS":"","LIVE_PV_GEN":"","MEASURE_TIME":""},"ENERGY":{"GUI_BAT_DATA_CURRENT":"","GUI_BAT_DATA_FUEL_CHARGE":"","GUI_BAT_DATA_POWER":"","GUI_BAT_DATA_VOLTAGE":"","GUI_GRID_POW":"","GUI_HOUSE_POW":"","GUI_INVERTER_POWER":"","STAT_HOURS_OF_OPERATION":""},"BMS":{"CHARGED_ENERGY":"","DISCHARGED_ENERGY":"","CYCLES":""},"PV1":{"POWER_RATIO":"","P_TOTAL":""},"WALLBOX":{"APPARENT_CHARGING_POWER":""}}'
+      string: "<INFLUX_BUCKET> bat_charge_current=-0.3,bat_fuel_charge=0.0,bat_power_minus=13i,bat_power_plus=0i,bat_voltage=45.5,grid_power_minus=0i,grid_power_plus=411i,house_power=424i,inverter_power=0i,wallbox_charge_power=0i
+        1642316697"
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
       User-Agent:
-      - Ruby
-      Host:
-      - example.com
+      - influxdb-client-ruby/2.1.0
+      Authorization:
+      - Token <INFLUX_TOKEN>
+      Content-Type:
+      - text/plain
   response:
     status:
       code: 404
@@ -29,7 +32,7 @@ http_interactions:
       Expires:
       - Sun, 23 Jan 2022 07:04:58 GMT
       Server:
-      - EOS (vny/0454)
+      - EOS (vny/044F)
       Content-Length:
       - '445'
     body:

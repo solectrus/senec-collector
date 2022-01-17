@@ -12,8 +12,8 @@ class LoopTest < Minitest::Test
           Loop.start(config:, max_count: 1)
         end
 
-        assert_match /Got record #1 from SENEC/, out
-        assert_equal '', err
+        assert_match(/Got record #1 from SENEC/, out)
+        assert_equal('', err)
       end
     end
   end

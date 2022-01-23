@@ -4,7 +4,6 @@ services:
   collector:
     image: ghcr.io/solectrus/senec-collector:latest
     env_file: .env
-    command: bundle exec src/main.rb
     network_mode: host
     privileged: true
     restart: unless-stopped

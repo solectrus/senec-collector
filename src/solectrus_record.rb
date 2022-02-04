@@ -9,16 +9,16 @@ class SolectrusRecord
 
   def to_hash
     {
-      inverter_power: inverter_power,
-      house_power: house_power,
-      bat_power_plus: bat_power_plus,
-      bat_power_minus: bat_power_minus,
-      bat_fuel_charge: bat_fuel_charge,
-      bat_charge_current: bat_charge_current,
-      bat_voltage: bat_voltage,
-      wallbox_charge_power: wallbox_charge_power,
-      grid_power_plus: grid_power_plus,
-      grid_power_minus: grid_power_minus
+      inverter_power:,
+      house_power:,
+      bat_power_plus:,
+      bat_power_minus:,
+      bat_fuel_charge:,
+      bat_charge_current:,
+      bat_voltage:,
+      wallbox_charge_power:,
+      grid_power_plus:,
+      grid_power_minus:
     }
   end
 

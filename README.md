@@ -16,7 +16,7 @@ and Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster)
 4. Run the Docker container on your Linux box:
 
    ```bash
-   docker-commpose up
+   docker-compose up
    ```
 
 The Docker image support multiple platforms: `linux/amd64`, `linux/arm64`, `linux/arm/v7`

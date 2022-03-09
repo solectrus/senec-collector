@@ -5,15 +5,15 @@ http_interactions:
     uri: https://example.com/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
     body:
       encoding: UTF-8
-      string: "<INFLUX_BUCKET> bat_charge_current=-0.3,bat_fuel_charge=0.0,bat_power_minus=13i,bat_power_plus=0i,bat_voltage=45.5,grid_power_minus=0i,grid_power_plus=411i,house_power=424i,inverter_power=0i,wallbox_charge_power=0i
-        1642316697"
+      string: "<INFLUX_BUCKET> bat_charge_current=0.0,bat_fuel_charge=0.0,bat_power_minus=0i,bat_power_plus=0i,bat_voltage=0.0,case_temp=33.0,grid_power_minus=1987i,grid_power_plus=0i,house_power=509i,inverter_power=2496i,wallbox_charge_power=0i
+        1646843048"
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
       User-Agent:
-      - influxdb-client-ruby/2.1.0
+      - influxdb-client-ruby/2.2.0
       Authorization:
       - Token <INFLUX_TOKEN>
       Content-Type:
@@ -28,11 +28,11 @@ http_interactions:
       Content-Type:
       - text/html; charset=UTF-8
       Date:
-      - Sun, 16 Jan 2022 07:04:58 GMT
+      - Wed, 09 Mar 2022 16:26:07 GMT
       Expires:
-      - Sun, 23 Jan 2022 07:04:58 GMT
+      - Wed, 16 Mar 2022 16:26:07 GMT
       Server:
-      - EOS (vny/044F)
+      - EOS (vny/0454)
       Content-Length:
       - '445'
     body:
@@ -42,5 +42,5 @@ http_interactions:
         xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n\t<head>\n\t\t<title>404
         - Not Found</title>\n\t</head>\n\t<body>\n\t\t<h1>404 - Not Found</h1>\n\t\t<script
         type=\"text/javascript\" src=\"//wpc.75674.betacdn.net/0075674/www/ec_tpm_bcon.js\"></script>\n\t</body>\n</html>\n"
-  recorded_at: Sun, 16 Jan 2022 07:04:58 GMT
+  recorded_at: Wed, 09 Mar 2022 16:26:07 GMT
 recorded_with: VCR 6.0.0

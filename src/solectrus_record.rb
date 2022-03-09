@@ -9,6 +9,7 @@ class SolectrusRecord
 
   def to_hash
     {
+      case_temp:,
       inverter_power:,
       house_power:,
       bat_power_plus:,
@@ -24,6 +25,10 @@ class SolectrusRecord
 
   def measure_time
     @senec_data.measure_time
+  end
+
+  def case_temp
+    @senec_data.case_temp
   end
 
   def inverter_power

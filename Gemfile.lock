@@ -12,7 +12,7 @@ GEM
     json (2.6.2)
     minitest (5.16.2)
     parallel (1.22.1)
-    parser (3.1.2.0)
+    parser (3.1.2.1)
       ast (~> 2.4.1)
     public_suffix (4.0.7)
     rainbow (3.1.1)

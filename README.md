@@ -3,7 +3,14 @@
 Collect data from SENEC photovoltaics and push it to InfluxDB 2
 
 Tested with SENEC.Home V3 hybrid duo
-and Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster)
+
+## Requirements
+
+Linux machine with Docker installed
+
+Tested on:
+- Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster)
+- Synology NAS DS220+ on DSM 7.1
 
 ## Getting started
 

@@ -31,6 +31,7 @@ class InfluxPushTest < Minitest::Test
         SenecPull.new(config:, queue:).run
       end
     end
+
     assert_equal 3, queue.length
 
     VCR.use_cassette('influx_success') do

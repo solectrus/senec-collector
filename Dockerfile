@@ -3,6 +3,8 @@ LABEL maintainer="georg@ledermann.dev"
 
 WORKDIR /senec-collector
 
+ENV MALLOC_ARENA_MAX 2
+
 COPY Gemfile* /senec-collector/
 RUN bundle config --local frozen 1 && \
     bundle config --local without 'development test' && \

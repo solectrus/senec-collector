@@ -7,14 +7,14 @@ http_interactions:
       encoding: UTF-8
       string: '{"STATISTIC":{"CURRENT_STATE":"","MEASURE_TIME":""},"ENERGY":{"GUI_BAT_DATA_CURRENT":"","GUI_BAT_DATA_FUEL_CHARGE":"","GUI_BAT_DATA_POWER":"","GUI_BAT_DATA_VOLTAGE":"","GUI_GRID_POW":"","GUI_HOUSE_POW":"","GUI_INVERTER_POWER":"","STAT_HOURS_OF_OPERATION":""},"TEMPMEASURE":{"CASE_TEMP":""},"WALLBOX":{"APPARENT_CHARGING_POWER":""}}'
     headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
       Host:
       - "<SENEC_HOST>"
+      User-Agent:
+      - http.rb/5.1.0
   response:
     status:
       code: 200
@@ -24,6 +24,6 @@ http_interactions:
       - application/json; charset=utf-8
     body:
       encoding: UTF-8
-      string: '{"STATISTIC":{"CURRENT_STATE":"u1_0046","MEASURE_TIME":"i3_6228D4A8"},"ENERGY":{"GUI_BAT_DATA_CURRENT":"fl_00000000","GUI_BAT_DATA_FUEL_CHARGE":"fl_00000000","GUI_BAT_DATA_POWER":"fl_00000000","GUI_BAT_DATA_VOLTAGE":"fl_00000000","GUI_GRID_POW":"fl_C4F85333","GUI_HOUSE_POW":"fl_43FE7A64","GUI_INVERTER_POWER":"fl_451BF8E6","STAT_HOURS_OF_OPERATION":"u3_00002BDC"},"TEMPMEASURE":{"CASE_TEMP":"fl_42040975"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"]}}'
-  recorded_at: Wed, 09 Mar 2022 16:24:06 GMT
-recorded_with: VCR 6.0.0
+      string: '{"STATISTIC":{"CURRENT_STATE":"u1_000E","MEASURE_TIME":"i3_6370B258"},"ENERGY":{"GUI_BAT_DATA_CURRENT":"fl_423A51EC","GUI_BAT_DATA_FUEL_CHARGE":"fl_427A814A","GUI_BAT_DATA_POWER":"fl_451EBCD0","GUI_BAT_DATA_VOLTAGE":"fl_425A199A","GUI_GRID_POW":"fl_C3811333","GUI_HOUSE_POW":"fl_44151A24","GUI_INVERTER_POWER":"fl_455425BF","STAT_HOURS_OF_OPERATION":"u3_0000433C"},"TEMPMEASURE":{"CASE_TEMP":"fl_4208F882"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"]}}'
+  recorded_at: Sun, 13 Nov 2022 09:01:11 GMT
+recorded_with: VCR 6.1.0

@@ -1,5 +1,6 @@
 FROM ruby:3.1.2-alpine
 LABEL maintainer="georg@ledermann.dev"
+RUN apk add --no-cache build-base
 
 WORKDIR /senec-collector
 

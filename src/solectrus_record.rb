@@ -32,19 +32,19 @@ class SolectrusRecord
   end
 
   def inverter_power
-    @senec_data.inverter_power
+    @senec_data.inverter_power.round
   end
 
   def house_power
-    @senec_data.house_power
+    @senec_data.house_power.round
   end
 
   def bat_power_plus
-    @senec_data.bat_power.positive? ? @senec_data.bat_power : 0
+    @senec_data.bat_power.positive? ? @senec_data.bat_power.round : 0
   end
 
   def bat_power_minus
-    @senec_data.bat_power.negative? ? -@senec_data.bat_power : 0
+    @senec_data.bat_power.negative? ? -@senec_data.bat_power.round : 0
   end
 
   def bat_fuel_charge
@@ -60,14 +60,14 @@ class SolectrusRecord
   end
 
   def wallbox_charge_power
-    @senec_data.wallbox_charge_power.sum
+    @senec_data.wallbox_charge_power.sum.round
   end
 
   def grid_power_plus
-    @senec_data.grid_power.positive? ? @senec_data.grid_power : 0
+    @senec_data.grid_power.positive? ? @senec_data.grid_power.round : 0
   end
 
   def grid_power_minus
-    @senec_data.grid_power.negative? ? -@senec_data.grid_power : 0
+    @senec_data.grid_power.negative? ? -@senec_data.grid_power.round : 0
   end
 end

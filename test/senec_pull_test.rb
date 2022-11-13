@@ -19,7 +19,7 @@ class SenecPullTest < Minitest::Test
     config = Config.from_env(senec_host: 'example.com')
 
     VCR.use_cassette('senec_failure') do
-      assert_raises(Net::HTTPClientException) do
+      assert_raises(Senec::Error) do
         SenecPull.new(config:, queue:).run
       end
     end

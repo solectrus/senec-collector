@@ -11,6 +11,7 @@ RUN bundle config --local frozen 1 && \
 FROM ruby:3.1.2-alpine
 LABEL maintainer="georg@ledermann.dev"
 ENV MALLOC_ARENA_MAX 2
+WORKDIR /senec-collector
 
 COPY --from=Builder /usr/local/bundle/ /usr/local/bundle/
 COPY . /senec-collector/

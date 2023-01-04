@@ -58,7 +58,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
-    unicode-display_width (2.3.0)
+    unicode-display_width (2.4.1)
     vcr (6.1.0)
     webmock (3.18.1)
       addressable (>= 2.8.0)

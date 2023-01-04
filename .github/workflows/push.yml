@@ -3,12 +3,12 @@ name: Continuous integration
 on:
   push:
     branches:
-      - 'main'
+      - develop
     tags:
-      - 'v*.*.*'
+      - v*
   pull_request:
     branches:
-      - 'main'
+      - develop
 
 jobs:
   test:

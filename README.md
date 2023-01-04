@@ -12,7 +12,8 @@ Tested with SENEC.Home V3 hybrid duo
 Linux machine with Docker installed
 
 Tested on:
-- Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster)
+
+- Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster) and 11 (bullseye)
 - Synology NAS DS220+ on DSM 7.1
 
 ## Getting started

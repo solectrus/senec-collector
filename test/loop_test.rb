@@ -8,9 +8,7 @@ class LoopTest < Minitest::Test
 
     VCR.use_cassette('senec_success') do
       VCR.use_cassette('influx_success') do
-        out, err = capture_io do
-          Loop.start(config:, max_count: 1)
-        end
+        out, err = capture_io { Loop.start(config:, max_count: 1) }
 
         assert_match(/Got record #1 from SENEC/, out)
         assert_equal('', err)

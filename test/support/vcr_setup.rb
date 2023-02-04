@@ -18,6 +18,6 @@ VCR.configure do |config|
   record_mode = ENV['VCR'] ? ENV['VCR'].to_sym : :once
   config.default_cassette_options = {
     record: record_mode,
-    allow_playback_repeats: true
+    allow_playback_repeats: true,
   }
 end

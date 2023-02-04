@@ -51,12 +51,13 @@ class Loop
     return if push_thread&.status
 
     # Create new thread and push to InfluxDB
-    self.push_thread = Thread.new do
-      push = InfluxPush.new(config:, queue:)
-      push.run
-      puts push.success_message
-    rescue StandardError => e
-      puts push.failure_message(e)
-    end
+    self.push_thread =
+      Thread.new do
+        push = InfluxPush.new(config:, queue:)
+        push.run
+        puts push.success_message
+      rescue StandardError => e
+        puts push.failure_message(e)
+      end
   end
 end

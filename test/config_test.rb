@@ -10,7 +10,7 @@ class ConfigTest < Minitest::Test
     influx_port: '443',
     influx_token: 'this.is.just.an.example',
     influx_org: 'solectrus',
-    influx_bucket: 'SENEC'
+    influx_bucket: 'SENEC',
   }.freeze
 
   def test_valid_options

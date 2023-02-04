@@ -19,7 +19,7 @@ class SolectrusRecord
       bat_voltage:,
       wallbox_charge_power:,
       grid_power_plus:,
-      grid_power_minus:
+      grid_power_minus:,
     }
   end
 

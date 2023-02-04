@@ -22,6 +22,16 @@ Config =
       "#{influx_schema}://#{influx_host}:#{influx_port}"
     end
 
+    def senec_state_names
+      @senec_state_names ||=
+        begin
+          puts 'Getting state names from SENEC by parsing source code...'
+          names = Senec::State.new(host: senec_host).names
+          puts "OK, got #{names.length} state names"
+          names
+        end
+    end
+
     private
 
     def senec_url

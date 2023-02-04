@@ -20,11 +20,16 @@ class SolectrusRecord
       wallbox_charge_power:,
       grid_power_plus:,
       grid_power_minus:,
+      current_state:,
     }
   end
 
   def measure_time
     @senec_data.measure_time
+  end
+
+  def current_state
+    @senec_data.current_state_name
   end
 
   def case_temp

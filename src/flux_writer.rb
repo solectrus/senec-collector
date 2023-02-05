@@ -17,7 +17,7 @@ class FluxWriter
     write_api.write(
       data: point(record),
       bucket: config.influx_bucket,
-      org: config.influx_org
+      org: config.influx_org,
     )
   end
 
@@ -27,7 +27,7 @@ class FluxWriter
     InfluxDB2::Point.new(
       name: influx_measurement,
       time: record.measure_time,
-      fields: record.to_hash
+      fields: record.to_hash,
     )
   end
 
@@ -36,12 +36,13 @@ class FluxWriter
   end
 
   def influx_client
-    @influx_client ||= InfluxDB2::Client.new(
-      config.influx_url,
-      config.influx_token,
-      use_ssl: config.influx_schema == 'https',
-      precision: InfluxDB2::WritePrecision::SECOND
-    )
+    @influx_client ||=
+      InfluxDB2::Client.new(
+        config.influx_url,
+        config.influx_token,
+        use_ssl: config.influx_schema == 'https',
+        precision: InfluxDB2::WritePrecision::SECOND,
+      )
   end
 
   def write_api

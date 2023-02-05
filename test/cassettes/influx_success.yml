@@ -5,15 +5,15 @@ http_interactions:
     uri: https://<INFLUX_HOST>/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
     body:
       encoding: UTF-8
-      string: "<INFLUX_BUCKET> bat_charge_current=46.6,bat_fuel_charge=62.6,bat_power_minus=0i,bat_power_plus=2540i,bat_voltage=54.5,case_temp=34.2,grid_power_minus=258i,grid_power_plus=0i,house_power=596i,inverter_power=3394i,wallbox_charge_power=0i
-        1668330072"
+      string: <INFLUX_BUCKET> bat_charge_current=34.9,bat_fuel_charge=23.2,bat_power_minus=0i,bat_power_plus=1756i,bat_voltage=50.3,case_temp=31.9,current_state="LADEN",grid_power_minus=0i,grid_power_plus=33i,house_power=549i,inverter_power=2272i,wallbox_charge_power=0i
+        1675509679
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
       User-Agent:
-      - influxdb-client-ruby/2.8.0
+      - influxdb-client-ruby/2.9.0
       Authorization:
       - Token <INFLUX_TOKEN>
       Content-Type:
@@ -24,13 +24,13 @@ http_interactions:
       message: No Content
     headers:
       Date:
-      - Sun, 13 Nov 2022 10:06:17 GMT
+      - Sat, 04 Feb 2023 11:21:18 GMT
       X-Influxdb-Build:
       - OSS
       X-Influxdb-Version:
-      - v2.5.1
+      - v2.6.1
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Sun, 13 Nov 2022 10:06:17 GMT
+  recorded_at: Sat, 04 Feb 2023 11:21:18 GMT
 recorded_with: VCR 6.1.0

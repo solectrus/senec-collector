@@ -7,9 +7,11 @@ require_relative 'config'
 # Flush output immediately
 $stdout.sync = true
 
-puts 'SENEC collector for SOLECTRUS'
+puts 'SENEC collector for SOLECTRUS, ' \
+       "Version #{ENV.fetch('VERSION', '<unknown>')}, " \
+       "built at #{ENV.fetch('BUILDTIME', '<unknown>')}"
 puts 'https://github.com/solectrus/senec-collector'
-puts 'Copyright (c) 2020,2022 Georg Ledermann, released under the MIT License'
+puts 'Copyright (c) 2020,2023 Georg Ledermann, released under the MIT License'
 puts "\n"
 
 config = Config.from_env

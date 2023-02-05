@@ -6,8 +6,11 @@ gem 'dotenv'
 # Ruby library for InfluxDB 2. (https://github.com/influxdata/influxdb-client-ruby)
 gem 'influxdb-client'
 
-# Unofficial Ruby Client for SENEC Home (https://github.com/ledermann/senec)
+# Unofficial Ruby Client for SENEC Home (https://github.com/solectrus/senec)
 gem 'senec'
+
+# A fast JSON parser and serializer. (http://www.ohler.com/oj)
+gem 'oj'
 
 group :development, :test do
   # minitest provides a complete suite of testing facilities supporting TDD, BDD, mocking, and benchmarking (https://github.com/seattlerb/minitest)
@@ -28,6 +31,6 @@ group :development, :test do
   # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests. (https://relishapp.com/vcr/vcr/docs)
   gem 'vcr'
 
-  # Library for stubbing HTTP requests in Ruby. (http://github.com/bblimke/webmock)
+  # Library for stubbing HTTP requests in Ruby. (https://github.com/bblimke/webmock)
   gem 'webmock'
 end

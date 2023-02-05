@@ -1,5 +1,8 @@
+require 'oj'
 require 'senec'
 require_relative 'solectrus_record'
+
+Oj.mimic_JSON
 
 class SenecPull
   def initialize(config:, queue:)
@@ -10,7 +13,9 @@ class SenecPull
   attr_reader :config, :queue
 
   def run
-    data = Senec::Request.new host: config.senec_host
+    data =
+      Senec::Request.new host: config.senec_host,
+                         state_names: config.senec_state_names
     @record = SolectrusRecord.new(data)
     return unless @record.valid?
 
@@ -21,10 +26,12 @@ class SenecPull
     return unless @record
 
     "\nGot record ##{count} from SENEC at #{config.senec_host}: " \
-      "Inverter #{@record.inverter_power} W, House #{@record.house_power} W, #{Time.at(@record.measure_time)}"
+      "#{@record.current_state}, " \
+      "Inverter #{@record.inverter_power} W, House #{@record.house_power} W, " \
+      "#{Time.at(@record.measure_time)}"
   end
 
   def failure_message(error)
-    "Error getting record from SENEC at #{config.senec_host}: #{error}"
+    "Error getting data from SENEC at #{config.senec_host}: #{error}"
   end
 end

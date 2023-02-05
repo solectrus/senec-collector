@@ -12,7 +12,8 @@ Tested with SENEC.Home V3 hybrid duo
 Linux machine with Docker installed
 
 Tested on:
-- Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster)
+
+- Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster) and 11 (bullseye)
 - Synology NAS DS220+ on DSM 7.1
 
 ## Getting started
@@ -41,4 +42,4 @@ docker buildx build --platform linux/arm/v7 -t senec-collector .
 
 ## License
 
-Copyright (c) 2020,2022 Georg Ledermann, released under the MIT License
+Copyright (c) 2020,2023 Georg Ledermann, released under the MIT License

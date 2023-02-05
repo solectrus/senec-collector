@@ -9,15 +9,11 @@ class InfluxPushTest < Minitest::Test
     config = Config.from_env
     queue = Queue.new
 
-    VCR.use_cassette('senec_success') do
-      SenecPull.new(config:, queue:).run
-    end
+    VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
 
     assert_equal 1, queue.length
 
-    VCR.use_cassette('influx_success') do
-      InfluxPush.new(config:, queue:).run
-    end
+    VCR.use_cassette('influx_success') { InfluxPush.new(config:, queue:).run }
 
     assert_equal 0, queue.length
   end
@@ -27,16 +23,12 @@ class InfluxPushTest < Minitest::Test
     queue = Queue.new
 
     3.times do
-      VCR.use_cassette('senec_success') do
-        SenecPull.new(config:, queue:).run
-      end
+      VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
     end
 
     assert_equal 3, queue.length
 
-    VCR.use_cassette('influx_success') do
-      InfluxPush.new(config:, queue:).run
-    end
+    VCR.use_cassette('influx_success') { InfluxPush.new(config:, queue:).run }
 
     assert_equal 0, queue.length
   end
@@ -45,9 +37,7 @@ class InfluxPushTest < Minitest::Test
     queue = Queue.new
     config = Config.from_env(influx_host: 'example.com')
 
-    VCR.use_cassette('senec_success') do
-      SenecPull.new(config:, queue:).run
-    end
+    VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
 
     assert_equal 1, queue.length
 

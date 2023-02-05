@@ -24,9 +24,9 @@ class Loop
       pull_from_senec
       push_to_influx
 
-      break if max_count && count >= max_count
-
       sleep config.senec_interval
+
+      break if break?
     end
 
     # Wait for the push thread (if there is one) to finish
@@ -34,6 +34,10 @@ class Loop
   end
 
   private
+
+  def break?
+    max_count && count >= max_count && queue.empty?
+  end
 
   # Pull data from SENEC and add to queue
   def pull_from_senec

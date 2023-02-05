@@ -21,4 +21,9 @@ puts "Pulling from SENEC at #{config.senec_host} every #{config.senec_interval} 
 puts "Pushing to InfluxDB at #{config.influx_url}, bucket #{config.influx_bucket}"
 puts "\n"
 
-Loop.start(config:)
+loop do
+  Loop.start(config:, max_count: 1000)
+
+  # To avoid memory leaks, the loop is restarted every 1000 iterations
+  puts "\n--- Restarting loop..."
+end

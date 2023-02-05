@@ -9,6 +9,9 @@ gem 'influxdb-client'
 # Unofficial Ruby Client for SENEC Home (https://github.com/solectrus/senec)
 gem 'senec'
 
+# A fast JSON parser and serializer. (http://www.ohler.com/oj)
+gem 'oj'
+
 group :development, :test do
   # minitest provides a complete suite of testing facilities supporting TDD, BDD, mocking, and benchmarking (https://github.com/seattlerb/minitest)
   gem 'minitest'

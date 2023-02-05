@@ -1,5 +1,8 @@
+require 'oj'
 require 'senec'
 require_relative 'solectrus_record'
+
+Oj.mimic_JSON
 
 class SenecPull
   def initialize(config:, queue:)

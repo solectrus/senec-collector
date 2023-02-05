@@ -10,7 +10,20 @@ RUN bundle config --local frozen 1 && \
 
 FROM ruby:3.2.0-alpine
 LABEL maintainer="georg@ledermann.dev"
+
+# Decrease memory usage
 ENV MALLOC_ARENA_MAX 2
+
+# Move build arguments to environment variables
+ARG BUILDTIME
+ENV BUILDTIME ${BUILDTIME}
+
+ARG VERSION
+ENV VERSION ${VERSION}
+
+ARG REVISION
+ENV REVISION ${REVISION}
+
 WORKDIR /senec-collector
 
 COPY --from=Builder /usr/local/bundle/ /usr/local/bundle/

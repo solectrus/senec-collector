@@ -26,3 +26,6 @@ Style/TrailingCommaInArguments:
 
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
+
+Layout/LineEndStringConcatenationIndentation:
+  Enabled: false

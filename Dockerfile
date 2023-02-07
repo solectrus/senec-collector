@@ -14,6 +14,9 @@ LABEL maintainer="georg@ledermann.dev"
 # Decrease memory usage
 ENV MALLOC_ARENA_MAX 2
 
+# Enable YJIT
+ENV RUBY_YJIT_ENABLE=1
+
 # Move build arguments to environment variables
 ARG BUILDTIME
 ENV BUILDTIME ${BUILDTIME}

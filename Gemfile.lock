@@ -28,7 +28,7 @@ GEM
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
     minitest (5.17.0)
-    oj (3.14.1)
+    oj (3.14.2)
     parallel (1.22.1)
     parser (3.2.1.0)
       ast (~> 2.4.1)

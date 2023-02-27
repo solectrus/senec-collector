@@ -2,11 +2,11 @@
 http_interactions:
 - request:
     method: post
-    uri: https://<INFLUX_HOST>/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
+    uri: http://<INFLUX_HOST>:8086/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
     body:
       encoding: UTF-8
-      string: <INFLUX_BUCKET> bat_charge_current=34.9,bat_fuel_charge=23.2,bat_power_minus=0i,bat_power_plus=1756i,bat_voltage=50.3,case_temp=31.9,current_state="LADEN",grid_power_minus=0i,grid_power_plus=33i,house_power=549i,inverter_power=2272i,wallbox_charge_power=0i
-        1675509679
+      string: SENEC bat_charge_current=1.8,bat_fuel_charge=60.6,bat_power_minus=0i,bat_power_plus=94i,bat_voltage=53.7,case_temp=33.8,grid_power_minus=2376i,grid_power_plus=0i,house_power=517i,inverter_power=2984i,mpp1_power=1523i,mpp2_power=2i,mpp3_power=1458i,wallbox_charge_power=0i
+        1677487116
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -23,14 +23,14 @@ http_interactions:
       code: 204
       message: No Content
     headers:
-      Date:
-      - Sat, 04 Feb 2023 11:21:18 GMT
       X-Influxdb-Build:
       - OSS
       X-Influxdb-Version:
       - v2.6.1
+      Date:
+      - Mon, 27 Feb 2023 08:38:35 GMT
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Sat, 04 Feb 2023 11:21:18 GMT
+  recorded_at: Mon, 27 Feb 2023 08:38:35 GMT
 recorded_with: VCR 6.1.0

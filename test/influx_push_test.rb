@@ -35,13 +35,19 @@ class InfluxPushTest < Minitest::Test
 
   def test_failure
     queue = Queue.new
-    config = Config.from_env(influx_host: 'example.com')
+    config = Config.from_env
 
     VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
 
     assert_equal 1, queue.length
 
-    VCR.use_cassette('influx_failure') do
+    FluxWriter.stub :push,
+                    lambda { |_args|
+                      raise InfluxDB2::InfluxError.new message: nil,
+                                                       code: nil,
+                                                       reference: nil,
+                                                       retry_after: nil
+                    } do
       assert_raises(InfluxDB2::InfluxError) do
         InfluxPush.new(config:, queue:).run
       end

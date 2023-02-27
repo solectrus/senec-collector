@@ -14,9 +14,9 @@ class SenecPullTest < Minitest::Test
 
   def test_failure
     queue = Queue.new
-    config = Config.from_env(senec_host: 'example.com')
+    config = Config.from_env
 
-    VCR.use_cassette('senec_failure') do
+    Senec::Request.stub :new, ->(_args) { raise Senec::Error } do
       assert_raises(Senec::Error) { SenecPull.new(config:, queue:).run }
     end
 

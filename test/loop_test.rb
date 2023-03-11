@@ -1,6 +1,4 @@
 require 'test_helper'
-require 'loop'
-require 'config'
 
 class LoopTest < Minitest::Test
   def config

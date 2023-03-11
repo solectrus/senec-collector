@@ -1,6 +1,4 @@
 require 'test_helper'
-require 'senec_pull'
-require 'config'
 
 class SenecPullTest < Minitest::Test
   def test_success

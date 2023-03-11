@@ -14,37 +14,73 @@ class InfluxPushTest < Minitest::Test
   end
 
   def test_single_record
-    VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
+    fill_queue
 
-    assert_equal 1, queue.length
+    assert_success do
+      thread =
+        Thread.new do
+          VCR.use_cassette('influx_success') do
+            InfluxPush.new(config:, queue:).run
+          end
+        end
 
-    VCR.use_cassette('influx_success') { InfluxPush.new(config:, queue:).run }
-
-    assert_equal 0, queue.length
+      Timeout.timeout(3) { loop until queue.empty? }
+      queue.close
+      thread.join
+    end
   end
 
-  def test_multiple_record
-    3.times do
-      VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
+  def test_multiple_records
+    fill_queue(3)
+
+    assert_success do
+      thread =
+        Thread.new do
+          VCR.use_cassette('influx_success') do
+            InfluxPush.new(config:, queue:).run
+          end
+        end
+
+      Timeout.timeout(3) { loop until queue.empty? }
+      queue.close
+      thread.join
     end
-
-    assert_equal 3, queue.length
-
-    VCR.use_cassette('influx_success') { InfluxPush.new(config:, queue:).run }
-
-    assert_equal 0, queue.length
   end
 
   def test_failure
-    VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
+    fill_queue
 
-    FluxWriter.stub :new, FailingFluxWriter.new do
-      assert_raises(InfluxDB2::InfluxError) do
-        InfluxPush.new(config:, queue:).run
+    assert_failure(1) do
+      FluxWriter.stub :new, FailingFluxWriter.new do
+        thread = Thread.new { InfluxPush.new(config:, queue:).run }
+
+        sleep(1)
+        queue.close
+        thread.join
       end
     end
+  end
 
-    assert_equal 1, queue.length
+  def fill_queue(num_records = 1)
+    num_records.times do
+      VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
+    end
+
+    assert_equal num_records, queue.length
+  end
+
+  def assert_success(&block)
+    out, _err = capture_io { yield(block) }
+
+    assert_equal 0, queue.length
+    assert_match(/Successfully pushed record to InfluxDB/, out)
+  end
+
+  def assert_failure(num_records, &block)
+    out, _err = capture_io { yield(block) }
+
+    assert_equal num_records, queue.length
+    assert_match(/Error while pushing record to InfluxDB/, out)
   end
 
   class FailingFluxWriter

@@ -20,9 +20,25 @@ class Loop
     pull_thread = Thread.new { pull_loop }
     push_thread = Thread.new { push_loop }
 
-    # Wait for the threads to finish
-    push_thread.join
+    # Wait for the pull thread to finish (will happen if max_count is set)
     pull_thread.join
+
+    # Push any remaining records to InfluxDB
+    close_queue
+
+    # Wait for the push thread to finish (will happen because queue is closed)
+    push_thread.join
+  rescue SystemExit, Interrupt
+    puts 'Exiting...'
+
+    # Stop pulling data from SENEC
+    pull_thread.exit
+
+    # Push any remaining records to InfluxDB (can take a while)
+    close_queue
+
+    # Stop pushing data to InfluxDB
+    push_thread.exit
   end
 
   private
@@ -50,21 +66,15 @@ class Loop
 
   # Push data from queue to InfluxDB
   def push_loop
-    push = InfluxPush.new(config:, queue:)
-    count = 0
+    InfluxPush.new(config:, queue:).run
+  end
 
-    loop do
-      begin
-        count += push.run
-
-        puts push.success_message if push.success_message
-      rescue StandardError => e
-        puts push.failure_message(e)
-      end
-
-      break if max_count && count >= max_count
-
+  def close_queue
+    until queue.empty?
+      puts "Waiting for #{queue.size} records to be pushed to InfluxDB"
       sleep 1
     end
+
+    queue.close
   end
 end

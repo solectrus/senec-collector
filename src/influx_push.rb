@@ -2,19 +2,21 @@ require_relative 'flux_writer'
 
 class InfluxPush
   def initialize(config:, queue:)
-    @queue = queue
     @config = config
-    @count = 0
+    @queue = queue
+    @flux_writer = FluxWriter.new(config)
   end
 
-  attr_reader :config, :queue
+  attr_reader :config, :queue, :flux_writer
 
   def run
+    @count = 0
+
     until queue.empty?
       record = queue.pop
 
       begin
-        FluxWriter.push(config:, record:)
+        flux_writer.push(record)
         @count += 1
       rescue StandardError
         # Put the record back into the queue
@@ -23,6 +25,8 @@ class InfluxPush
         raise
       end
     end
+
+    @count
   end
 
   def success_message

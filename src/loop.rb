@@ -12,52 +12,59 @@ class Loop
   end
 
   attr_reader :config, :max_count
-  attr_accessor :queue, :count, :push_thread
+  attr_accessor :queue
 
   def start
     self.queue = Queue.new
-    self.count = 0
 
-    loop do
-      self.count += 1
+    pull_thread = Thread.new { pull_loop }
+    push_thread = Thread.new { push_loop }
 
-      pull_from_senec
-      push_to_influx
-
-      break if max_count && count >= max_count
-
-      sleep config.senec_interval
-    end
-
-    # Wait for the push thread (if there is one) to finish
-    push_thread&.join
+    # Wait for the threads to finish
+    push_thread.join
+    pull_thread.join
   end
 
   private
 
   # Pull data from SENEC and add to queue
-  def pull_from_senec
+  def pull_loop
     pull = SenecPull.new(config:, queue:)
-    pull.run
-    puts pull.success_message(count)
-  rescue StandardError => e
-    puts pull.failure_message(e)
+    count = 0
+
+    loop do
+      count += 1
+
+      begin
+        pull.run
+        puts pull.success_message(count)
+      rescue StandardError => e
+        puts pull.failure_message(e)
+      end
+
+      break if max_count && count >= max_count
+
+      sleep config.senec_interval
+    end
   end
 
   # Push data from queue to InfluxDB
-  # Do this in a separate thread so that the main thread is not blocked
-  def push_to_influx
-    # Do nothing if there is already a push thread running
-    return if push_thread&.status
+  def push_loop
+    push = InfluxPush.new(config:, queue:)
+    count = 0
 
-    # Create new thread and push to InfluxDB
-    self.push_thread =
-      Thread.new do
-        push = InfluxPush.new(config:, queue:)
-        push.run
-        puts push.success_message
+    loop do
+      begin
+        count += push.run
+
+        puts push.success_message if push.success_message
       rescue StandardError => e
         puts push.failure_message(e)
       end
+
+      break if max_count && count >= max_count
+
+      sleep 1
+    end
   end
 end

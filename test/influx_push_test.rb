@@ -5,10 +5,15 @@ require 'config'
 require 'solectrus_record'
 
 class InfluxPushTest < Minitest::Test
-  def test_single_record
-    config = Config.from_env
-    queue = Queue.new
+  def config
+    @config ||= Config.from_env
+  end
 
+  def queue
+    @queue ||= Queue.new
+  end
+
+  def test_single_record
     VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
 
     assert_equal 1, queue.length
@@ -19,9 +24,6 @@ class InfluxPushTest < Minitest::Test
   end
 
   def test_multiple_record
-    config = Config.from_env
-    queue = Queue.new
-
     3.times do
       VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
     end
@@ -34,25 +36,23 @@ class InfluxPushTest < Minitest::Test
   end
 
   def test_failure
-    queue = Queue.new
-    config = Config.from_env
-
     VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
 
-    assert_equal 1, queue.length
-
-    FluxWriter.stub :push,
-                    lambda { |_args|
-                      raise InfluxDB2::InfluxError.new message: nil,
-                                                       code: nil,
-                                                       reference: nil,
-                                                       retry_after: nil
-                    } do
+    FluxWriter.stub :new, FailingFluxWriter.new do
       assert_raises(InfluxDB2::InfluxError) do
         InfluxPush.new(config:, queue:).run
       end
     end
 
     assert_equal 1, queue.length
+  end
+
+  class FailingFluxWriter
+    def push(_record)
+      raise InfluxDB2::InfluxError.new message: nil,
+                                       code: nil,
+                                       reference: nil,
+                                       retry_after: nil
+    end
   end
 end

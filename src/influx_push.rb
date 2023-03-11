@@ -19,17 +19,25 @@ class InfluxPush
         flux_writer.push(record)
         puts 'Successfully pushed record to InfluxDB'
       rescue StandardError => e
-        # Log the error
-        puts "Error while pushing record to InfluxDB. #{e.class}: #{e.message}"
+        error_handling(record, e)
 
-        unless queue.closed?
-          # Put the record back into the queue
-          queue << record
-
-          # Wait a second before trying again
-          sleep(1)
-        end
+        # Wait a second before trying again
+        sleep(1)
       end
     end
+  end
+
+  private
+
+  def error_handling(record, error)
+    # Log the error
+    puts "Error while pushing record to InfluxDB: #{error.message}"
+
+    return if queue.closed?
+
+    # Put the record back into the queue
+    queue << record
+
+    puts "The record has been queued. Will retry to push #{queue.size} records later."
   end
 end

@@ -46,19 +46,16 @@ class Loop
   # Pull data from SENEC and add to queue
   def pull_loop
     pull = SenecPull.new(config:, queue:)
-    count = 0
 
     loop do
-      count += 1
-
       begin
-        pull.run
-        puts pull.success_message(count)
+        pull.next
+        puts pull.success_message
       rescue StandardError => e
         puts pull.failure_message(e)
       end
 
-      break if max_count && count >= max_count
+      break if max_count && pull.count >= max_count
 
       sleep config.senec_interval
     end

@@ -8,21 +8,23 @@ class SenecPull
   def initialize(config:, queue:)
     @queue = queue
     @config = config
+    @count = 0
   end
 
-  attr_reader :config, :queue
+  attr_reader :config, :queue, :count
 
-  def run
+  def next
     data =
       Senec::Request.new host: config.senec_host,
                          state_names: config.senec_state_names
     @record = SolectrusRecord.new(data)
     return unless @record.valid?
 
+    @count += 1
     queue << @record
   end
 
-  def success_message(count)
+  def success_message
     return unless @record
 
     "\nGot record ##{count} from SENEC at #{config.senec_host}: " \

@@ -5,7 +5,7 @@ class SenecPullTest < Minitest::Test
     queue = Queue.new
     config = Config.from_env
 
-    VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
+    VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).next }
 
     assert_equal 1, queue.length
   end
@@ -15,7 +15,7 @@ class SenecPullTest < Minitest::Test
     config = Config.from_env
 
     Senec::Request.stub :new, ->(_args) { raise Senec::Error } do
-      assert_raises(Senec::Error) { SenecPull.new(config:, queue:).run }
+      assert_raises(Senec::Error) { SenecPull.new(config:, queue:).next }
     end
 
     assert_equal 0, queue.length

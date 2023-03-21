@@ -13,7 +13,9 @@ class InfluxPush
     until queue.closed?
       # Wait for a record to be added to the queue
       record = queue.pop
-      return unless record
+
+      # Stop if the queue has been closed
+      next unless record
 
       begin
         flux_writer.push(record)
@@ -21,8 +23,8 @@ class InfluxPush
       rescue StandardError => e
         error_handling(record, e)
 
-        # Wait a second before trying again
-        sleep(1)
+        # Wait a bit before trying again
+        sleep(5)
       end
     end
   end

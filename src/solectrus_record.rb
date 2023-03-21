@@ -1,11 +1,10 @@
 class SolectrusRecord
-  def initialize(senec_data)
+  def initialize(id, senec_data)
+    @id = id
     @senec_data = senec_data
   end
 
-  def valid?
-    !measure_time.nil?
-  end
+  attr_reader :id
 
   def to_hash
     {

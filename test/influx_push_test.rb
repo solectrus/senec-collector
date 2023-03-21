@@ -77,14 +77,17 @@ class InfluxPushTest < Minitest::Test
     out, _err = capture_io { yield(block) }
 
     assert_equal 0, queue.length
-    assert_equal("Successfully pushed record to InfluxDB\n" * num_records, out)
+    assert_equal(
+      "Successfully pushed record #1 to InfluxDB\n" * num_records,
+      out,
+    )
   end
 
   def assert_failure(num_records, &block)
     out, _err = capture_io { yield(block) }
 
     assert_equal num_records, queue.length
-    assert_match(/Error while pushing record to InfluxDB/, out)
+    assert_match(/Error while pushing record #1 to InfluxDB/, out)
   end
 end
 

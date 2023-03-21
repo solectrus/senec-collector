@@ -17,7 +17,7 @@ class InfluxPush
 
       begin
         flux_writer.push(record)
-        puts 'Successfully pushed record to InfluxDB'
+        puts "Successfully pushed record ##{record.id} to InfluxDB"
       rescue StandardError => e
         error_handling(record, e)
 
@@ -31,7 +31,7 @@ class InfluxPush
 
   def error_handling(record, error)
     # Log the error
-    puts "Error while pushing record to InfluxDB: #{error.message}"
+    puts "Error while pushing record ##{record.id} to InfluxDB: #{error.message}"
 
     return if queue.closed?
 

@@ -17,10 +17,9 @@ class SenecPull
     data =
       Senec::Request.new host: config.senec_host,
                          state_names: config.senec_state_names
-    @record = SolectrusRecord.new(data)
-    return unless @record.valid?
+    return unless data.measure_time
 
-    @count += 1
+    @record = SolectrusRecord.new(@count += 1, data)
     queue << @record
   end
 

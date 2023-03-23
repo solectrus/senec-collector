@@ -28,6 +28,9 @@ group :development, :test do
   # A RuboCop plugin for Rake (https://github.com/rubocop/rubocop-rake)
   gem 'rubocop-rake'
 
+  # Automatic performance checking tool for Ruby code. (https://github.com/rubocop/rubocop-performance)
+  gem 'rubocop-performance'
+
   # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests. (https://relishapp.com/vcr/vcr/docs)
   gem 'vcr'
 

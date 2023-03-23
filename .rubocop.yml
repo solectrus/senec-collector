@@ -1,6 +1,7 @@
 require:
   - rubocop-minitest
   - rubocop-rake
+  - rubocop-performance
 
 AllCops:
   TargetRubyVersion: 3.2
@@ -16,7 +17,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Metrics/MethodLength:
-  Max: 15
+  Max: 20
 
 Minitest/MultipleAssertions:
   Max: 10

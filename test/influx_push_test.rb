@@ -1,52 +1,101 @@
 require 'test_helper'
-require 'senec_pull'
-require 'influx_push'
-require 'config'
-require 'solectrus_record'
 
 class InfluxPushTest < Minitest::Test
   def test_single_record
-    config = Config.from_env
-    queue = Queue.new
+    fill_queue
 
-    VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
+    assert_success do
+      thread =
+        Thread.new do
+          VCR.use_cassette('influx_success') do
+            InfluxPush.new(config:, queue:).run
+          end
+        end
 
-    assert_equal 1, queue.length
+      # Wait for the queue to be empty (or timeout)
+      Timeout.timeout(3) { loop until queue.empty? }
 
-    VCR.use_cassette('influx_success') { InfluxPush.new(config:, queue:).run }
-
-    assert_equal 0, queue.length
+      queue.close
+      thread.join
+    end
   end
 
-  def test_multiple_record
-    config = Config.from_env
-    queue = Queue.new
+  def test_multiple_records
+    fill_queue(3)
 
-    3.times do
-      VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
+    assert_success(3) do
+      thread =
+        Thread.new do
+          VCR.use_cassette('influx_success') do
+            InfluxPush.new(config:, queue:).run
+          end
+        end
+
+      # Wait for the queue to be empty (or timeout)
+      Timeout.timeout(1) { loop until queue.empty? }
+
+      queue.close
+      thread.join
     end
-
-    assert_equal 3, queue.length
-
-    VCR.use_cassette('influx_success') { InfluxPush.new(config:, queue:).run }
-
-    assert_equal 0, queue.length
   end
 
   def test_failure
-    queue = Queue.new
-    config = Config.from_env(influx_host: 'example.com')
+    fill_queue
 
-    VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).run }
+    assert_failure(1) do
+      FluxWriter.stub :new, FailingFluxWriter.new do
+        thread = Thread.new { InfluxPush.new(config:, queue:).run }
 
-    assert_equal 1, queue.length
+        # Wait a bit for the thread to fail
+        sleep(1)
 
-    VCR.use_cassette('influx_failure') do
-      assert_raises(InfluxDB2::InfluxError) do
-        InfluxPush.new(config:, queue:).run
+        queue.close
+        thread.join
       end
     end
+  end
 
-    assert_equal 1, queue.length
+  private
+
+  def config
+    @config ||= Config.from_env
+  end
+
+  def queue
+    @queue ||= Queue.new
+  end
+
+  def fill_queue(num_records = 1)
+    num_records.times do
+      VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).next }
+    end
+
+    assert_equal num_records, queue.length
+  end
+
+  def assert_success(num_records = 1, &block)
+    out, _err = capture_io { yield(block) }
+
+    assert_equal 0, queue.length
+    assert_equal(
+      "Successfully pushed record #1 to InfluxDB\n" * num_records,
+      out,
+    )
+  end
+
+  def assert_failure(num_records, &block)
+    out, _err = capture_io { yield(block) }
+
+    assert_equal num_records, queue.length
+    assert_match(/Error while pushing record #1 to InfluxDB/, out)
+  end
+end
+
+class FailingFluxWriter
+  def push(_record)
+    raise InfluxDB2::InfluxError.new message: nil,
+                                     code: nil,
+                                     reference: nil,
+                                     retry_after: nil
   end
 end

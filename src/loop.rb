@@ -12,52 +12,66 @@ class Loop
   end
 
   attr_reader :config, :max_count
-  attr_accessor :queue, :count, :push_thread
+  attr_accessor :queue
 
   def start
     self.queue = Queue.new
-    self.count = 0
 
-    loop do
-      self.count += 1
+    pull_thread = Thread.new { pull_loop }
+    push_thread = Thread.new { push_loop }
 
-      pull_from_senec
-      push_to_influx
+    # Wait for the pull thread to finish (will happen if max_count is set)
+    pull_thread.join
 
-      break if max_count && count >= max_count
+    # Push any remaining records to InfluxDB
+    close_queue
 
-      sleep config.senec_interval
-    end
+    # Wait for the push thread to finish (will happen because queue is closed)
+    push_thread.join
+  rescue SystemExit, Interrupt
+    puts 'Exiting...'
 
-    # Wait for the push thread (if there is one) to finish
-    push_thread&.join
+    # Stop pulling data from SENEC
+    pull_thread.exit
+
+    # Push any remaining records to InfluxDB (can take a while)
+    close_queue
+
+    # Stop pushing data to InfluxDB
+    push_thread.exit
   end
 
   private
 
   # Pull data from SENEC and add to queue
-  def pull_from_senec
+  def pull_loop
     pull = SenecPull.new(config:, queue:)
-    pull.run
-    puts pull.success_message(count)
-  rescue StandardError => e
-    puts pull.failure_message(e)
+
+    loop do
+      begin
+        pull.next
+        puts pull.success_message
+      rescue StandardError => e
+        puts pull.failure_message(e)
+      end
+
+      break if max_count && pull.count >= max_count
+
+      sleep config.senec_interval
+    end
   end
 
   # Push data from queue to InfluxDB
-  # Do this in a separate thread so that the main thread is not blocked
-  def push_to_influx
-    # Do nothing if there is already a push thread running
-    return if push_thread&.status
+  def push_loop
+    InfluxPush.new(config:, queue:).run
+  end
 
-    # Create new thread and push to InfluxDB
-    self.push_thread =
-      Thread.new do
-        push = InfluxPush.new(config:, queue:)
-        push.run
-        puts push.success_message
-      rescue StandardError => e
-        puts push.failure_message(e)
-      end
+  def close_queue
+    until queue.empty?
+      puts "Waiting for #{queue.size} records to be pushed to InfluxDB"
+      sleep 1
+    end
+
+    queue.close
   end
 end

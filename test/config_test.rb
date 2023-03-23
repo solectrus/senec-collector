@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'config'
 
 class ConfigTest < Minitest::Test
   VALID_OPTIONS = {

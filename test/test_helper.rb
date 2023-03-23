@@ -1,5 +1,7 @@
 require 'minitest/autorun'
 require 'webmock/minitest'
+require 'loop'
+require 'config'
 
 require File.expand_path './support/vcr_setup.rb', __dir__
 
@@ -10,7 +12,6 @@ module StubStateNames
   end
 end
 
-require 'config'
 class Config
   prepend StubStateNames
 end

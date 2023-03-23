@@ -1,16 +1,18 @@
 class SolectrusRecord
-  def initialize(senec_data)
+  def initialize(id, senec_data)
+    @id = id
     @senec_data = senec_data
   end
 
-  def valid?
-    !measure_time.nil?
-  end
+  attr_reader :id
 
   def to_hash
     {
       case_temp:,
       inverter_power:,
+      mpp1_power:,
+      mpp2_power:,
+      mpp3_power:,
       house_power:,
       bat_power_plus:,
       bat_power_minus:,
@@ -38,6 +40,18 @@ class SolectrusRecord
 
   def inverter_power
     @senec_data.inverter_power.round
+  end
+
+  def mpp1_power
+    @senec_data.mpp_power[0]&.round
+  end
+
+  def mpp2_power
+    @senec_data.mpp_power[1]&.round
+  end
+
+  def mpp3_power
+    @senec_data.mpp_power[2]&.round
   end
 
   def house_power

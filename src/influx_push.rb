@@ -2,42 +2,44 @@ require_relative 'flux_writer'
 
 class InfluxPush
   def initialize(config:, queue:)
-    @queue = queue
     @config = config
-    @count = 0
+    @queue = queue
+    @flux_writer = FluxWriter.new(config)
   end
 
-  attr_reader :config, :queue
+  attr_reader :config, :queue, :flux_writer
 
   def run
-    until queue.empty?
+    until queue.closed?
+      # Wait for a record to be added to the queue
       record = queue.pop
 
-      begin
-        FluxWriter.push(config:, record:)
-        @count += 1
-      rescue StandardError
-        # Put the record back into the queue
-        queue << record
+      # Stop if the queue has been closed
+      next unless record
 
-        raise
+      begin
+        flux_writer.push(record)
+        puts "Successfully pushed record ##{record.id} to InfluxDB"
+      rescue StandardError => e
+        error_handling(record, e)
+
+        # Wait a bit before trying again
+        sleep(5)
       end
     end
   end
 
-  def success_message
-    return unless @count.positive?
-
-    "Successfully pushed #{pluralize(@count, 'record', 'records')} to InfluxDB"
-  end
-
-  def failure_message(error)
-    "Error while pushing #{pluralize(queue.length, 'record', 'records')} to InfluxDB. #{error.class}: #{error.message}"
-  end
-
   private
 
-  def pluralize(count, singular, plural)
-    count == 1 ? singular : "#{count} #{plural}"
+  def error_handling(record, error)
+    # Log the error
+    puts "Error while pushing record ##{record.id} to InfluxDB: #{error.message}"
+
+    return if queue.closed?
+
+    # Put the record back into the queue
+    queue << record
+
+    puts "The record has been queued. Will retry to push #{queue.size} records later."
   end
 end

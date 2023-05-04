@@ -4,7 +4,7 @@ class SolectrusRecord
     @senec_data = senec_data
   end
 
-  attr_reader :id
+  attr_reader :id, :senec_data
 
   def to_hash
     {
@@ -27,66 +27,66 @@ class SolectrusRecord
   end
 
   def measure_time
-    @senec_data.measure_time
+    senec_data.measure_time
   end
 
   def current_state
-    @senec_data.current_state_name
+    senec_data.current_state_name
   end
 
   def case_temp
-    @senec_data.case_temp
+    senec_data.case_temp
   end
 
   def inverter_power
-    @senec_data.inverter_power.round
+    senec_data.inverter_power.round
   end
 
   def mpp1_power
-    @senec_data.mpp_power[0]&.round
+    senec_data.mpp_power[0]&.round
   end
 
   def mpp2_power
-    @senec_data.mpp_power[1]&.round
+    senec_data.mpp_power[1]&.round
   end
 
   def mpp3_power
-    @senec_data.mpp_power[2]&.round
+    senec_data.mpp_power[2]&.round
   end
 
   def house_power
-    @senec_data.house_power.round
+    senec_data.house_power.round
   end
 
   def bat_power_plus
-    @senec_data.bat_power.positive? ? @senec_data.bat_power.round : 0
+    senec_data.bat_power.positive? ? senec_data.bat_power.round : 0
   end
 
   def bat_power_minus
-    @senec_data.bat_power.negative? ? -@senec_data.bat_power.round : 0
+    senec_data.bat_power.negative? ? -senec_data.bat_power.round : 0
   end
 
   def bat_fuel_charge
-    @senec_data.bat_fuel_charge
+    senec_data.bat_fuel_charge
   end
 
   def bat_charge_current
-    @senec_data.bat_charge_current
+    senec_data.bat_charge_current
   end
 
   def bat_voltage
-    @senec_data.bat_voltage
+    senec_data.bat_voltage
   end
 
   def wallbox_charge_power
-    @senec_data.wallbox_charge_power.sum.round
+    senec_data.wallbox_charge_power.sum.round
   end
 
   def grid_power_plus
-    @senec_data.grid_power.positive? ? @senec_data.grid_power.round : 0
+    senec_data.grid_power.positive? ? senec_data.grid_power.round : 0
   end
 
   def grid_power_minus
-    @senec_data.grid_power.negative? ? -@senec_data.grid_power.round : 0
+    senec_data.grid_power.negative? ? -senec_data.grid_power.round : 0
   end
 end

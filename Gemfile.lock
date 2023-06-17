@@ -14,7 +14,7 @@ GEM
     influxdb-client (2.9.0)
     json (2.6.3)
     mini_mime (1.1.2)
-    minitest (5.18.0)
+    minitest (5.18.1)
     multi_xml (0.6.0)
     oj (3.15.0)
     parallel (1.23.0)

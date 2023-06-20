@@ -13,7 +13,7 @@ gem 'senec'
 gem 'oj'
 
 group :development, :test do
-  # minitest provides a complete suite of testing facilities supporting TDD, BDD, mocking, and benchmarking (https://github.com/seattlerb/minitest)
+  # minitest provides a complete suite of testing facilities supporting TDD, BDD, mocking, and benchmarking (https://github.com/minitest/minitest)
   gem 'minitest'
 
   # Rake is a Make-like program implemented in Ruby (https://github.com/ruby/rake)

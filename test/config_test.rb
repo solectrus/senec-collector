@@ -10,6 +10,7 @@ class ConfigTest < Minitest::Test
     influx_token: 'this.is.just.an.example',
     influx_org: 'solectrus',
     influx_bucket: 'SENEC',
+    influx_measurement: 'SENEC',
   }.freeze
 
   def test_valid_options
@@ -38,5 +39,6 @@ class ConfigTest < Minitest::Test
     assert_equal 'this.is.just.an.example', config.influx_token
     assert_equal 'solectrus', config.influx_org
     assert_equal 'SENEC', config.influx_bucket
+    assert_equal 'SENEC', config.influx_measurement
   end
 end

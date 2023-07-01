@@ -28,7 +28,7 @@ class FluxWriter
   end
 
   def influx_measurement
-    'SENEC'
+    config.influx_measurement
   end
 
   def influx_client

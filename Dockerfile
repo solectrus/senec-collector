@@ -29,4 +29,4 @@ WORKDIR /senec-collector
 COPY --from=Builder /usr/local/bundle/ /usr/local/bundle/
 COPY . /senec-collector/
 
-ENTRYPOINT bundle exec src/main.rb
+ENTRYPOINT bundle exec app/main.rb

@@ -13,7 +13,7 @@ gem 'senec'
 gem 'oj'
 
 group :development, :test do
-  # minitest provides a complete suite of testing facilities supporting TDD, BDD, mocking, and benchmarking (https://github.com/seattlerb/minitest)
+  # minitest provides a complete suite of testing facilities supporting TDD, BDD, mocking, and benchmarking (https://github.com/minitest/minitest)
   gem 'minitest'
 
   # Rake is a Make-like program implemented in Ruby (https://github.com/ruby/rake)
@@ -31,7 +31,7 @@ group :development, :test do
   # Automatic performance checking tool for Ruby code. (https://github.com/rubocop/rubocop-performance)
   gem 'rubocop-performance'
 
-  # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests. (https://relishapp.com/vcr/vcr/docs)
+  # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests. (https://benoittgt.github.io/vcr)
   gem 'vcr'
 
   # Library for stubbing HTTP requests in Ruby. (https://github.com/bblimke/webmock)

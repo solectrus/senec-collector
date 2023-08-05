@@ -15,6 +15,6 @@ class LoopTest < Minitest::Test
         end
       end
 
-    assert_match(/Got record #1 from SENEC/, out)
+    assert_match(/Got record #1/, out)
   end
 end

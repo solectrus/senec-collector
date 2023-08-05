@@ -26,10 +26,11 @@ class SenecPull
   def success_message
     return unless @record
 
-    "\nGot record ##{count} from SENEC at #{config.senec_host}: " \
-      "#{@record.current_state}, " \
+    "\nGot record ##{count}: " \
+      "#{Time.at(@record.measure_time)} | " \
+      "#{@record.current_state},  " \
       "Inverter #{@record.inverter_power} W, House #{@record.house_power} W, " \
-      "#{Time.at(@record.measure_time)}"
+      "Wallbox #{@record.wallbox_charge_power} W"
   end
 
   def failure_message(error)

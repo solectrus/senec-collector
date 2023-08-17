@@ -3,6 +3,7 @@ require 'test_helper'
 class ConfigTest < Minitest::Test
   VALID_OPTIONS = {
     senec_host: '1.2.3.4',
+    senec_schema: 'http',
     senec_interval: 5,
     influx_host: 'influx.example.com',
     influx_schema: 'https',
@@ -27,6 +28,7 @@ class ConfigTest < Minitest::Test
     config = Config.new(VALID_OPTIONS)
 
     assert_equal '1.2.3.4', config.senec_host
+    assert_equal 'http', config.senec_schema
     assert_equal 5, config.senec_interval
   end
 

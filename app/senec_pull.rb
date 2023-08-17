@@ -16,6 +16,7 @@ class SenecPull
   def next
     data =
       Senec::Request.new host: config.senec_host,
+                         schema: config.senec_schema,
                          state_names: config.senec_state_names
     return unless data.measure_time
 
@@ -34,6 +35,6 @@ class SenecPull
   end
 
   def failure_message(error)
-    "Error getting data from SENEC at #{config.senec_host}: #{error}"
+    "Error getting data from SENEC at #{config.senec_url}: #{error}"
   end
 end

@@ -1,6 +1,7 @@
 Config =
   Struct.new(
     :senec_host,
+    :senec_schema,
     :senec_interval,
     :influx_schema,
     :influx_host,
@@ -27,17 +28,17 @@ Config =
       @senec_state_names ||=
         begin
           puts 'Getting state names from SENEC by parsing source code...'
-          names = Senec::State.new(host: senec_host).names
+          names = Senec::State.new(host: senec_host, schema: senec_schema).names
           puts "OK, got #{names.length} state names"
           names
         end
     end
 
-    private
-
     def senec_url
-      "http://#{senec_host}"
+      "#{senec_schema}://#{senec_host}"
     end
+
+    private
 
     def validate_interval!(interval)
       return if interval.is_a?(Integer) && interval.positive?
@@ -56,6 +57,7 @@ Config =
       new(
         {
           senec_host: ENV.fetch('SENEC_HOST'),
+          senec_schema: ENV.fetch('SENEC_SCHEMA', 'http'),
           senec_interval: ENV.fetch('SENEC_INTERVAL').to_i,
           influx_host: ENV.fetch('INFLUX_HOST'),
           influx_schema: ENV.fetch('INFLUX_SCHEMA', 'http'),

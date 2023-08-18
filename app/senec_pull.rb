@@ -16,6 +16,7 @@ class SenecPull
   def next
     data =
       Senec::Request.new host: config.senec_host,
+                         schema: config.senec_schema,
                          state_names: config.senec_state_names
     return unless data.measure_time
 
@@ -26,13 +27,14 @@ class SenecPull
   def success_message
     return unless @record
 
-    "\nGot record ##{count} from SENEC at #{config.senec_host}: " \
-      "#{@record.current_state}, " \
+    "\nGot record ##{count}: " \
+      "#{Time.at(@record.measure_time)} | " \
+      "#{@record.current_state},  " \
       "Inverter #{@record.inverter_power} W, House #{@record.house_power} W, " \
-      "#{Time.at(@record.measure_time)}"
+      "Wallbox #{@record.wallbox_charge_power} W"
   end
 
   def failure_message(error)
-    "Error getting data from SENEC at #{config.senec_host}: #{error}"
+    "Error getting data from SENEC at #{config.senec_url}: #{error}"
   end
 end

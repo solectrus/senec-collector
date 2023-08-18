@@ -6,7 +6,7 @@ class SolectrusRecord
 
   attr_reader :id, :senec_data
 
-  def to_hash
+  def to_hash # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     {
       case_temp:,
       inverter_power:,
@@ -20,6 +20,10 @@ class SolectrusRecord
       bat_charge_current:,
       bat_voltage:,
       wallbox_charge_power:,
+      wallbox_charge_power0: wallbox_charge_power(0),
+      wallbox_charge_power1: wallbox_charge_power(1),
+      wallbox_charge_power2: wallbox_charge_power(2),
+      wallbox_charge_power3: wallbox_charge_power(3),
       grid_power_plus:,
       grid_power_minus:,
       current_state:,
@@ -78,8 +82,12 @@ class SolectrusRecord
     senec_data.bat_voltage
   end
 
-  def wallbox_charge_power
-    senec_data.wallbox_charge_power.sum.round
+  def wallbox_charge_power(index = nil)
+    if index
+      senec_data.wallbox_charge_power[index].round
+    else
+      senec_data.wallbox_charge_power.sum.round
+    end
   end
 
   def grid_power_plus

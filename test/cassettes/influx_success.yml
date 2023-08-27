@@ -5,8 +5,8 @@ http_interactions:
     uri: http://<INFLUX_HOST>:8086/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
     body:
       encoding: UTF-8
-      string: my-pv-measurement bat_charge_current=1.8,bat_fuel_charge=60.6,bat_power_minus=0i,bat_power_plus=94i,bat_voltage=53.7,case_temp=33.8,grid_power_minus=2376i,grid_power_plus=0i,house_power=517i,inverter_power=2984i,mpp1_power=1523i,mpp2_power=2i,mpp3_power=1458i,wallbox_charge_power=0i,wallbox_charge_power0=0i,wallbox_charge_power1=0i,wallbox_charge_power2=0i,wallbox_charge_power3=0i
-        1677487116
+      string: my-pv-measurement application_version="3824",bat_charge_current=5.8,bat_fuel_charge=71.7,bat_power_minus=0i,bat_power_plus=314i,bat_voltage=54.4,case_temp=33.4,grid_power_minus=6265i,grid_power_plus=0i,house_power=759i,inverter_power=7339i,mpp1_power=3647i,mpp2_power=0i,mpp3_power=3692i,wallbox_charge_power=0i,wallbox_charge_power0=0i,wallbox_charge_power1=0i,wallbox_charge_power2=0i,wallbox_charge_power3=0i
+        1693129876
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -28,9 +28,9 @@ http_interactions:
       X-Influxdb-Version:
       - v2.7.1
       Date:
-      - Sat, 05 Aug 2023 09:15:44 GMT
+      - Sun, 27 Aug 2023 09:53:06 GMT
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Sat, 05 Aug 2023 09:15:44 GMT
+  recorded_at: Sun, 27 Aug 2023 09:53:06 GMT
 recorded_with: VCR 6.2.0

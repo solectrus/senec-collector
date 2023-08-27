@@ -27,6 +27,7 @@ class SolectrusRecord
       grid_power_plus:,
       grid_power_minus:,
       current_state:,
+      application_version:,
     }
   end
 
@@ -40,6 +41,10 @@ class SolectrusRecord
 
   def case_temp
     senec_data.case_temp
+  end
+
+  def application_version
+    senec_data.application_version
   end
 
   def inverter_power

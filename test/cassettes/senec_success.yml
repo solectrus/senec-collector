@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: http://<SENEC_HOST>/lala.cgi
+    uri: https://<SENEC_HOST>/lala.cgi
     body:
       encoding: UTF-8
       string: '{"ENERGY":{"STAT_STATE":"","GUI_BAT_DATA_CURRENT":"","GUI_BAT_DATA_FUEL_CHARGE":"","GUI_BAT_DATA_POWER":"","GUI_BAT_DATA_VOLTAGE":"","GUI_GRID_POW":"","GUI_HOUSE_POW":"","GUI_INVERTER_POWER":"","STAT_HOURS_OF_OPERATION":""},"WIZARD":{"APPLICATION_VERSION":""},"RTC":{"UTC_OFFSET":"","WEB_TIME":""},"PV1":{"MPP_POWER":""},"TEMPMEASURE":{"CASE_TEMP":""},"WALLBOX":{"APPARENT_CHARGING_POWER":""}}'
@@ -20,10 +20,18 @@ http_interactions:
       code: 200
       message: OK
     headers:
+      Server:
+      - nginx/1.17.7
+      Date:
+      - Fri, 08 Sep 2023 07:04:15 GMT
       Content-Type:
       - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
     body:
       encoding: UTF-8
-      string: '{"ENERGY":{"STAT_STATE":"u8_38","GUI_BAT_DATA_CURRENT":"fl_40B8F5C3","GUI_BAT_DATA_FUEL_CHARGE":"fl_428F6F31","GUI_BAT_DATA_POWER":"fl_439D20EA","GUI_BAT_DATA_VOLTAGE":"fl_425979DB","GUI_GRID_POW":"fl_C5C3CB0A","GUI_HOUSE_POW":"fl_443DCFD0","GUI_INVERTER_POWER":"fl_45E55713","STAT_HOURS_OF_OPERATION":"u3_00005E32"},"WIZARD":{"APPLICATION_VERSION":"st_3824"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_64EB38B4"},"PV1":{"MPP_POWER":["fl_4563F6B1","fl_00000000","fl_4566B775"]},"TEMPMEASURE":{"CASE_TEMP":"fl_4205A578"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"]}}'
-  recorded_at: Sun, 27 Aug 2023 09:51:15 GMT
+      string: '{"ENERGY":{"STAT_STATE":"u8_38","GUI_BAT_DATA_CURRENT":"fl_40170A3D","GUI_BAT_DATA_FUEL_CHARGE":"fl_42835029","GUI_BAT_DATA_POWER":"fl_42FD85F6","GUI_BAT_DATA_VOLTAGE":"fl_4256D917","GUI_GRID_POW":"fl_C3E6E8F5","GUI_HOUSE_POW":"fl_43D74DC0","GUI_INVERTER_POWER":"fl_447ECC19","STAT_HOURS_OF_OPERATION":"u3_00005F52"},"WIZARD":{"APPLICATION_VERSION":"st_0825"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_64FAE391"},"PV1":{"MPP_POWER":["fl_440F2021","fl_00000000","fl_43DF57F0"]},"TEMPMEASURE":{"CASE_TEMP":"fl_4207038E"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"]}}'
+  recorded_at: Fri, 08 Sep 2023 07:04:15 GMT
 recorded_with: VCR 6.2.0

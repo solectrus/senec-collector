@@ -2,6 +2,7 @@ require 'vcr'
 
 VCR.configure do |config|
   config.cassette_library_dir = 'test/cassettes'
+  config.hook_into :faraday
   config.hook_into :webmock
 
   sensitive_environment_variables = %w[

@@ -28,7 +28,12 @@ class SolectrusRecord
       grid_power_minus:,
       current_state:,
       application_version:,
+      response_duration:,
     }
+  end
+
+  def response_duration
+    (senec_data.response_duration * 1000).round
   end
 
   def measure_time

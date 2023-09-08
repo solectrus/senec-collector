@@ -28,7 +28,7 @@ Config =
       @senec_state_names ||=
         begin
           puts 'Getting state names from SENEC by parsing source code...'
-          names = Senec::State.new(host: senec_host, schema: senec_schema).names
+          names = Senec::State.new(connection: senec_connection).names
           puts "OK, got #{names.length} state names"
           names
         end
@@ -36,6 +36,11 @@ Config =
 
     def senec_url
       "#{senec_schema}://#{senec_host}"
+    end
+
+    def senec_connection
+      @senec_connection ||=
+        Senec::Connection.new(host: senec_host, schema: senec_schema)
     end
 
     private

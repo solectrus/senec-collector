@@ -15,8 +15,7 @@ class SenecPull
 
   def next
     data =
-      Senec::Request.new host: config.senec_host,
-                         schema: config.senec_schema,
+      Senec::Request.new connection: config.senec_connection,
                          state_names: config.senec_state_names
     return unless data.measure_time
 
@@ -27,9 +26,10 @@ class SenecPull
   def success_message
     return unless @record
 
-    "\nGot record ##{count}: " \
-      "#{Time.at(@record.measure_time)} | " \
-      "#{@record.current_state},  " \
+    "\nGot record ##{count} at " \
+      "#{Time.at(@record.measure_time)} " \
+      "within #{@record.response_duration} ms, " \
+      "#{@record.current_state}, " \
       "Inverter #{@record.inverter_power} W, House #{@record.house_power} W, " \
       "Wallbox #{@record.wallbox_charge_power} W"
   end

@@ -10,7 +10,7 @@ http_interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Faraday v2.7.10
+      - Faraday v2.7.11
       Content-Type:
       - application/x-www-form-urlencoded; charset=UTF-8
       Accept:
@@ -23,7 +23,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Fri, 08 Sep 2023 13:32:16 GMT
+      - Sun, 24 Sep 2023 10:03:44 GMT
       content-type:
       - application/json; charset=utf-8
       transfer-encoding:
@@ -32,6 +32,6 @@ http_interactions:
       - keep-alive
     body:
       encoding: UTF-8
-      string: '{"ENERGY":{"STAT_STATE":"u8_0E","GUI_BAT_DATA_CURRENT":"fl_41B90A3D","GUI_BAT_DATA_FUEL_CHARGE":"fl_42B5D174","GUI_BAT_DATA_POWER":"fl_44A4F466","GUI_BAT_DATA_VOLTAGE":"fl_42643646","GUI_GRID_POW":"fl_C59E12A4","GUI_HOUSE_POW":"fl_44306E20","GUI_INVERTER_POWER":"fl_45DD5D82","STAT_HOURS_OF_OPERATION":"u3_00005F58"},"WIZARD":{"APPLICATION_VERSION":"st_0825"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_64FB3E80"},"PV1":{"MPP_POWER":["fl_455D12EA","fl_00000000","fl_455DA819"]},"TEMPMEASURE":{"CASE_TEMP":"fl_42142808"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"]}}'
-  recorded_at: Fri, 08 Sep 2023 13:32:16 GMT
+      string: '{"ENERGY":{"STAT_STATE":"u8_10","GUI_BAT_DATA_CURRENT":"fl_C1D33333","GUI_BAT_DATA_FUEL_CHARGE":"fl_427E8BA2","GUI_BAT_DATA_POWER":"fl_C4B026E5","GUI_BAT_DATA_VOLTAGE":"fl_42558419","GUI_GRID_POW":"fl_C5247BD7","GUI_HOUSE_POW":"fl_00000000","GUI_INVERTER_POWER":"fl_45CBBAF6","STAT_HOURS_OF_OPERATION":"u3_000060D5"},"WIZARD":{"APPLICATION_VERSION":"st_0825"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_651025A2"},"PV1":{"MPP_POWER":["fl_454B2F61","fl_00000000","fl_454C468C"]},"TEMPMEASURE":{"CASE_TEMP":"fl_42019038"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_45B1F99A","fl_00000000","fl_00000000","fl_00000000"]}}'
+  recorded_at: Sun, 24 Sep 2023 10:03:44 GMT
 recorded_with: VCR 6.2.0

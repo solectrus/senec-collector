@@ -27,6 +27,7 @@ class SolectrusRecord
       grid_power_plus:,
       grid_power_minus:,
       current_state:,
+      current_state_code:,
       application_version:,
       response_duration:,
     }
@@ -38,6 +39,10 @@ class SolectrusRecord
 
   def measure_time
     senec_data.measure_time
+  end
+
+  def current_state_code
+    senec_data.current_state_code
   end
 
   def current_state

@@ -20,8 +20,20 @@ class ConfigTest < Minitest::Test
 
   def test_invalid_options
     assert_raises(Exception) { Config.new({}) }
-    assert_raises(Exception) { Config.new(senec_interval: 0) }
-    assert_raises(Exception) { Config.new(influx_host: 'this is no host') }
+
+    error =
+      assert_raises(Exception) do
+        Config.new(VALID_OPTIONS.merge(senec_interval: 0))
+      end
+
+    assert_match(/Interval is invalid/, error.message)
+
+    error =
+      assert_raises(Exception) do
+        Config.new(VALID_OPTIONS.merge(influx_schema: 'foo'))
+      end
+
+    assert_match(/URL is invalid/, error.message)
   end
 
   def test_senec_methods

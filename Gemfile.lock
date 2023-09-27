@@ -8,6 +8,7 @@ GEM
     connection_pool (2.4.1)
     crack (0.4.5)
       rexml
+    docile (1.4.0)
     dotenv (2.8.1)
     faraday (2.7.11)
       base64
@@ -64,6 +65,12 @@ GEM
       faraday
       faraday-net_http_persistent
       faraday-request-timer
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.12.3)
+    simplecov_json_formatter (0.1.4)
     unicode-display_width (2.4.2)
     vcr (6.2.0)
     webmock (3.19.1)
@@ -85,6 +92,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rake
   senec
+  simplecov
   vcr
   webmock
 

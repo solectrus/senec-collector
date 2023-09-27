@@ -18,6 +18,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      CI: true
+
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
@@ -32,6 +36,12 @@ jobs:
 
       - name: Run tests
         run: bundle exec rake test
+
+      - name: Send test coverage to CodeClimate
+        uses: paambaati/codeclimate-action@v5.0.0
+        if: ${{ env.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: true
 
   build:
     runs-on: ubuntu-latest

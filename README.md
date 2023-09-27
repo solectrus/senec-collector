@@ -1,5 +1,7 @@
 [![Continuous integration](https://github.com/solectrus/senec-collector/actions/workflows/push.yml/badge.svg)](https://github.com/solectrus/senec-collector/actions/workflows/push.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ae0d21c0c4eb9c430505/maintainability)](https://codeclimate.com/github/solectrus/senec-collector/maintainability)
 [![wakatime](https://wakatime.com/badge/user/697af4f5-617a-446d-ba58-407e7f3e0243/project/e8426066-7e79-40d8-8d8b-583dd965720a.svg)](https://wakatime.com/badge/user/697af4f5-617a-446d-ba58-407e7f3e0243/project/e8426066-7e79-40d8-8d8b-583dd965720a)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/ae0d21c0c4eb9c430505/test_coverage)](https://codeclimate.com/github/solectrus/senec-collector/test_coverage)
 
 # SENEC collector
 

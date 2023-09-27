@@ -65,10 +65,20 @@ class InfluxPushTest < Minitest::Test
     @queue ||= Queue.new
   end
 
+  def senec_pull
+    @senec_pull ||=
+      begin
+        senec_pull = SenecPull.new(config:, queue:)
+        capture_io do
+          VCR.use_cassette('senec_state_names') { senec_pull.senec_state_names }
+        end
+
+        senec_pull
+      end
+  end
+
   def fill_queue(num_records = 1)
-    num_records.times do
-      VCR.use_cassette('senec_success') { SenecPull.new(config:, queue:).next }
-    end
+    num_records.times { VCR.use_cassette('senec_success') { senec_pull.next } }
 
     assert_equal num_records, queue.length
   end
@@ -78,7 +88,9 @@ class InfluxPushTest < Minitest::Test
 
     assert_equal 0, queue.length
     assert_equal(
-      "Successfully pushed record #1 to InfluxDB\n" * num_records,
+      (1..num_records)
+        .map { |i| "Successfully pushed record ##{i} to InfluxDB\n" }
+        .join,
       out,
     )
   end

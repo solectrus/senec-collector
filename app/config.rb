@@ -3,6 +3,7 @@ Config =
     :senec_host,
     :senec_schema,
     :senec_interval,
+    :senec_language,
     :influx_schema,
     :influx_host,
     :influx_port,
@@ -24,18 +25,13 @@ Config =
       "#{influx_schema}://#{influx_host}:#{influx_port}"
     end
 
-    def senec_state_names
-      @senec_state_names ||=
-        begin
-          puts 'Getting state names from SENEC by parsing source code...'
-          names = Senec::State.new(host: senec_host, schema: senec_schema).names
-          puts "OK, got #{names.length} state names"
-          names
-        end
-    end
-
     def senec_url
       "#{senec_schema}://#{senec_host}"
+    end
+
+    def senec_connection
+      @senec_connection ||=
+        Senec::Connection.new(host: senec_host, schema: senec_schema)
     end
 
     private
@@ -59,6 +55,7 @@ Config =
           senec_host: ENV.fetch('SENEC_HOST'),
           senec_schema: ENV.fetch('SENEC_SCHEMA', 'http'),
           senec_interval: ENV.fetch('SENEC_INTERVAL').to_i,
+          senec_language: ENV.fetch('SENEC_LANGUAGE', 'de').to_sym,
           influx_host: ENV.fetch('INFLUX_HOST'),
           influx_schema: ENV.fetch('INFLUX_SCHEMA', 'http'),
           influx_port: ENV.fetch('INFLUX_PORT', '8086'),

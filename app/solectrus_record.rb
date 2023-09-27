@@ -27,19 +27,49 @@ class SolectrusRecord
       grid_power_plus:,
       grid_power_minus:,
       current_state:,
+      current_state_code:,
+      current_state_ok:,
+      application_version:,
+      response_duration:,
     }
+  end
+
+  def response_duration
+    (senec_data.response_duration * 1000).round
   end
 
   def measure_time
     senec_data.measure_time
   end
 
+  def current_state_code
+    senec_data.current_state_code
+  end
+
   def current_state
     senec_data.current_state_name
   end
 
+  OK_STATES = [
+    13, # BATTERY FULL
+    14, # CHARGE
+    15, # BATTERY EMPTY
+    16, # DISCHARGE
+    17, # PV + DISCHARGE
+    18, # GRID + DISCHARGE
+    56, # PEAK-SHAVING: WAIT"
+  ].freeze
+
+  def current_state_ok
+    OK_STATES.include? current_state_code
+  end
+
   def case_temp
     senec_data.case_temp
+  end
+
+  def application_version
+    senec_data.application_version
   end
 
   def inverter_power

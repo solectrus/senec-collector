@@ -8,9 +8,11 @@ class LoopTest < Minitest::Test
   def test_start
     out, _err =
       capture_io do
-        VCR.use_cassette('senec_success') do
-          VCR.use_cassette('influx_success') do
-            Loop.start(config:, max_count: 1)
+        VCR.use_cassette('senec_state_names') do
+          VCR.use_cassette('senec_success') do
+            VCR.use_cassette('influx_success') do
+              Loop.start(config:, max_count: 1)
+            end
           end
         end
       end

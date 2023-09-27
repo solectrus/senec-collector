@@ -1,6 +1,7 @@
 require 'oj'
 require 'senec'
 require_relative 'solectrus_record'
+require_relative 'senec_state_names'
 
 Oj.mimic_JSON
 
@@ -16,7 +17,7 @@ class SenecPull
   def next
     data =
       Senec::Request.new connection: config.senec_connection,
-                         state_names: config.senec_state_names
+                         state_names: senec_state_names
     return unless data.measure_time
 
     @record = SolectrusRecord.new(@count += 1, data)
@@ -36,5 +37,9 @@ class SenecPull
 
   def failure_message(error)
     "Error getting data from SENEC at #{config.senec_url}: #{error}"
+  end
+
+  def senec_state_names
+    @senec_state_names ||= SenecStateNames.new(config:).fetch
   end
 end

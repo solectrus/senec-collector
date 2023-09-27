@@ -1,13 +1,13 @@
 require 'test_helper'
 
 class SenecPullTest < Minitest::Test
-  def test_success
+  def test_next_success
     VCR.use_cassette('senec_success') { senec_pull.next }
 
     assert_equal 1, queue.length
   end
 
-  def test_failure
+  def test_next_failure
     Senec::Request.stub :new, ->(_args) { raise Senec::Error } do
       assert_raises(Senec::Error) { senec_pull.next }
     end

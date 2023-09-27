@@ -43,19 +43,21 @@ class Loop
 
   private
 
+  def senec_pull
+    @senec_pull ||= SenecPull.new(config:, queue:)
+  end
+
   # Pull data from SENEC and add to queue
   def pull_loop
-    pull = SenecPull.new(config:, queue:)
-
     loop do
       begin
-        pull.next
-        puts pull.success_message
+        record = senec_pull.next
+        puts success_message(record)
       rescue StandardError => e
-        puts pull.failure_message(e)
+        puts failure_message(e)
       end
 
-      break if max_count && pull.count >= max_count
+      break if max_count && senec_pull.count >= max_count
 
       sleep config.senec_interval
     end
@@ -73,5 +75,20 @@ class Loop
     end
 
     queue.close
+  end
+
+  def success_message(record)
+    return unless record
+
+    "\nGot record ##{senec_pull.count} at " \
+      "#{Time.at(record.measure_time)} " \
+      "within #{record.response_duration} ms, " \
+      "#{record.current_state}, " \
+      "Inverter #{record.inverter_power} W, House #{record.house_power} W, " \
+      "Wallbox #{record.wallbox_charge_power} W"
+  end
+
+  def failure_message(error)
+    "Error getting data from SENEC at #{config.senec_url}: #{error}"
   end
 end

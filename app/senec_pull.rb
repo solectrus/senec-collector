@@ -20,23 +20,10 @@ class SenecPull
                          state_names: senec_state_names
     return unless data.measure_time
 
-    @record = SolectrusRecord.new(@count += 1, data)
-    queue << @record
-  end
+    record = SolectrusRecord.new(@count += 1, data)
+    queue << record
 
-  def success_message
-    return unless @record
-
-    "\nGot record ##{count} at " \
-      "#{Time.at(@record.measure_time)} " \
-      "within #{@record.response_duration} ms, " \
-      "#{@record.current_state}, " \
-      "Inverter #{@record.inverter_power} W, House #{@record.house_power} W, " \
-      "Wallbox #{@record.wallbox_charge_power} W"
-  end
-
-  def failure_message(error)
-    "Error getting data from SENEC at #{config.senec_url}: #{error}"
+    record
   end
 
   def senec_state_names

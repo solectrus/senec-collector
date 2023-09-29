@@ -13,6 +13,7 @@ class SolectrusRecord
       mpp1_power:,
       mpp2_power:,
       mpp3_power:,
+      power_ratio:,
       house_power:,
       bat_power_plus:,
       bat_power_minus:,
@@ -86,6 +87,10 @@ class SolectrusRecord
 
   def mpp3_power
     senec_data.mpp_power[2]&.round
+  end
+
+  def power_ratio
+    senec_data.power_ratio
   end
 
   def house_power

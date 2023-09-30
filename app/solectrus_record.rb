@@ -13,6 +13,7 @@ class SolectrusRecord
       mpp1_power:,
       mpp2_power:,
       mpp3_power:,
+      power_ratio:,
       house_power:,
       bat_power_plus:,
       bat_power_minus:,
@@ -57,6 +58,8 @@ class SolectrusRecord
     16, # DISCHARGE
     17, # PV + DISCHARGE
     18, # GRID + DISCHARGE
+    21, # OWN CONSUMPTION
+    54, # ABSORPTION PHASE
     56, # PEAK-SHAVING: WAIT"
   ].freeze
 
@@ -86,6 +89,10 @@ class SolectrusRecord
 
   def mpp3_power
     senec_data.mpp_power[2]&.round
+  end
+
+  def power_ratio
+    senec_data.power_ratio
   end
 
   def house_power

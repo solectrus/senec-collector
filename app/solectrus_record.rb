@@ -58,6 +58,8 @@ class SolectrusRecord
     16, # DISCHARGE
     17, # PV + DISCHARGE
     18, # GRID + DISCHARGE
+    21, # OWN CONSUMPTION
+    54, # ABSORPTION PHASE
     56, # PEAK-SHAVING: WAIT"
   ].freeze
 

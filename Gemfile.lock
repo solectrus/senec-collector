@@ -5,6 +5,7 @@ GEM
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
     base64 (0.2.0)
+    bigdecimal (3.1.4)
     connection_pool (2.4.1)
     crack (0.4.5)
       rexml
@@ -27,7 +28,8 @@ GEM
     minitest (5.20.0)
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
-    oj (3.16.1)
+    oj (3.16.2)
+      bigdecimal (~> 3.1)
     parallel (1.23.0)
     parser (3.2.2.4)
       ast (~> 2.4.1)

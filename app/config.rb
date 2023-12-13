@@ -31,7 +31,7 @@ Config =
 
     def senec_connection
       @senec_connection ||=
-        Senec::Connection.new(host: senec_host, schema: senec_schema)
+        Senec::Local::Connection.new(host: senec_host, schema: senec_schema)
     end
 
     private

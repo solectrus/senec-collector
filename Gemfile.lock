@@ -62,7 +62,7 @@ GEM
       rubocop (~> 1.0)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    senec (0.13.0)
+    senec (0.14.0)
       faraday
       faraday-net_http_persistent
       faraday-request-timer

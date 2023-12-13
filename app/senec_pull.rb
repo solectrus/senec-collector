@@ -16,8 +16,8 @@ class SenecPull
 
   def next
     data =
-      Senec::Request.new connection: config.senec_connection,
-                         state_names: senec_state_names
+      Senec::Local::Request.new connection: config.senec_connection,
+                                state_names: senec_state_names
     return unless data.measure_time
 
     record = SolectrusRecord.new(@count += 1, data)

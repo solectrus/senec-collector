@@ -9,6 +9,7 @@ GEM
     connection_pool (2.4.1)
     crack (0.4.5)
       rexml
+    csv (3.2.8)
     docile (1.4.0)
     dotenv (2.8.1)
     faraday (2.8.1)
@@ -26,6 +27,7 @@ GEM
     json (2.7.1)
     language_server-protocol (3.17.0.3)
     minitest (5.20.0)
+    mutex_m (0.2.0)
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
     oj (3.16.3)
@@ -84,9 +86,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  csv
   dotenv
   influxdb-client
   minitest
+  mutex_m
   oj
   rake
   rubocop
@@ -99,4 +103,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.4.22
+   2.5.3

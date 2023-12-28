@@ -12,6 +12,12 @@ gem 'senec'
 # A fast JSON parser and serializer. (http://www.ohler.com/oj)
 gem 'oj'
 
+# Mixin to extend objects to be handled like a Mutex. (https://github.com/ruby/mutex_m)
+gem 'mutex_m'
+
+# CSV Reading and Writing (https://github.com/ruby/csv)
+gem 'csv'
+
 group :development, :test do
   # minitest provides a complete suite of testing facilities supporting TDD, BDD, mocking, and benchmarking (https://github.com/minitest/minitest)
   gem 'minitest'

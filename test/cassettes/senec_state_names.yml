@@ -10,7 +10,7 @@ http_interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Faraday v2.7.11
+      - Faraday v2.9.0
   response:
     status:
       code: 200
@@ -19,7 +19,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Wed, 27 Sep 2023 10:15:38 GMT
+      - Thu, 11 Jan 2024 07:34:01 GMT
       content-type:
       - application/javascript; charset=utf-8
       content-length:
@@ -1144,5 +1144,5 @@ http_interactions:
             2: "NMC",
             3: "NCA-B"
         };
-  recorded_at: Wed, 27 Sep 2023 10:15:38 GMT
+  recorded_at: Thu, 11 Jan 2024 07:34:01 GMT
 recorded_with: VCR 6.2.0

@@ -8,8 +8,8 @@ class SenecPullTest < Minitest::Test
   end
 
   def test_next_failure
-    Senec::Request.stub :new, ->(_args) { raise Senec::Error } do
-      assert_raises(Senec::Error) { senec_pull.next }
+    Senec::Local::Request.stub :new, ->(_args) { raise Senec::Local::Error } do
+      assert_raises(Senec::Local::Error) { senec_pull.next }
     end
 
     assert_equal 0, queue.length

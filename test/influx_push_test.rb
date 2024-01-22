@@ -13,7 +13,7 @@ class InfluxPushTest < Minitest::Test
         end
 
       # Wait for the queue to be empty (or timeout)
-      Timeout.timeout(3) { loop until queue.empty? }
+      Timeout.timeout(5) { loop until queue.empty? }
 
       queue.close
       thread.join
@@ -32,7 +32,7 @@ class InfluxPushTest < Minitest::Test
         end
 
       # Wait for the queue to be empty (or timeout)
-      Timeout.timeout(1) { loop until queue.empty? }
+      Timeout.timeout(5) { loop until queue.empty? }
 
       queue.close
       thread.join

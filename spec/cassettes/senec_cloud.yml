@@ -1,0 +1,179 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://app-gateway.prod.senec.dev/v1/senec/login
+    body:
+      encoding: UTF-8
+      string: '{"username":"<SENEC_USERNAME>","password":"<SENEC_PASSWORD>"}'
+    headers:
+      User-Agent:
+      - Faraday v2.9.0
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      date:
+      - Tue, 23 Jan 2024 11:20:32 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+      x-content-type-options:
+      - nosniff
+      x-xss-protection:
+      - 1; mode=block
+      cache-control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      pragma:
+      - no-cache
+      expires:
+      - '0'
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-frame-options:
+      - DENY
+    body:
+      encoding: UTF-8
+      string: '{"token":"<TOKEN>","refreshToken":""}'
+  recorded_at: Tue, 23 Jan 2024 11:20:32 GMT
+- request:
+    method: get
+    uri: https://app-gateway.prod.senec.dev/v1/senec/systems
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.9.0
+      Authorization:
+      - "<TOKEN>"
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      date:
+      - Tue, 23 Jan 2024 11:20:32 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+      x-content-type-options:
+      - nosniff
+      x-xss-protection:
+      - 1; mode=block
+      cache-control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      pragma:
+      - no-cache
+      expires:
+      - '0'
+      strict-transport-security:
+      - max-age=<hausnummer>724800; includeSubDomains
+      x-frame-options:
+      - DENY
+    body:
+      encoding: UTF-8
+      string: '[{"id":"<SENEC_SYSTEM_ID>","steuereinheitnummer":"<steuereinheitnummer>","gehaeusenummer":"<gehaeusenummer>","strasse":"<strasse>","hausnummer":"<hausnummer>","postleitzahl":"<postleitzahl>","ort":"<ort>","laendercode":"DE","zeitzone":"Europe/Berlin","wallboxIds":["1"],"systemType":"V3"}]'
+  recorded_at: Tue, 23 Jan 2024 11:20:32 GMT
+- request:
+    method: get
+    uri: https://app-gateway.prod.senec.dev/v1/senec/systems
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.9.0
+      Authorization:
+      - "<TOKEN>"
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      date:
+      - Tue, 23 Jan 2024 11:20:32 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+      x-content-type-options:
+      - nosniff
+      x-xss-protection:
+      - 1; mode=block
+      cache-control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      pragma:
+      - no-cache
+      expires:
+      - '0'
+      strict-transport-security:
+      - max-age=<hausnummer>724800; includeSubDomains
+      x-frame-options:
+      - DENY
+    body:
+      encoding: UTF-8
+      string: '[{"id":"<SENEC_SYSTEM_ID>","steuereinheitnummer":"<steuereinheitnummer>","gehaeusenummer":"<gehaeusenummer>","strasse":"<strasse>","hausnummer":"<hausnummer>","postleitzahl":"<postleitzahl>","ort":"<ort>","laendercode":"DE","zeitzone":"Europe/Berlin","wallboxIds":["1"],"systemType":"V3"}]'
+  recorded_at: Tue, 23 Jan 2024 11:20:33 GMT
+- request:
+    method: get
+    uri: https://app-gateway.prod.senec.dev/v1/senec/systems/<SENEC_SYSTEM_ID>/dashboard
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.9.0
+      Authorization:
+      - "<TOKEN>"
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      date:
+      - Tue, 23 Jan 2024 11:20:33 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+      x-content-type-options:
+      - nosniff
+      x-xss-protection:
+      - 1; mode=block
+      cache-control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      pragma:
+      - no-cache
+      expires:
+      - '0'
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-frame-options:
+      - DENY
+    body:
+      encoding: UTF-8
+      string: '{"aktuell":{"stromerzeugung":{"wert":2328.228,"einheit":"W"},"stromverbrauch":{"wert":720.0,"einheit":"W"},"netzeinspeisung":{"wert":46.565000000000005,"einheit":"W"},"netzbezug":{"wert":23.282,"einheit":"W"},"speicherbeladung":{"wert":1583.195,"einheit":"W"},"speicherentnahme":{"wert":0.01,"einheit":"W"},"speicherfuellstand":{"wert":41.41413879394531,"einheit":"%"},"autarkie":{"wert":96.77,"einheit":"%"},"wallbox":{"wert":0.01,"einheit":"W"}},"heute":{"stromerzeugung":{"wert":9089.84375,"einheit":"Wh"},"stromverbrauch":{"wert":13760.0,"einheit":"Wh"},"netzeinspeisung":{"wert":1220.703125,"einheit":"Wh"},"netzbezug":{"wert":10250.9765625,"einheit":"Wh"},"speicherbeladung":{"wert":4478.515625,"einheit":"Wh"},"speicherentnahme":{"wert":131.34765625,"einheit":"Wh"},"speicherfuellstand":{"wert":3.573146343231201,"einheit":"%"},"autarkie":{"wert":25.55,"einheit":"%"},"wallbox":{"wert":0.0,"einheit":"Wh"}},"zeitstempel":"2024-01-23T11:16:10Z","electricVehicleConnected":false}'
+  recorded_at: Tue, 23 Jan 2024 11:20:33 GMT
+recorded_with: VCR 6.2.0

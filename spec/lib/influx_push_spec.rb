@@ -3,13 +3,16 @@ require 'senec_pull'
 require 'config'
 
 describe InfluxPush do
-  let(:config) { Config.from_env }
+  let(:config) { Config.from_env(senec_adapter: :local, senec_interval: 5) }
   let(:queue) { Queue.new }
-  let(:senec_pull) do
-    SenecPull.new(config:, queue:).tap do |senec_pull|
-      silence_stream($stdout) do
-        VCR.use_cassette('senec_state_names') { senec_pull.senec_state_names }
-      end
+  let!(:senec_pull) do
+    SenecPull.new(config:, queue:)
+  end
+  let(:messages) { [] }
+
+  around do |example|
+    VCR.use_cassette('senec_success') do
+      example.run
     end
   end
 
@@ -52,14 +55,18 @@ describe InfluxPush do
   # Helper methods
 
   def fill_queue(num_records = 1)
-    num_records.times { VCR.use_cassette('senec_success') { senec_pull.next } }
+    num_records.times { senec_pull.next }
+
     expect(queue.length).to eq(num_records)
   end
 
   def run_influx_push
     thread = Thread.new do
       VCR.use_cassette('influx_success') do
-        InfluxPush.new(config:, queue:).run
+        pusher = described_class.new(config:, queue:) do |message|
+          messages << message
+        end
+        pusher.run
       end
     end
 
@@ -68,17 +75,19 @@ describe InfluxPush do
     thread.join
   end
 
-  def assert_success(num_records, &block)
-    expected_output = (1..num_records).map { |i| "Successfully pushed record ##{i} to InfluxDB\n" }.join
+  def assert_success(num_records)
+    yield
 
-    expect(&block).to output(expected_output).to_stdout
+    (1..num_records).each do |i|
+      expect(messages).to include "Successfully pushed record ##{i} to InfluxDB"
+    end
+
     expect(queue.length).to eq(0)
   end
 
-  def assert_failure(num_records, &block)
-    expect do
-      expect(&block).to raise_error(Timeout::Error)
-    end.to output(/Error while pushing record #1 to InfluxDB/).to_stdout
+  def assert_failure(num_records, &)
+    expect(&).to raise_error(Timeout::Error)
+    expect(messages).to include(/Error while pushing record #1 to InfluxDB/)
     expect(queue.length).to eq(num_records)
   end
 end

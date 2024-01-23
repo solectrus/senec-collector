@@ -1,0 +1,45 @@
+require 'loop'
+require 'config'
+
+describe Loop do
+  let(:config) { Config.from_env(senec_adapter: :local, senec_interval: 5) }
+  let(:messages) { [] }
+
+  before do
+    config.adapter.message_handler = lambda { |message|
+      messages << message
+    }
+  end
+
+  around do |example|
+    VCR.use_cassette('senec_success') do
+      example.run
+    end
+  end
+
+  describe '#start' do
+    it 'outputs the correct information when started' do
+      VCR.use_cassette('influx_success') do
+        described_class.start(config:, max_count: 2)
+      end
+
+      expect(messages).to include(/Got record #1/)
+    end
+
+    it 'handles Interrupt' do
+      allow(config.adapter).to receive(:data).and_raise(SystemExit)
+
+      described_class.start(config:)
+
+      expect(messages).to include(/Exiting/)
+    end
+
+    it 'handles errors' do
+      allow(config.adapter).to receive(:data).and_raise(StandardError)
+
+      described_class.start(config:, max_count: 1)
+
+      expect(messages).to include(/Error getting data/)
+    end
+  end
+end

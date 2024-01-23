@@ -4,6 +4,6 @@
 .env.*
 .env
 docker-compose.yml
-test
+spec
 Rakefile
 Dockerfile

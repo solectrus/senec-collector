@@ -1,7 +1,7 @@
 require:
-  - rubocop-minitest
   - rubocop-rake
   - rubocop-performance
+  - rubocop-rspec
 
 AllCops:
   TargetRubyVersion: 3.2
@@ -22,9 +22,6 @@ Metrics/MethodLength:
 Metrics/ClassLength:
   Enabled: false
 
-Minitest/MultipleAssertions:
-  Max: 10
-
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: consistent_comma
 
@@ -35,4 +32,16 @@ Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: consistent_comma
 
 Layout/LineEndStringConcatenationIndentation:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 20
+
+RSpec/MultipleExpectations:
+  Max: 3
+
+Layout/LineLength:
+  Max: 130
+
+RSpec/NoExpectationExample:
   Enabled: false

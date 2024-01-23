@@ -12,9 +12,14 @@ gem 'senec'
 # A fast JSON parser and serializer. (http://www.ohler.com/oj)
 gem 'oj'
 
+group :development do
+  # Guard gem for RSpec (https://github.com/guard/guard-rspec)
+  gem 'guard-rspec', require: false
+end
+
 group :development, :test do
-  # minitest provides a complete suite of testing facilities supporting TDD, BDD, mocking, and benchmarking (https://github.com/minitest/minitest)
-  gem 'minitest'
+  # rspec-3.12.0 (http://github.com/rspec)
+  gem 'rspec'
 
   # Rake is a Make-like program implemented in Ruby (https://github.com/ruby/rake)
   gem 'rake'
@@ -22,14 +27,14 @@ group :development, :test do
   # Automatic Ruby code style checking tool. (https://github.com/rubocop/rubocop)
   gem 'rubocop'
 
-  # Automatic Minitest code style checking tool.
-  gem 'rubocop-minitest'
-
   # A RuboCop plugin for Rake (https://github.com/rubocop/rubocop-rake)
   gem 'rubocop-rake'
 
   # Automatic performance checking tool for Ruby code. (https://github.com/rubocop/rubocop-performance)
   gem 'rubocop-performance'
+
+  # Code style checking for RSpec files (https://github.com/rubocop/rubocop-rspec)
+  gem 'rubocop-rspec'
 
   # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests. (https://benoittgt.github.io/vcr)
   gem 'vcr'

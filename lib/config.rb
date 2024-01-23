@@ -1,9 +1,16 @@
+require 'local_adapter'
+require 'cloud_adapter'
+
 Config =
   Struct.new(
+    :senec_adapter,
     :senec_host,
     :senec_schema,
     :senec_interval,
     :senec_language,
+    :senec_username,
+    :senec_password,
+    :senec_system_id,
     :influx_schema,
     :influx_host,
     :influx_port,
@@ -16,7 +23,13 @@ Config =
     def initialize(*options)
       super
 
-      validate_url!(senec_url)
+      case senec_adapter
+      when :local
+        validate_senec_host!
+      when :cloud
+        validate_senec_credentials!
+      end
+
       validate_url!(influx_url)
       validate_interval!(senec_interval)
     end
@@ -25,13 +38,14 @@ Config =
       "#{influx_schema}://#{influx_host}:#{influx_port}"
     end
 
-    def senec_url
-      "#{senec_schema}://#{senec_host}"
-    end
-
-    def senec_connection
-      @senec_connection ||=
-        Senec::Local::Connection.new(host: senec_host, schema: senec_schema)
+    def adapter
+      @adapter ||=
+        case senec_adapter
+        when :local
+          LocalAdapter.new(config: self)
+        when :cloud
+          CloudAdapter.new(config: self)
+        end
     end
 
     private
@@ -49,13 +63,25 @@ Config =
       throw "URL is invalid: #{url}"
     end
 
-    def self.from_env(options = {})
+    def validate_senec_credentials!
+      !senec_username.nil? && !senec_password.nil?
+    end
+
+    def validate_senec_host!
+      !senec_host.nil? && %w[http https.include].include?(senec_schema)
+    end
+
+    def self.from_env(options = {}) # rubocop:disable Metrics/AbcSize
       new(
         {
-          senec_host: ENV.fetch('SENEC_HOST'),
+          senec_adapter: ENV.fetch('SENEC_ADAPTER', 'local').to_sym,
+          senec_host: ENV.fetch('SENEC_HOST', nil),
           senec_schema: ENV.fetch('SENEC_SCHEMA', 'http'),
           senec_interval: ENV.fetch('SENEC_INTERVAL').to_i,
           senec_language: ENV.fetch('SENEC_LANGUAGE', 'de').to_sym,
+          senec_username: ENV.fetch('SENEC_USERNAME', nil),
+          senec_password: ENV.fetch('SENEC_PASSWORD', nil),
+          senec_system_id: ENV.fetch('SENEC_SYSTEM_ID', nil),
           influx_host: ENV.fetch('INFLUX_HOST'),
           influx_schema: ENV.fetch('INFLUX_SCHEMA', 'http'),
           influx_port: ENV.fetch('INFLUX_PORT', '8086'),

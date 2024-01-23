@@ -1,5 +1,3 @@
-require 'influxdb-client'
-
 class FluxWriter
   def initialize(config)
     @config = config

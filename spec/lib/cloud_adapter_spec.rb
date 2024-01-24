@@ -6,17 +6,12 @@ describe CloudAdapter do
     described_class.new(config:)
   end
 
-  let(:config) { Config.from_env(senec_adapter: :cloud, senec_interval: 60) }
+  let(:config) { Config.from_env(senec_adapter: :cloud, senec_interval: 60, senec_system_id:) }
   let(:logger) { MemoryLogger.new }
+  let(:senec_system_id) { nil }
 
   before do
     config.logger = logger
-  end
-
-  around do |example|
-    VCR.use_cassette('senec_cloud') do
-      example.run
-    end
   end
 
   describe '#initialize' do
@@ -31,7 +26,23 @@ describe CloudAdapter do
     it { is_expected.to be_a(Senec::Cloud::Connection) }
   end
 
-  describe '#solectrus_record' do
+  describe '#dashboard' do
+    subject(:dashboard) { adapter.dashboard }
+
+    context 'with a system id', vcr: 'senec-cloud-given-system' do
+      let(:senec_system_id) { ENV.fetch('SENEC_SYSTEM_ID') }
+
+      it { is_expected.to be_a(Senec::Cloud::Dashboard) }
+    end
+
+    context 'without a system id', vcr: 'senec-cloud-first-system' do
+      let(:senec_system_id) { nil }
+
+      it { is_expected.to be_a(Senec::Cloud::Dashboard) }
+    end
+  end
+
+  describe '#solectrus_record', vcr: 'senec-cloud-first-system' do
     subject(:solectrus_record) { adapter.solectrus_record }
 
     it { is_expected.to be_a(SolectrusRecord) }

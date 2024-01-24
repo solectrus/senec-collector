@@ -18,6 +18,46 @@ class CloudAdapter
       Senec::Cloud::Connection.new(username: config.senec_username, password: config.senec_password)
   end
 
+  def system_id
+    @system_id ||=
+      if config.senec_system_id
+        logger.info "Using SENEC_SYSTEM_ID #{config.senec_system_id}"
+        config.senec_system_id
+      else
+        determine_system
+      end
+  end
+
+  def determine_system
+    logger.info 'No SENEC_SYSTEM_ID given, looking for existing systems...'
+    systems.each do |system|
+      logger.info "Found #{system}"
+    end
+
+    logger.info "Using first system, which is #{systems.first.id}"
+    systems.first.id
+  end
+
+  SYSTEM = Struct.new(:id, :steuereinheitnummer, :gehaeusenummer) do
+    def to_s
+      "SENEC system #{id} (#{steuereinheitnummer}, #{gehaeusenummer})"
+    end
+  end
+
+  def systems
+    @systems ||= connection.systems.map do |system|
+      SYSTEM.new(
+        system['id'],
+        system['steuereinheitnummer'],
+        system['gehaeusenummer'],
+      )
+    end
+  end
+
+  def dashboard
+    Senec::Cloud::Dashboard[connection].find(system_id)
+  end
+
   def solectrus_record(id = 1)
     # Reset data cache
     @data = nil
@@ -45,7 +85,7 @@ class CloudAdapter
   end
 
   def data
-    @data ||= Senec::Cloud::Dashboard[connection].first.data
+    @data ||= dashboard.data
   end
 
   def success_message(record)

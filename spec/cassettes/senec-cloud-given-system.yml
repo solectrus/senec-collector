@@ -1,0 +1,91 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://app-gateway.prod.senec.dev/v1/senec/login
+    body:
+      encoding: UTF-8
+      string: '{"username":"<SENEC_USERNAME>","password":"<SENEC_PASSWORD>"}'
+    headers:
+      User-Agent:
+      - Faraday v2.9.0
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      date:
+      - Wed, 24 Jan 2024 10:11:30 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+      x-content-type-options:
+      - nosniff
+      x-xss-protection:
+      - 1; mode=block
+      cache-control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      pragma:
+      - no-cache
+      expires:
+      - '0'
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-frame-options:
+      - DENY
+    body:
+      encoding: UTF-8
+      string: '{"token":"<TOKEN>","refreshToken":""}'
+  recorded_at: Wed, 24 Jan 2024 10:11:30 GMT
+- request:
+    method: get
+    uri: https://app-gateway.prod.senec.dev/v1/senec/systems/<SENEC_SYSTEM_ID>/dashboard
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.9.0
+      Authorization:
+      - "<TOKEN>"
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      date:
+      - Wed, 24 Jan 2024 10:11:33 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+      x-content-type-options:
+      - nosniff
+      x-xss-protection:
+      - 1; mode=block
+      cache-control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      pragma:
+      - no-cache
+      expires:
+      - '0'
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-frame-options:
+      - DENY
+    body:
+      encoding: UTF-8
+      string: '{"aktuell":{"stromerzeugung":{"wert":791.5980000000001,"einheit":"W"},"stromverbrauch":{"wert":870.0,"einheit":"W"},"netzeinspeisung":{"wert":46.565000000000005,"einheit":"W"},"netzbezug":{"wert":17.462,"einheit":"W"},"speicherbeladung":{"wert":0.01,"einheit":"W"},"speicherentnahme":{"wert":58.206,"einheit":"W"},"speicherfuellstand":{"wert":1.0E-5,"einheit":"%"},"autarkie":{"wert":98.0,"einheit":"%"},"wallbox":{"wert":0.01,"einheit":"W"}},"heute":{"stromerzeugung":{"wert":1261.71875,"einheit":"Wh"},"stromverbrauch":{"wert":9390.0,"einheit":"Wh"},"netzeinspeisung":{"wert":35.15625,"einheit":"Wh"},"netzbezug":{"wert":8154.78515625,"einheit":"Wh"},"speicherbeladung":{"wert":157.2265625,"einheit":"Wh"},"speicherentnahme":{"wert":175.78125,"einheit":"Wh"},"speicherfuellstand":{"wert":0.0,"einheit":"%"},"autarkie":{"wert":13.24,"einheit":"%"},"wallbox":{"wert":0.0,"einheit":"Wh"}},"zeitstempel":"2024-01-24T10:09:19Z","electricVehicleConnected":false}'
+  recorded_at: Wed, 24 Jan 2024 10:11:33 GMT
+recorded_with: VCR 6.2.0

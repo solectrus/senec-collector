@@ -4,6 +4,7 @@ VCR.configure do |config|
   config.cassette_library_dir = 'spec/cassettes'
   config.hook_into :faraday
   config.hook_into :webmock
+  config.configure_rspec_metadata!
 
   VCR::HTTPInteraction::HookAware.class_eval do
     def senec_cloud?

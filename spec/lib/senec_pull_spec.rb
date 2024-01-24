@@ -14,12 +14,6 @@ describe SenecPull do
     config.logger = logger
   end
 
-  around do |example|
-    VCR.use_cassette('senec_success') do
-      example.run
-    end
-  end
-
   describe '#next' do
     context 'when successful' do
       it 'increments the queue length' do

@@ -5,8 +5,8 @@ http_interactions:
     uri: http://<INFLUX_HOST>:8086/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
     body:
       encoding: UTF-8
-      string: my-pv-measurement application_version="0826",bat_charge_current=43.1,bat_fuel_charge=10.1,bat_power_minus=0i,bat_power_plus=2109i,bat_voltage=49.0,case_temp=33.8,current_state="LADEN",current_state_code=14i,current_state_ok=true,grid_power_minus=0i,grid_power_plus=3i,house_power=1236i,inverter_power=3342i,mpp1_power=1680i,mpp2_power=0i,mpp3_power=1662i,power_ratio=100.0,response_duration=0i,wallbox_charge_power=0i,wallbox_charge_power0=0i,wallbox_charge_power1=0i,wallbox_charge_power2=0i,wallbox_charge_power3=0i
-        1706003125
+      string: my-pv-measurement application_version="0826",bat_charge_current=9.1,bat_fuel_charge=0.0,bat_power_minus=0i,bat_power_plus=427i,bat_voltage=46.8,case_temp=35.2,current_state="LADEN",current_state_code=14i,current_state_ok=true,grid_power_minus=0i,grid_power_plus=165i,house_power=808i,inverter_power=1070i,measure_time=1706091385i,mpp1_power=528i,mpp2_power=0i,mpp3_power=542i,power_ratio=100.0,response_duration=8i,wallbox_charge_power=0i,wallbox_charge_power0=0i,wallbox_charge_power1=0i,wallbox_charge_power2=0i,wallbox_charge_power3=0i
+        1706091385
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -28,9 +28,9 @@ http_interactions:
       X-Influxdb-Version:
       - v2.7.5
       Date:
-      - Tue, 23 Jan 2024 09:45:30 GMT
+      - Wed, 24 Jan 2024 10:16:24 GMT
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Tue, 23 Jan 2024 09:45:30 GMT
+  recorded_at: Wed, 24 Jan 2024 10:16:24 GMT
 recorded_with: VCR 6.2.0

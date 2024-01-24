@@ -9,15 +9,9 @@ describe Loop do
     config.logger = logger
   end
 
-  around do |example|
-    VCR.use_cassette('senec_success') do
-      example.run
-    end
-  end
-
   describe '#start' do
-    it 'outputs the correct information when started' do
-      VCR.use_cassette('influx_success') do
+    it 'outputs the correct information when started', vcr: 'senec-local' do
+      VCR.use_cassette('influx-success') do
         described_class.start(config:, max_count: 2)
       end
 

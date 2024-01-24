@@ -14,13 +14,7 @@ describe InfluxPush do
     config.logger = logger
   end
 
-  around do |example|
-    VCR.use_cassette('senec_success') do
-      example.run
-    end
-  end
-
-  describe '#run' do
+  describe '#run', vcr: 'senec-local' do
     context 'with a single record' do
       before { fill_queue }
 
@@ -66,7 +60,7 @@ describe InfluxPush do
 
   def run_influx_push
     thread = Thread.new do
-      VCR.use_cassette('influx_success') do
+      VCR.use_cassette('influx-success') do
         pusher = described_class.new(config:, queue:)
         pusher.run
       end

@@ -7,13 +7,11 @@ class CloudAdapter
 
   def initialize(config:)
     @config = config
+
+    logger.info "Pulling from SENEC cloud every #{config.senec_interval} seconds"
   end
 
   attr_reader :config
-
-  def init_message
-    "Pulling from SENEC cloud every #{config.senec_interval} seconds"
-  end
 
   def connection
     @connection ||=

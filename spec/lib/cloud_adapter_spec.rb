@@ -19,10 +19,10 @@ describe CloudAdapter do
     end
   end
 
-  describe '#init_message' do
-    subject { adapter.init_message }
+  describe '#initialize' do
+    before { adapter }
 
-    it { is_expected.to eq('Pulling from SENEC cloud every 60 seconds') }
+    it { expect(logger.info_messages).to include('Pulling from SENEC cloud every 60 seconds') }
   end
 
   describe '#connection' do

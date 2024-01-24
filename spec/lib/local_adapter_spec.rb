@@ -13,10 +13,10 @@ describe LocalAdapter do
     config.logger = logger
   end
 
-  describe '#init_message' do
-    subject { adapter.init_message }
+  describe '#initialize' do
+    before { adapter }
 
-    it { is_expected.to eq('Pulling from your local SENEC at https://192.168.178.29 every 5 seconds') }
+    it { expect(logger.info_messages).to include('Pulling from your local SENEC at https://192.168.178.29 every 5 seconds') }
   end
 
   describe '#connection' do

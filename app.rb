@@ -25,7 +25,6 @@ config = Config.from_env
 config.logger = logger
 
 logger.info "Using Ruby #{RUBY_VERSION} on platform #{RUBY_PLATFORM}"
-logger.info config.adapter.init_message
 logger.info "Pushing to InfluxDB at #{config.influx_url}, " \
        "bucket #{config.influx_bucket}, " \
        "measurement #{config.influx_measurement}"

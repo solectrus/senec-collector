@@ -7,13 +7,11 @@ class LocalAdapter
 
   def initialize(config:)
     @config = config
+
+    logger.info "Pulling from your local SENEC at #{config.senec_url} every #{config.senec_interval} seconds"
   end
 
   attr_reader :config
-
-  def init_message
-    "Pulling from your local SENEC at #{config.senec_url} every #{config.senec_interval} seconds"
-  end
 
   def connection
     @connection ||=

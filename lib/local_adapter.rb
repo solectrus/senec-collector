@@ -9,7 +9,7 @@ class LocalAdapter
   attr_accessor :message_handler
 
   def init_message
-    "Pulling from your local SENEC at #{senec_url} every #{config.senec_interval} seconds"
+    "Pulling from your local SENEC at #{config.senec_url} every #{config.senec_interval} seconds"
   end
 
   def connection
@@ -73,10 +73,6 @@ class LocalAdapter
 
   private
 
-  def senec_url
-    "#{config.senec_schema}://#{config.senec_host}"
-  end
-
   def data
     @data ||= Senec::Local::Request.new connection:, state_names:
   end
@@ -91,7 +87,7 @@ class LocalAdapter
   end
 
   def failure_message(error)
-    "Error getting data from SENEC at #{senec_url}: #{error}"
+    "Error getting data from SENEC at #{config.senec_url}: #{error}"
   end
 
   def response_duration

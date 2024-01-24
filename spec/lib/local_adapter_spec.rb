@@ -6,14 +6,12 @@ describe LocalAdapter do
     described_class.new(config:)
   end
 
-  before do
-    adapter.message_handler = lambda { |message|
-      messages << message
-    }
-  end
-
-  let(:messages) { [] }
   let(:config) { Config.from_env(senec_adapter: :local, senec_interval: 5) }
+  let(:logger) { MemoryLogger.new }
+
+  before do
+    config.logger = logger
+  end
 
   around do |example|
     VCR.use_cassette('senec_success') do
@@ -45,8 +43,8 @@ describe LocalAdapter do
     it 'writes messages' do
       state_names
 
-      expect(messages).to include('Getting state names (language: de) from SENEC by parsing source code...')
-      expect(messages).to include('OK, got 99 state names')
+      expect(logger.info_messages).to include('Getting state names (language: de) from SENEC by parsing source code...')
+      expect(logger.info_messages).to include('OK, got 99 state names')
     end
   end
 
@@ -61,6 +59,13 @@ describe LocalAdapter do
 
     it 'has a valid measure_time' do
       expect(solectrus_record.measure_time).to be > 1_700_000_000
+    end
+
+    it 'handles errors' do
+      allow(Senec::Local::Request).to receive(:new).and_raise(StandardError)
+
+      solectrus_record
+      expect(logger.error_messages).to include(/Error getting data from SENEC at/)
     end
   end
 end

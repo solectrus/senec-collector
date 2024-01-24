@@ -1,12 +1,15 @@
 require 'solectrus_record'
+require 'forwardable'
 
 class LocalAdapter
+  extend Forwardable
+  def_delegators :config, :logger
+
   def initialize(config:)
     @config = config
   end
 
   attr_reader :config
-  attr_accessor :message_handler
 
   def init_message
     "Pulling from your local SENEC at #{config.senec_url} every #{config.senec_interval} seconds"
@@ -19,59 +22,60 @@ class LocalAdapter
 
   def state_names
     @state_names ||= begin
-      send_message "Getting state names (language: #{config.senec_language}) from SENEC by parsing source code..."
+      logger.info "Getting state names (language: #{config.senec_language}) from SENEC by parsing source code..."
 
       names =
         Senec::Local::State.new(connection:).names(
           language: config.senec_language,
         )
-      send_message "OK, got #{names.length} state names"
+      logger.info "OK, got #{names.length} state names"
       names
     end
   end
 
-  def solectrus_record(id = 1) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  def solectrus_record(id = 1)
     # Reset data cache
     @data = nil
 
-    SolectrusRecord.new(id,
-                        measure_time:,
-                        case_temp:,
-                        inverter_power:,
-                        mpp1_power:,
-                        mpp2_power:,
-                        mpp3_power:,
-                        power_ratio:,
-                        house_power:,
-                        bat_power_plus:,
-                        bat_power_minus:,
-                        bat_fuel_charge:,
-                        bat_charge_current:,
-                        bat_voltage:,
-                        wallbox_charge_power:,
-                        wallbox_charge_power0: wallbox_charge_power(0),
-                        wallbox_charge_power1: wallbox_charge_power(1),
-                        wallbox_charge_power2: wallbox_charge_power(2),
-                        wallbox_charge_power3: wallbox_charge_power(3),
-                        grid_power_plus:,
-                        grid_power_minus:,
-                        current_state:,
-                        current_state_code:,
-                        current_state_ok:,
-                        application_version:,
-                        response_duration:,).tap do |record|
-                          send_message success_message(record)
-                        end
+    SolectrusRecord.new(id, record_hash).tap do |record|
+      logger.info success_message(record)
+    end
   rescue StandardError => e
-    send_message failure_message(e)
+    logger.error failure_message(e)
     nil
   end
 
-  def send_message(message)
-    message_handler&.call(message)
-  end
-
   private
+
+  def record_hash # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+    {
+      measure_time:,
+      case_temp:,
+      inverter_power:,
+      mpp1_power:,
+      mpp2_power:,
+      mpp3_power:,
+      power_ratio:,
+      house_power:,
+      bat_power_plus:,
+      bat_power_minus:,
+      bat_fuel_charge:,
+      bat_charge_current:,
+      bat_voltage:,
+      wallbox_charge_power:,
+      wallbox_charge_power0: wallbox_charge_power(0),
+      wallbox_charge_power1: wallbox_charge_power(1),
+      wallbox_charge_power2: wallbox_charge_power(2),
+      wallbox_charge_power3: wallbox_charge_power(3),
+      grid_power_plus:,
+      grid_power_minus:,
+      current_state:,
+      current_state_code:,
+      current_state_ok:,
+      application_version:,
+      response_duration:,
+    }
+  end
 
   def data
     @data ||= Senec::Local::Request.new connection:, state_names:

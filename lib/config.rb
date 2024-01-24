@@ -1,6 +1,7 @@
 require 'local_adapter'
 require 'cloud_adapter'
 require 'blank'
+require 'null_logger'
 
 KEYS = %i[
   senec_adapter
@@ -98,6 +99,12 @@ Config =
         when :cloud
           CloudAdapter.new(config: self)
         end
+    end
+
+    attr_writer :logger
+
+    def logger
+      @logger ||= NullLogger.new
     end
 
     private

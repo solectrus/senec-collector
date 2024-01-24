@@ -6,14 +6,12 @@ describe CloudAdapter do
     described_class.new(config:)
   end
 
-  before do
-    adapter.message_handler = lambda { |message|
-      messages << message
-    }
-  end
-
-  let(:messages) { [] }
   let(:config) { Config.from_env(senec_adapter: :cloud, senec_interval: 60) }
+  let(:logger) { MemoryLogger.new }
+
+  before do
+    config.logger = logger
+  end
 
   around do |example|
     VCR.use_cassette('senec_cloud') do
@@ -72,6 +70,13 @@ describe CloudAdapter do
 
     it 'has a valid bat_fuel_charge' do
       expect(solectrus_record.bat_fuel_charge).to be >= 0
+    end
+
+    it 'handles errors' do
+      allow(Senec::Cloud::Dashboard).to receive(:new).and_raise(StandardError)
+
+      solectrus_record
+      expect(logger.error_messages).to include(/Error getting data from SENEC cloud/)
     end
   end
 end

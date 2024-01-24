@@ -13,12 +13,6 @@ describe LocalAdapter do
     config.logger = logger
   end
 
-  around do |example|
-    VCR.use_cassette('senec_success') do
-      example.run
-    end
-  end
-
   describe '#init_message' do
     subject { adapter.init_message }
 
@@ -31,7 +25,7 @@ describe LocalAdapter do
     it { is_expected.to be_a(Senec::Local::Connection) }
   end
 
-  describe '#state_names' do
+  describe '#state_names', vcr: 'senec-local' do
     subject(:state_names) { adapter.state_names }
 
     it { is_expected.to be_a(Hash) }
@@ -48,7 +42,7 @@ describe LocalAdapter do
     end
   end
 
-  describe '#solectrus_record' do
+  describe '#solectrus_record', vcr: 'senec-local' do
     subject(:solectrus_record) { adapter.solectrus_record }
 
     it { is_expected.to be_a(SolectrusRecord) }

@@ -8,27 +8,27 @@ $LOAD_PATH.unshift(File.expand_path('./lib', __dir__))
 require 'dotenv/load'
 require 'loop'
 require 'config'
+require 'stdout_logger'
 
 Oj.mimic_JSON
 
-# Flush output immediately
-$stdout.sync = true
+logger = StdoutLogger.new
 
-puts 'SENEC collector for SOLECTRUS, ' \
+logger.info 'SENEC collector for SOLECTRUS, ' \
        "Version #{ENV.fetch('VERSION', '<unknown>')}, " \
        "built at #{ENV.fetch('BUILDTIME', '<unknown>')}"
-puts 'https://github.com/solectrus/senec-collector'
-puts 'Copyright (c) 2020-2024 Georg Ledermann, released under the MIT License'
-puts "\n"
+logger.info 'https://github.com/solectrus/senec-collector'
+logger.info 'Copyright (c) 2020-2024 Georg Ledermann, released under the MIT License'
+logger.info "\n"
 
 config = Config.from_env
-config.adapter.message_handler = ->(message) { puts message }
+config.logger = logger
 
-puts "Using Ruby #{RUBY_VERSION} on platform #{RUBY_PLATFORM}"
-puts config.adapter.init_message
-puts "Pushing to InfluxDB at #{config.influx_url}, " \
+logger.info "Using Ruby #{RUBY_VERSION} on platform #{RUBY_PLATFORM}"
+logger.info config.adapter.init_message
+logger.info "Pushing to InfluxDB at #{config.influx_url}, " \
        "bucket #{config.influx_bucket}, " \
        "measurement #{config.influx_measurement}"
-puts "\n"
+logger.info "\n"
 
 Loop.start(config:)

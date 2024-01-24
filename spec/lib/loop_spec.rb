@@ -3,12 +3,10 @@ require 'config'
 
 describe Loop do
   let(:config) { Config.from_env(senec_adapter: :local, senec_interval: 5) }
-  let(:messages) { [] }
+  let(:logger) { MemoryLogger.new }
 
   before do
-    config.adapter.message_handler = lambda { |message|
-      messages << message
-    }
+    config.logger = logger
   end
 
   around do |example|
@@ -23,7 +21,7 @@ describe Loop do
         described_class.start(config:, max_count: 2)
       end
 
-      expect(messages).to include(/Got record #1/)
+      expect(logger.info_messages).to include(/Got record #1/)
     end
 
     it 'handles Interrupt' do
@@ -31,7 +29,7 @@ describe Loop do
 
       described_class.start(config:)
 
-      expect(messages).to include(/Exiting/)
+      expect(logger.error_messages).to include(/Exiting/)
     end
 
     it 'handles errors' do
@@ -39,7 +37,7 @@ describe Loop do
 
       described_class.start(config:, max_count: 1)
 
-      expect(messages).to include(/Error getting data/)
+      expect(logger.error_messages).to include(/Error getting data/)
     end
   end
 end

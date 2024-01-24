@@ -8,6 +8,12 @@ describe SenecPull do
     described_class.new(config:, queue:)
   end
 
+  let(:logger) { MemoryLogger.new }
+
+  before do
+    config.logger = logger
+  end
+
   around do |example|
     VCR.use_cassette('senec_success') do
       example.run

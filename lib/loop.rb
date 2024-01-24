@@ -1,7 +1,11 @@
 require 'influx_push'
 require 'senec_pull'
+require 'forwardable'
 
 class Loop
+  extend Forwardable
+  def_delegators :config, :logger
+
   def self.start(config:, max_count: nil, &)
     new(config:, max_count:, &).start
   end
@@ -29,7 +33,7 @@ class Loop
     # Wait for the push thread to finish (will happen because queue is closed)
     push_thread.join
   rescue SystemExit, Interrupt
-    send_message 'Exiting...'
+    logger.error 'Exiting...'
 
     # Stop pulling data from SENEC
     pull_thread.exit
@@ -65,14 +69,10 @@ class Loop
 
   def close_queue
     until queue.empty?
-      send_message "Waiting for #{queue.size} records to be pushed to InfluxDB"
+      logger.info "Waiting for #{queue.size} records to be pushed to InfluxDB"
       sleep 1
     end
 
     queue.close
-  end
-
-  def send_message(message)
-    config.adapter.send_message message
   end
 end

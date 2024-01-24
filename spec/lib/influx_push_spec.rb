@@ -8,7 +8,11 @@ describe InfluxPush do
   let!(:senec_pull) do
     SenecPull.new(config:, queue:)
   end
-  let(:messages) { [] }
+  let(:logger) { MemoryLogger.new }
+
+  before do
+    config.logger = logger
+  end
 
   around do |example|
     VCR.use_cassette('senec_success') do
@@ -63,9 +67,7 @@ describe InfluxPush do
   def run_influx_push
     thread = Thread.new do
       VCR.use_cassette('influx_success') do
-        pusher = described_class.new(config:, queue:) do |message|
-          messages << message
-        end
+        pusher = described_class.new(config:, queue:)
         pusher.run
       end
     end
@@ -79,7 +81,7 @@ describe InfluxPush do
     yield
 
     (1..num_records).each do |i|
-      expect(messages).to include "Successfully pushed record ##{i} to InfluxDB"
+      expect(logger.info_messages).to include "Successfully pushed record ##{i} to InfluxDB"
     end
 
     expect(queue.length).to eq(0)
@@ -87,7 +89,7 @@ describe InfluxPush do
 
   def assert_failure(num_records, &)
     expect(&).to raise_error(Timeout::Error)
-    expect(messages).to include(/Error while pushing record #1 to InfluxDB/)
+    expect(logger.error_messages).to include(/Error while pushing record #1 to InfluxDB/)
     expect(queue.length).to eq(num_records)
   end
 end

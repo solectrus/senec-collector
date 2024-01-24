@@ -1,14 +1,17 @@
 require 'flux_writer'
+require 'forwardable'
 
 class InfluxPush
-  def initialize(config:, queue:, &message_handler)
+  extend Forwardable
+  def_delegators :config, :logger
+
+  def initialize(config:, queue:)
     @config = config
     @queue = queue
     @flux_writer = FluxWriter.new(config)
-    @message_handler = message_handler
   end
 
-  attr_reader :config, :queue, :flux_writer, :message_handler
+  attr_reader :config, :queue, :flux_writer
 
   def run
     until queue.closed?
@@ -20,7 +23,7 @@ class InfluxPush
 
       begin
         flux_writer.push(record)
-        send_message "Successfully pushed record ##{record.id} to InfluxDB"
+        logger.info "Successfully pushed record ##{record.id} to InfluxDB"
       rescue StandardError => e
         error_handling(record, e)
 
@@ -34,17 +37,13 @@ class InfluxPush
 
   def error_handling(record, error)
     # Log the error
-    send_message "Error while pushing record ##{record.id} to InfluxDB: #{error.message}"
+    logger.error "Error while pushing record ##{record.id} to InfluxDB: #{error.message}"
 
     return if queue.closed?
 
     # Put the record back into the queue
     queue << record
 
-    send_message "The record has been queued. Will retry to push #{queue.size} records later."
-  end
-
-  def send_message(message)
-    message_handler&.call(message)
+    logger.info "The record has been queued. Will retry to push #{queue.size} records later."
   end
 end

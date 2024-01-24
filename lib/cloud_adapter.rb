@@ -1,12 +1,15 @@
 require 'solectrus_record'
+require 'forwardable'
 
 class CloudAdapter
+  extend Forwardable
+  def_delegators :config, :logger
+
   def initialize(config:)
     @config = config
   end
 
   attr_reader :config
-  attr_accessor :message_handler
 
   def init_message
     "Pulling from SENEC cloud every #{config.senec_interval} seconds"
@@ -21,28 +24,27 @@ class CloudAdapter
     # Reset data cache
     @data = nil
 
-    SolectrusRecord.new(id,
-                        measure_time:,
-                        inverter_power:,
-                        house_power:,
-                        grid_power_minus:,
-                        grid_power_plus:,
-                        bat_power_minus:,
-                        bat_power_plus:,
-                        bat_fuel_charge:,
-                        wallbox_charge_power:,).tap do |record|
-      send_message success_message(record)
+    SolectrusRecord.new(id, record_hash).tap do |record|
+      logger.info success_message(record)
     end
   rescue StandardError => e
-    send_message failure_message(e)
+    logger.error failure_message(e)
     nil
   end
 
-  def send_message(message)
-    message_handler&.call(message)
-  end
-
   private
+
+  def record_hash
+    { measure_time:,
+      inverter_power:,
+      house_power:,
+      grid_power_minus:,
+      grid_power_plus:,
+      bat_power_minus:,
+      bat_power_plus:,
+      bat_fuel_charge:,
+      wallbox_charge_power:, }
+  end
 
   def data
     @data ||= Senec::Cloud::Dashboard[connection].first.data

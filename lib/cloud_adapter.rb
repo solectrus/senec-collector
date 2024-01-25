@@ -59,7 +59,7 @@ class CloudAdapter
   end
 
   def solectrus_record(id = 1)
-    # Reset data cache
+    # Reset data cache to force a new request
     @data = nil
 
     SolectrusRecord.new(id, record_hash).tap do |record|
@@ -86,19 +86,6 @@ class CloudAdapter
 
   def data
     @data ||= dashboard.data
-  end
-
-  def success_message(record)
-    "\nGot record ##{record.id} at " \
-      "#{Time.at(record.measure_time)} " \
-      "Inverter #{record.inverter_power} W, House #{record.house_power} W, " \
-      "Grid -#{record.grid_power_minus} W / +#{record.grid_power_plus} W, " \
-      "Bat -#{record.bat_power_minus} W / +#{record.bat_power_plus} W, #{record.bat_fuel_charge} %, " \
-      "Wallbox #{record.wallbox_charge_power} W"
-  end
-
-  def failure_message(error)
-    "Error getting data from SENEC cloud: #{error}"
   end
 
   def measure_time
@@ -135,5 +122,18 @@ class CloudAdapter
 
   def bat_fuel_charge
     data.dig('aktuell', 'speicherfuellstand', 'wert').round(1)
+  end
+
+  def success_message(record)
+    "\nGot record ##{record.id} at " \
+      "#{Time.at(record.measure_time)} " \
+      "Inverter #{record.inverter_power} W, House #{record.house_power} W, " \
+      "Grid -#{record.grid_power_minus} W / +#{record.grid_power_plus} W, " \
+      "Bat -#{record.bat_power_minus} W / +#{record.bat_power_plus} W, #{record.bat_fuel_charge} %, " \
+      "Wallbox #{record.wallbox_charge_power} W"
+  end
+
+  def failure_message(error)
+    "Error getting data from SENEC cloud: #{error}"
   end
 end

@@ -70,10 +70,16 @@ describe Config do
         end.to raise_error(Exception, /URL is invalid/)
       end
 
-      it 'raises an error for invalid SENEC_INTERVAL' do
-        expect do
-          described_class.new(valid_local_options.merge(senec_interval: 0))
-        end.to raise_error(Exception, /SENEC_INTERVAL is invalid/)
+      it 'limits SENEC_INTERVAL for local adapter' do
+        config = described_class.new(valid_local_options.merge(senec_adapter: :local, senec_interval: 1))
+
+        expect(config.senec_interval).to eq(5)
+      end
+
+      it 'limits SENEC_INTERVAL for cloud adapter' do
+        config = described_class.new(valid_cloud_options.merge(senec_adapter: :cloud, senec_interval: 1))
+
+        expect(config.senec_interval).to eq(30)
       end
     end
 

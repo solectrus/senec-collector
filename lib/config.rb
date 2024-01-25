@@ -42,6 +42,7 @@ Config =
     def set_defaults_and_types
       convert_types
       set_defaults
+      limit_interval
     end
 
     def convert_types
@@ -67,6 +68,17 @@ Config =
       end
 
       self[:senec_interval] ||= senec_adapter == :local ? 5 : 60
+    end
+
+    def limit_interval
+      case senec_adapter
+      when :local
+        # Be careful with your local SENEC device, do not flood it with queries. 12 RPM is the minimum.
+        self[:senec_interval] = 5 if senec_interval < 5
+      when :cloud
+        # Let's be nice to SENEC. 2 RPM is the minimum.
+        self[:senec_interval] = 30 if senec_interval < 30
+      end
     end
 
     def validate!

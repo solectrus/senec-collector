@@ -126,7 +126,7 @@ class CloudAdapter
 
   def success_message(record)
     "\nGot record ##{record.id} at " \
-      "#{Time.at(record.measure_time)} " \
+      "#{Time.at(record.measure_time).localtime} " \
       "Inverter #{record.inverter_power} W, House #{record.house_power} W, " \
       "Grid -#{record.grid_power_minus} W / +#{record.grid_power_plus} W, " \
       "Bat -#{record.bat_power_minus} W / +#{record.bat_power_plus} W, #{record.bat_fuel_charge} %, " \

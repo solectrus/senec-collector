@@ -11,6 +11,9 @@ RUN bundle config --local frozen 1 && \
 FROM ruby:3.2.3-alpine
 LABEL maintainer="georg@ledermann.dev"
 
+# Add tzdata to get correct timezone
+RUN apk add --no-cache tzdata
+
 # Decrease memory usage
 ENV MALLOC_ARENA_MAX 2
 

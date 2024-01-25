@@ -81,7 +81,7 @@ class LocalAdapter
 
   def success_message(record)
     "\nGot record ##{record.id} at " \
-      "#{Time.at(record.measure_time)} " \
+      "#{Time.at(record.measure_time).localtime} " \
       "within #{record.response_duration} ms, " \
       "#{record.current_state}, " \
       "Inverter #{record.inverter_power} W, House #{record.house_power} W, " \

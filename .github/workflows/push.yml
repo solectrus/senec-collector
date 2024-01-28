@@ -36,7 +36,7 @@ jobs:
         run: bundle exec rubocop
 
       - name: Run tests
-        run: bundle exec rake test
+        run: bundle exec rspec
 
       - name: Send test coverage to CodeClimate
         uses: paambaati/codeclimate-action@v5.0.0

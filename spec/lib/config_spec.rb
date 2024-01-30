@@ -154,7 +154,7 @@ describe Config do
     end
 
     it 'returns correct influx_schema' do
-      expect(config.influx_schema).to eq(:https)
+      expect(config.influx_schema).to eq(:http)
     end
 
     it 'returns default influx_port' do

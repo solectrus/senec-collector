@@ -25,7 +25,7 @@ DEFAULTS = {
   senec_adapter: :local,
   senec_schema: :https,
   senec_language: :de,
-  influx_schema: :https,
+  influx_schema: :http,
   influx_port: 8086,
   influx_measurement: 'SENEC',
 }.freeze

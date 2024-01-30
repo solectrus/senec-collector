@@ -167,11 +167,11 @@ class CloudAdapter
     'LADEN',
     'AKKU LEER',
     'ENTLADEN',
-    'PV + ENTLADEN',
-    'NETZ + ENTLADEN',
+    'PV UND ENTLADEN',
+    'NETZ UND ENTLADEN',
     'EIGENVERBRAUCH',
     'LADESCHLUSSPHASE',
-    'PEAK-SHAVING: WARTEN',
+    'PEAK-SHAVING WARTEN',
   ].freeze
 
   def current_state_ok

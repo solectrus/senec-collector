@@ -1,5 +1,39 @@
 require 'vcr'
 
+SENSITIVE_DATA = [
+  # Systems
+  [0, 'id'],
+  [0, 'steuereinheitnummer'],
+  [0, 'gehaeusenummer'],
+  [0, 'strasse'],
+  [0, 'hausnummer'],
+  [0, 'postleitzahl'],
+  [0, 'ort'],
+  # Technical data
+  %w[systemOverview systemId],
+  %w[systemOverview productName],
+  %w[systemOverview installationDate],
+  %w[casing serial],
+  %w[mcu mainControllerSerial],
+  %w[warranty endDate],
+  %w[warranty warrantyTermInMonths],
+  ['batteryModules', 0, 'serialNumber'],
+  ['batteryModules', 1, 'serialNumber'],
+  ['batteryModules', 2, 'serialNumber'],
+  ['batteryModules', 3, 'serialNumber'],
+  %w[installer companyName],
+  %w[installer email],
+  %w[installer phoneNumber],
+  %w[installer address street],
+  %w[installer address houseNumber],
+  %w[installer address postcode],
+  %w[installer address city],
+  %w[installer address region],
+  %w[installer address longitude],
+  %w[installer address latitude],
+  %w[installer website],
+].freeze
+
 VCR.configure do |config|
   config.cassette_library_dir = 'spec/cassettes'
   config.hook_into :faraday
@@ -36,26 +70,43 @@ VCR.configure do |config|
     end
   end
 
-  %w[
-    steuereinheitnummer
-    gehaeusenummer
-    strasse
-    hausnummer
-    postleitzahl
-    ort
-  ].each do |key|
-    config.filter_sensitive_data("<#{key}>") do |interaction|
-      next unless interaction.senec_cloud?
-
-      JSON.parse(interaction.response.body).first[key] if interaction.response.body.include?("\"#{key}\"")
-    end
-  end
-
-  config.filter_sensitive_data('<SENEC_SYSTEM_ID>') do |interaction|
+  # :nocov:
+  config.before_record do |interaction|
     next unless interaction.senec_cloud?
 
-    JSON.parse(interaction.response.body).first['id'] if interaction.response.body.include?('id')
+    # Bring back the original SENEC_SYSTEM_ID to the body. It will be replaced again later, but as String (not number)
+    response_body = interaction.response.body.gsub('<SENEC_SYSTEM_ID>', ENV.fetch('SENEC_SYSTEM_ID'))
+
+    json_data = begin
+      JSON.parse(response_body)
+    rescue JSON::ParserError
+      nil
+    end
+    next unless json_data.is_a?(Hash) || json_data.is_a?(Array)
+
+    SENSITIVE_DATA.each do |path|
+      # Use dig to navigate to the target, but stop one level before the final key
+      target = begin
+        json_data.dig(*path[0...-1])
+      rescue TypeError
+        nil
+      end
+
+      # Check if we have an actual target to work with
+      next unless target
+
+      # Depending on the target's type, update it accordingly
+      target[path.last] = if path.last == 'id'
+                            '<SENEC_SYSTEM_ID>'
+                          else
+                            '<FILTERED>'
+                          end
+    end
+
+    # Update the interaction response with the modified data
+    interaction.response.body = json_data.to_json
   end
+  # :nocov:
 
   record_mode = ENV['VCR'] ? ENV['VCR'].to_sym : :once
   config.default_cassette_options = {

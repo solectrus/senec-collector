@@ -158,7 +158,10 @@ class CloudAdapter
   end
 
   def current_state
-    technical_data_record.dig('mcu', 'mainControllerState', 'name').tr('_', ' ')
+    raw_state = technical_data_record.dig('mcu', 'mainControllerState', 'name')
+    return if raw_state.casecmp('UNKNOWN').zero?
+
+    raw_state.tr('_', ' ')
   end
 
   # In German, because this seams to be language of the SENEC cloud

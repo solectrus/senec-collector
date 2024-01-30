@@ -18,22 +18,22 @@ class InfluxPush
       # Wait for a record to be added to the queue
       record = queue.pop
 
-      # Stop if the queue has been closed
-      next unless record
-
-      begin
-        flux_writer.push(record)
-        logger.info "Successfully pushed record ##{record.id} to InfluxDB"
-      rescue StandardError => e
-        error_handling(record, e)
-
-        # Wait a bit before trying again
-        sleep(5)
-      end
+      # Push (unless queue has been closed)
+      push(record) if record
     end
   end
 
   private
+
+  def push(record)
+    flux_writer.push(record)
+    logger.info "Successfully pushed record ##{record.id} to InfluxDB"
+  rescue StandardError => e
+    error_handling(record, e)
+
+    # Wait a bit before trying again
+    sleep(5)
+  end
 
   def error_handling(record, error)
     # Log the error

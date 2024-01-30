@@ -71,14 +71,18 @@ Config =
     end
 
     def limit_interval
-      case senec_adapter
-      when :local
-        # Be careful with your local SENEC device, do not flood it with queries. 12 RPM is the minimum.
-        self[:senec_interval] = 5 if senec_interval < 5
-      when :cloud
-        # Let's be nice to SENEC. 2 RPM is the minimum.
-        self[:senec_interval] = 30 if senec_interval < 30
-      end
+      minimum = case senec_adapter
+                when :local
+                  # Be careful with your local SENEC device, do not flood it with queries.
+                  # 12 requests/min is the maximum.
+                  5
+                when :cloud
+                  # Let's be nice to SENEC.
+                  # 2 requests/min is the maximum.
+                  30
+                end
+
+      self[:senec_interval] = minimum if senec_interval < minimum
     end
 
     def validate!

@@ -29,7 +29,7 @@ Tested on:
 4. Run the Docker container on your Linux box:
 
    ```bash
-   docker-compose up
+   docker compose up
    ```
 
 The Docker image support multiple platforms: `linux/amd64`, `linux/arm64`, `linux/arm/v7`

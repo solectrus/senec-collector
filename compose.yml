@@ -1,7 +1,5 @@
-version: '2'
-
 services:
-  collector:
+  senec-collector:
     image: ghcr.io/solectrus/senec-collector:latest
     env_file: .env
     network_mode: host

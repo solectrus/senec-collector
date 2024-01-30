@@ -55,6 +55,10 @@ describe LocalAdapter do
       expect(solectrus_record.measure_time).to be > 1_700_000_000
     end
 
+    it 'has a valid current_state' do
+      expect(solectrus_record.current_state).to be_a(String)
+    end
+
     it 'handles errors' do
       allow(Senec::Local::Request).to receive(:new).and_raise(StandardError)
 

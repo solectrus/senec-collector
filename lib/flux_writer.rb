@@ -34,7 +34,7 @@ class FluxWriter
       InfluxDB2::Client.new(
         config.influx_url,
         config.influx_token,
-        use_ssl: config.influx_schema == 'https',
+        use_ssl: config.influx_schema == :https,
         precision: InfluxDB2::WritePrecision::SECOND,
       )
   end

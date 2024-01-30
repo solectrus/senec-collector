@@ -54,13 +54,10 @@ class CloudAdapter
     end
   end
 
-  def dashboard
-    Senec::Cloud::Dashboard[connection].find(system_id)
-  end
-
   def solectrus_record(id = 1)
     # Reset data cache to force a new request
-    @data = nil
+    @dashboard_record = nil
+    @technical_data_record = nil
 
     SolectrusRecord.new(id, record_hash).tap do |record|
       logger.info success_message(record)
@@ -72,8 +69,19 @@ class CloudAdapter
 
   private
 
+  def dashboard
+    Senec::Cloud::Dashboard[connection].find(system_id)
+  end
+
+  def technical_data
+    Senec::Cloud::TechnicalData[connection].find(system_id)
+  end
+
   def record_hash
-    { measure_time:,
+    {
+      current_state:,
+      current_state_ok:,
+      measure_time:,
       inverter_power:,
       house_power:,
       grid_power_minus:,
@@ -81,55 +89,100 @@ class CloudAdapter
       bat_power_minus:,
       bat_power_plus:,
       bat_fuel_charge:,
-      wallbox_charge_power:, }
+      bat_charge_current:,
+      bat_voltage:,
+      wallbox_charge_power:,
+      case_temp:,
+      application_version:,
+    }
   end
 
-  def data
-    @data ||= dashboard.data
+  def dashboard_record
+    @dashboard_record ||= dashboard.data
+  end
+
+  def technical_data_record
+    @technical_data_record ||= technical_data.data
   end
 
   def measure_time
-    Time.parse(data['zeitstempel']).to_i
+    Time.parse(dashboard_record['zeitstempel']).to_i
   end
 
   def inverter_power
-    data.dig('aktuell', 'stromerzeugung', 'wert').round
+    dashboard_record.dig('aktuell', 'stromerzeugung', 'wert').round
   end
 
   def house_power
-    data.dig('aktuell', 'stromverbrauch', 'wert').round
+    dashboard_record.dig('aktuell', 'stromverbrauch', 'wert').round
   end
 
   def wallbox_charge_power
-    data.dig('aktuell', 'wallbox', 'wert').round
+    dashboard_record.dig('aktuell', 'wallbox', 'wert').round
   end
 
   def grid_power_minus
-    data.dig('aktuell', 'netzeinspeisung', 'wert').round
+    dashboard_record.dig('aktuell', 'netzeinspeisung', 'wert').round
   end
 
   def grid_power_plus
-    data.dig('aktuell', 'netzbezug', 'wert').round
+    dashboard_record.dig('aktuell', 'netzbezug', 'wert').round
   end
 
   def bat_power_plus
-    data.dig('aktuell', 'speicherbeladung', 'wert').round
+    dashboard_record.dig('aktuell', 'speicherbeladung', 'wert').round
   end
 
   def bat_power_minus
-    data.dig('aktuell', 'speicherentnahme', 'wert').round
+    dashboard_record.dig('aktuell', 'speicherentnahme', 'wert').round
   end
 
   def bat_fuel_charge
-    data.dig('aktuell', 'speicherfuellstand', 'wert').round(1)
+    dashboard_record.dig('aktuell', 'speicherfuellstand', 'wert').round(1)
+  end
+
+  def bat_charge_current
+    technical_data_record.dig('batteryPack', 'currentCurrentInA').round(2)
+  end
+
+  def bat_voltage
+    technical_data_record.dig('batteryPack', 'currentVoltageInV').round(2)
+  end
+
+  def case_temp
+    technical_data_record.dig('casing', 'temperatureInCelsius').round(1)
+  end
+
+  def application_version
+    technical_data_record.dig('mcu', 'firmwareVersion')
+  end
+
+  def current_state
+    technical_data_record.dig('mcu', 'mainControllerState', 'name').tr('_', ' ')
+  end
+
+  # In German, because this seams to be language of the SENEC cloud
+  OK_STATES = [
+    'AKKU VOLL',
+    'LADEN',
+    'AKKU LEER',
+    'ENTLADEN',
+    'PV + ENTLADEN',
+    'NETZ + ENTLADEN',
+    'EIGENVERBRAUCH',
+    'LADESCHLUSSPHASE',
+    'PEAK-SHAVING: WARTEN',
+  ].freeze
+
+  def current_state_ok
+    OK_STATES.include? current_state
   end
 
   def success_message(record)
     "\nGot record ##{record.id} at " \
       "#{Time.at(record.measure_time).localtime} " \
+      "#{record.current_state}, " \
       "Inverter #{record.inverter_power} W, House #{record.house_power} W, " \
-      "Grid -#{record.grid_power_minus} W / +#{record.grid_power_plus} W, " \
-      "Bat -#{record.bat_power_minus} W / +#{record.bat_power_plus} W, #{record.bat_fuel_charge} %, " \
       "Wallbox #{record.wallbox_charge_power} W"
   end
 

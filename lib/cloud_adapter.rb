@@ -94,7 +94,7 @@ class CloudAdapter
       wallbox_charge_power:,
       case_temp:,
       application_version:,
-    }
+    }.compact
   end
 
   def dashboard_record
@@ -159,7 +159,7 @@ class CloudAdapter
 
   def current_state
     raw_state = technical_data_record.dig('mcu', 'mainControllerState', 'name')
-    return if raw_state.casecmp('UNKNOWN').zero?
+    return if raw_state == 'UNKNOWN'
 
     raw_state.tr('_', ' ')
   end
@@ -178,13 +178,15 @@ class CloudAdapter
   ].freeze
 
   def current_state_ok
+    return unless current_state
+
     OK_STATES.include? current_state
   end
 
   def success_message(record)
     "\nGot record ##{record.id} at " \
       "#{Time.at(record.measure_time).localtime} " \
-      "#{record.current_state}, " \
+      "#{record.current_state || 'Unknown state'}, " \
       "Inverter #{record.inverter_power} W, House #{record.house_power} W, " \
       "Wallbox #{record.wallbox_charge_power} W"
   end

@@ -110,47 +110,47 @@ class CloudAdapter
   end
 
   def inverter_power
-    dashboard_record.dig('aktuell', 'stromerzeugung', 'wert').round
+    dashboard_record.dig('aktuell', 'stromerzeugung', 'wert')&.round
   end
 
   def house_power
-    dashboard_record.dig('aktuell', 'stromverbrauch', 'wert').round
+    dashboard_record.dig('aktuell', 'stromverbrauch', 'wert')&.round
   end
 
   def wallbox_charge_power
-    dashboard_record.dig('aktuell', 'wallbox', 'wert').round
+    dashboard_record.dig('aktuell', 'wallbox', 'wert')&.round
   end
 
   def grid_power_minus
-    dashboard_record.dig('aktuell', 'netzeinspeisung', 'wert').round
+    dashboard_record.dig('aktuell', 'netzeinspeisung', 'wert')&.round
   end
 
   def grid_power_plus
-    dashboard_record.dig('aktuell', 'netzbezug', 'wert').round
+    dashboard_record.dig('aktuell', 'netzbezug', 'wert')&.round
   end
 
   def bat_power_plus
-    dashboard_record.dig('aktuell', 'speicherbeladung', 'wert').round
+    dashboard_record.dig('aktuell', 'speicherbeladung', 'wert')&.round
   end
 
   def bat_power_minus
-    dashboard_record.dig('aktuell', 'speicherentnahme', 'wert').round
+    dashboard_record.dig('aktuell', 'speicherentnahme', 'wert')&.round
   end
 
   def bat_fuel_charge
-    dashboard_record.dig('aktuell', 'speicherfuellstand', 'wert').round(1)
+    dashboard_record.dig('aktuell', 'speicherfuellstand', 'wert')&.round(1)
   end
 
   def bat_charge_current
-    technical_data_record.dig('batteryPack', 'currentCurrentInA').round(2)
+    technical_data_record.dig('batteryPack', 'currentCurrentInA')&.round(2)
   end
 
   def bat_voltage
-    technical_data_record.dig('batteryPack', 'currentVoltageInV').round(2)
+    technical_data_record.dig('batteryPack', 'currentVoltageInV')&.round(2)
   end
 
   def case_temp
-    technical_data_record.dig('casing', 'temperatureInCelsius').round(1)
+    technical_data_record.dig('casing', 'temperatureInCelsius')&.round(1)
   end
 
   def application_version

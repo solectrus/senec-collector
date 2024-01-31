@@ -6,18 +6,18 @@ describe CloudAdapter do
     described_class.new(config:)
   end
 
-  let(:config) { Config.from_env(senec_adapter: :cloud, senec_interval: 60, senec_system_id:) }
-  let(:logger) { MemoryLogger.new }
+  let(:config) { Config.from_env(senec_adapter: :cloud, senec_interval: 60, senec_system_id:, senec_token:) }
   let(:senec_system_id) { nil }
+  let(:senec_token) { nil }
 
   before do
-    config.logger = logger
+    config.logger = MemoryLogger.new
   end
 
   describe '#initialize' do
     before { adapter }
 
-    it { expect(logger.info_messages).to include('Pulling from SENEC cloud every 60 seconds') }
+    it { expect(config.logger.info_messages).to include('Pulling from SENEC cloud every 60 seconds') }
   end
 
   describe '#connection' do
@@ -29,88 +29,7 @@ describe CloudAdapter do
   describe '#solectrus_record' do
     subject(:solectrus_record) { adapter.solectrus_record }
 
-    context 'with a system id', vcr: 'senec-cloud-given-system' do
-      let(:senec_system_id) { ENV.fetch('SENEC_SYSTEM_ID') }
-
-      it { is_expected.to be_a(SolectrusRecord) }
-    end
-
-    context 'with a system id for V4' do
-      let(:senec_system_id) { ENV.fetch('SENEC_SYSTEM_ID') }
-
-      let(:technical_data) do
-        {
-          casing: {
-            temperatureInCelsius: 28.0,
-          },
-          mcu: {
-            mainControllerState: { name: 'UNKNOWN', severity: 'WARNING' },
-          },
-          batteryPack: {
-            currentVoltageInV: 193.0,
-            currentCurrentInA: 0.0299,
-          },
-        }
-      end
-
-      let(:dashboard_data) do
-        {
-          aktuell: {
-            stromerzeugung: { wert: 0.01, einheit: 'W' },
-            stromverbrauch: { wert: 0.0, einheit: 'W' },
-            netzeinspeisung: { wert: 0.01, einheit: 'W' },
-            netzbezug: { wert: 0.01, einheit: 'W' },
-            speicherbeladung: { wert: 0.01, einheit: 'W' },
-            speicherentnahme: { wert: 0.01, einheit: 'W' },
-            speicherfuellstand: { wert: 1.0E-5, einheit: '%' },
-            autarkie: { wert: 1.0E-5, einheit: '%' },
-            wallbox: { wert: 0.01, einheit: 'W' },
-          },
-          zeitstempel: '2023-12-08T11:04:18Z',
-          electricVehicleConnected: false,
-        }
-      end
-
-      before do
-        VCR.turn_off!
-
-        stub_request(:post, 'https://app-gateway.prod.senec.dev/v1/senec/login')
-        stub_request(:get, "https://app-gateway.prod.senec.dev/v1/senec/systems/#{senec_system_id}/dashboard").to_return(
-          headers: { content_type: 'application/json' }, body: dashboard_data.to_json,
-        )
-        stub_request(:get, "https://app-gateway.prod.senec.dev/v1/senec/systems/#{senec_system_id}/technical-data")
-          .to_return(status: 200, headers: { content_type: 'application/json' }, body: technical_data.to_json)
-      end
-
-      after do
-        VCR.turn_on!
-      end
-
-      it { is_expected.to be_a(SolectrusRecord) }
-
-      it 'has' do
-        expect(solectrus_record.to_hash).to(
-          eq(
-            bat_charge_current: 0.03,
-            bat_fuel_charge: 0.0,
-            bat_power_minus: 0,
-            bat_power_plus: 0,
-            bat_voltage: 193.0,
-            case_temp: 28.0,
-            grid_power_minus: 0,
-            grid_power_plus: 0,
-            house_power: 0,
-            inverter_power: 0,
-            measure_time: 1_702_033_458,
-            wallbox_charge_power: 0,
-          ),
-        )
-      end
-    end
-
-    context 'without a system id', vcr: 'senec-cloud-first-system' do
-      let(:senec_system_id) { nil }
-
+    shared_examples 'a SolectrusRecord' do
       it { is_expected.to be_a(SolectrusRecord) }
 
       it 'has an automatic id' do
@@ -160,7 +79,9 @@ describe CloudAdapter do
       it 'has a valid case_temp' do
         expect(solectrus_record.case_temp).to be > 20
       end
+    end
 
+    shared_examples 'a SolectrusRecord for V3' do
       it 'has a valid current_state' do
         expect(solectrus_record.current_state).to be_a(String)
       end
@@ -174,11 +95,109 @@ describe CloudAdapter do
       end
     end
 
-    it 'handles errors' do
+    shared_examples 'a SolectrusRecord for V4' do
+      it 'has no current_state' do
+        expect(solectrus_record.current_state).to be_nil
+      end
+
+      it 'has no current_state_ok' do
+        expect(solectrus_record.current_state_ok).to be_nil
+      end
+
+      it 'has no application_version' do
+        expect(solectrus_record.application_version).to be_nil
+      end
+    end
+
+    context 'when SENEC.Home V3' do
+      context 'with a system id', vcr: 'senec-cloud-given-system' do
+        let(:senec_system_id) { ENV.fetch('SENEC_SYSTEM_ID') }
+
+        it_behaves_like 'a SolectrusRecord'
+        it_behaves_like 'a SolectrusRecord for V3'
+      end
+
+      context 'with token', vcr: 'senec-cloud-with-token' do
+        let(:senec_system_id) { nil }
+        let(:senec_token) { ENV.fetch('SENEC_TOKEN') }
+
+        it_behaves_like 'a SolectrusRecord'
+        it_behaves_like 'a SolectrusRecord for V3'
+      end
+
+      context 'without a system id', vcr: 'senec-cloud-first-system' do
+        let(:senec_system_id) { nil }
+
+        it_behaves_like 'a SolectrusRecord'
+        it_behaves_like 'a SolectrusRecord for V3'
+      end
+    end
+
+    context 'when SENEC.Home 4' do
+      context 'with a system id' do
+        let(:senec_system_id) { ENV.fetch('SENEC_SYSTEM_ID') }
+
+        let(:technical_data) do
+          {
+            casing: {
+              temperatureInCelsius: 28.0,
+            },
+            mcu: {
+              mainControllerState: { name: 'UNKNOWN', severity: 'WARNING' },
+            },
+            batteryPack: {
+              currentVoltageInV: 193.0,
+              currentCurrentInA: 0.0299,
+            },
+          }
+        end
+
+        let(:dashboard_data) do
+          {
+            aktuell: {
+              stromerzeugung: { wert: 0.01, einheit: 'W' },
+              stromverbrauch: { wert: 0.0, einheit: 'W' },
+              netzeinspeisung: { wert: 0.01, einheit: 'W' },
+              netzbezug: { wert: 0.01, einheit: 'W' },
+              speicherbeladung: { wert: 0.01, einheit: 'W' },
+              speicherentnahme: { wert: 0.01, einheit: 'W' },
+              speicherfuellstand: { wert: 1.0E-5, einheit: '%' },
+              autarkie: { wert: 1.0E-5, einheit: '%' },
+              wallbox: { wert: 0.01, einheit: 'W' },
+            },
+            zeitstempel: '2023-12-08T11:04:18Z',
+            electricVehicleConnected: false,
+          }
+        end
+
+        before do
+          stub_request(:post, 'https://app-gateway.prod.senec.dev/v1/senec/login')
+          stub_request(:get, "https://app-gateway.prod.senec.dev/v1/senec/systems/#{senec_system_id}/dashboard").to_return(
+            headers: { content_type: 'application/json' }, body: dashboard_data.to_json,
+          )
+          stub_request(:get, "https://app-gateway.prod.senec.dev/v1/senec/systems/#{senec_system_id}/technical-data")
+            .to_return(status: 200, headers: { content_type: 'application/json' }, body: technical_data.to_json)
+        end
+
+        it_behaves_like 'a SolectrusRecord'
+        it_behaves_like 'a SolectrusRecord for V4'
+      end
+    end
+
+    it 'handles error in Dashboard request' do
       allow(Senec::Cloud::Dashboard).to receive(:new).and_raise(StandardError)
 
-      solectrus_record
-      expect(logger.error_messages).to include(/Error getting data from SENEC cloud/)
+      expect do
+        solectrus_record
+      end.to change(config.logger, :error_messages).to include(/Error getting data from SENEC cloud/)
+    end
+
+    it 'handles error in TechnicalData request' do
+      allow(Senec::Cloud::TechnicalData).to receive(:new).and_raise(StandardError)
+
+      expect do
+        solectrus_record
+      end.to change(config.logger, :error_messages).to include(/Error getting data from SENEC cloud/)
     end
   end
 end

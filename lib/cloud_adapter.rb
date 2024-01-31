@@ -14,8 +14,15 @@ class CloudAdapter
   attr_reader :config
 
   def connection
-    @connection ||=
-      Senec::Cloud::Connection.new(username: config.senec_username, password: config.senec_password)
+    @connection ||= begin
+      logger.info 'Using SENEC_TOKEN to skip login' if config.senec_token
+
+      Senec::Cloud::Connection.new(
+        username: config.senec_username,
+        password: config.senec_password,
+        token: config.senec_token,
+      )
+    end
   end
 
   def system_id

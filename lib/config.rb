@@ -11,6 +11,7 @@ KEYS = %i[
   senec_language
   senec_username
   senec_password
+  senec_token
   senec_system_id
   influx_schema
   influx_host
@@ -173,6 +174,7 @@ Config =
           senec_language: ENV.fetch('SENEC_LANGUAGE', nil),
           senec_username: ENV.fetch('SENEC_USERNAME', nil),
           senec_password: ENV.fetch('SENEC_PASSWORD', nil),
+          senec_token: ENV.fetch('SENEC_TOKEN', nil),
           senec_system_id: ENV.fetch('SENEC_SYSTEM_ID', nil),
           influx_host: ENV.fetch('INFLUX_HOST'),
           influx_schema: ENV.fetch('INFLUX_SCHEMA', nil),

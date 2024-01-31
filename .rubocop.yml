@@ -45,3 +45,6 @@ Layout/LineLength:
 
 RSpec/NoExpectationExample:
   Enabled: false
+
+Metrics/AbcSize:
+  Max: 18

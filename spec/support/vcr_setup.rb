@@ -54,10 +54,11 @@ VCR.configure do |config|
     SENEC_HOST
     SENEC_USERNAME
     SENEC_PASSWORD
+    SENEC_TOKEN
     SENEC_SYSTEM_ID
   ]
   sensitive_environment_variables.each do |key_name|
-    config.filter_sensitive_data("<#{key_name}>") { ENV.fetch(key_name) }
+    config.filter_sensitive_data("<#{key_name}>") { ENV.fetch(key_name, nil) }
   end
 
   config.filter_sensitive_data('<TOKEN>') do |interaction|

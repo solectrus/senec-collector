@@ -1,9 +1,13 @@
-require_relative 'influx_push'
-require_relative 'senec_pull'
+require 'influx_push'
+require 'senec_pull'
+require 'forwardable'
 
 class Loop
-  def self.start(config:, max_count: nil)
-    new(config:, max_count:).start
+  extend Forwardable
+  def_delegators :config, :logger
+
+  def self.start(config:, max_count: nil, &)
+    new(config:, max_count:, &).start
   end
 
   def initialize(config:, max_count:)
@@ -29,7 +33,7 @@ class Loop
     # Wait for the push thread to finish (will happen because queue is closed)
     push_thread.join
   rescue SystemExit, Interrupt
-    puts 'Exiting...'
+    logger.error 'Exiting...'
 
     # Stop pulling data from SENEC
     pull_thread.exit
@@ -50,12 +54,7 @@ class Loop
   # Pull data from SENEC and add to queue
   def pull_loop
     loop do
-      begin
-        record = senec_pull.next
-        puts success_message(record)
-      rescue StandardError => e
-        puts failure_message(e)
-      end
+      senec_pull.next
 
       break if max_count && senec_pull.count >= max_count
 
@@ -70,25 +69,10 @@ class Loop
 
   def close_queue
     until queue.empty?
-      puts "Waiting for #{queue.size} records to be pushed to InfluxDB"
+      logger.info "Waiting for #{queue.size} records to be pushed to InfluxDB"
       sleep 1
     end
 
     queue.close
-  end
-
-  def success_message(record)
-    return unless record
-
-    "\nGot record ##{senec_pull.count} at " \
-      "#{Time.at(record.measure_time)} " \
-      "within #{record.response_duration} ms, " \
-      "#{record.current_state}, " \
-      "Inverter #{record.inverter_power} W, House #{record.house_power} W, " \
-      "Wallbox #{record.wallbox_charge_power} W"
-  end
-
-  def failure_message(error)
-    "Error getting data from SENEC at #{config.senec_url}: #{error}"
   end
 end

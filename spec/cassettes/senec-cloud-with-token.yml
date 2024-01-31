@@ -1,0 +1,135 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://app-gateway.prod.senec.dev/v1/senec/systems
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.9.0
+      Authorization:
+      - "<TOKEN>"
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      date:
+      - Wed, 31 Jan 2024 09:35:54 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+      x-content-type-options:
+      - nosniff
+      x-xss-protection:
+      - 1; mode=block
+      cache-control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      pragma:
+      - no-cache
+      expires:
+      - '0'
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-frame-options:
+      - DENY
+    body:
+      encoding: UTF-8
+      string: '[{"id":"<SENEC_SYSTEM_ID>","steuereinheitnummer":"<FILTERED>","gehaeusenummer":"<FILTERED>","strasse":"<FILTERED>","hausnummer":"<FILTERED>","postleitzahl":"<FILTERED>","ort":"<FILTERED>","laendercode":"DE","zeitzone":"Europe/Berlin","wallboxIds":["1"],"systemType":"V3"}]'
+  recorded_at: Wed, 31 Jan 2024 09:35:54 GMT
+- request:
+    method: get
+    uri: https://app-gateway.prod.senec.dev/v1/senec/systems/<SENEC_SYSTEM_ID>/technical-data
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.9.0
+      Authorization:
+      - "<TOKEN>"
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      date:
+      - Wed, 31 Jan 2024 09:35:56 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+      x-content-type-options:
+      - nosniff
+      x-xss-protection:
+      - 1; mode=block
+      cache-control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      pragma:
+      - no-cache
+      expires:
+      - '0'
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-frame-options:
+      - DENY
+    body:
+      encoding: UTF-8
+      string: '{"systemOverview":{"systemId":"<FILTERED>","productName":"<FILTERED>","installationDate":"<FILTERED>"},"casing":{"serial":"<FILTERED>","temperatureInCelsius":33.0667724609375},"mcu":{"mainControllerSerial":"<FILTERED>","mainControllerState":{"name":"LADEN","severity":"INFO"},"firmwareVersion":"826","guiVersion":966},"warranty":{"endDate":"<FILTERED>","warrantyTermInMonths":"<FILTERED>"},"batteryModules":[{"ordinal":1,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":26.0,"maxTemperature":28.0,"lastContact":{"time":1706693551000,"severity":"INFO"},"flags":[{"flag":"EMPTY","severity":"INFO"}]},{"ordinal":2,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":26.0,"maxTemperature":28.0,"lastContact":{"time":1706693551000,"severity":"INFO"},"flags":[{"flag":"EMPTY","severity":"INFO"}]},{"ordinal":3,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":26.0,"maxTemperature":28.0,"lastContact":{"time":1706693551000,"severity":"INFO"},"flags":[{"flag":"EMPTY","severity":"INFO"}]},{"ordinal":4,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":26.0,"maxTemperature":29.0,"lastContact":{"time":1706693551000,"severity":"INFO"},"flags":[{"flag":"EMPTY","severity":"INFO"}]}],"batteryInverter":{"state":{"name":"RUN_GRID","severity":"INFO"},"vendor":"SENEC_INVERTER_V3_LV","firmware":{"firmwareVersion":null,"firmwareVersionHumanMachineInterface":"3.16.20","firmwareVersionPowerUnit":"4.3.10","firmwareVersionBidirectionalDcConverter":"5.4.6"},"temperatures":{"amb":41.0,"halfBridge1":null,"halfBridge2":null,"throttle":null,"max":47.0},"lastContact":{"time":1706693551000,"severity":"INFO"},"flags":[]},"batteryPack":{"numberOfBatteryModules":4,"technology":"LITHIUM_ION","maxCapacityInKwh":10.0,"maxChargingPowerInKw":2.5,"maxDischargingPowerInKw":3.75,"currentChargingLevelInPercent":0.0,"currentVoltageInV":45.262001037597656,"currentCurrentInA":1.8200000524520874,"remainingCapacityInPercent":98.0},"installer":{"companyName":"<FILTERED>","email":"<FILTERED>","phoneNumber":"<FILTERED>","address":{"street":"<FILTERED>","houseNumber":"<FILTERED>","postcode":"<FILTERED>","city":"<FILTERED>","countryCode":"DE","region":"<FILTERED>","longitude":"<FILTERED>","latitude":"<FILTERED>","timezone":"Europe/Berlin"},"onlineMonitoringAllowed":true,"website":"<FILTERED>"},"slaveSystemInfoDtos":[]}'
+  recorded_at: Wed, 31 Jan 2024 09:35:56 GMT
+- request:
+    method: get
+    uri: https://app-gateway.prod.senec.dev/v1/senec/systems/<SENEC_SYSTEM_ID>/dashboard
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.9.0
+      Authorization:
+      - "<TOKEN>"
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      date:
+      - Wed, 31 Jan 2024 09:35:57 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+      x-content-type-options:
+      - nosniff
+      x-xss-protection:
+      - 1; mode=block
+      cache-control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      pragma:
+      - no-cache
+      expires:
+      - '0'
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-frame-options:
+      - DENY
+    body:
+      encoding: UTF-8
+      string: '{"aktuell":{"stromerzeugung":{"wert":419.08099999999996,"einheit":"W"},"stromverbrauch":{"wert":660.0,"einheit":"W"},"netzeinspeisung":{"wert":0.01,"einheit":"W"},"netzbezug":{"wert":273.567,"einheit":"W"},"speicherbeladung":{"wert":29.103,"einheit":"W"},"speicherentnahme":{"wert":0.01,"einheit":"W"},"speicherfuellstand":{"wert":1.0e-05,"einheit":"%"},"autarkie":{"wert":58.77,"einheit":"%"},"wallbox":{"wert":0.01,"einheit":"W"}},"heute":{"stromerzeugung":{"wert":320.3125,"einheit":"Wh"},"stromverbrauch":{"wert":9200.0,"einheit":"Wh"},"netzeinspeisung":{"wert":0.0,"einheit":"Wh"},"netzbezug":{"wert":8779.78515625,"einheit":"Wh"},"speicherbeladung":{"wert":19.53125,"einheit":"Wh"},"speicherentnahme":{"wert":124.51171875,"einheit":"Wh"},"speicherfuellstand":{"wert":0.0,"einheit":"%"},"autarkie":{"wert":4.57,"einheit":"%"},"wallbox":{"wert":0.0,"einheit":"Wh"}},"zeitstempel":"2024-01-31T09:32:31Z","electricVehicleConnected":false}'
+  recorded_at: Wed, 31 Jan 2024 09:35:57 GMT
+recorded_with: VCR 6.2.0

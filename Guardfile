@@ -35,7 +35,7 @@ ignore(
 #  * 'just' rspec: 'rspec'
 
 guard :rspec, cmd: 'rspec --colour --format documentation --fail-fast' do
-  directories(%w[app spec])
+  directories(%w[lib spec])
 
   require 'guard/rspec/dsl'
   dsl = Guard::RSpec::Dsl.new(self)
@@ -43,7 +43,7 @@ guard :rspec, cmd: 'rspec --colour --format documentation --fail-fast' do
   # RSpec files
   rspec = dsl.rspec
   watch(rspec.spec_files)
-  watch(%r{^app/(.+)\.rb$}) { |m| "spec/#{m[1]}_spec.rb" }
+  watch(%r{^lib/(.+)\.rb$}) { |m| "spec/lib/#{m[1]}_spec.rb" }
   watch(rspec.spec_helper) { rspec.spec_dir }
   watch(rspec.spec_support) { rspec.spec_dir }
 end

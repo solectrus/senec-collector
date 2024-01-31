@@ -3,7 +3,7 @@
 .gitignore
 .env.*
 .env
-docker-compose.yml
+compose.yml
 spec
 Rakefile
 Dockerfile

@@ -10,29 +10,43 @@ AllCops:
     - 'vendor/**/*'
   NewCops: enable
 
+# Layout
+
+Layout/LineLength:
+  Max: 130
+
+Layout/LineEndStringConcatenationIndentation:
+  Enabled: false
+
+# Metrics
+
+Metrics/AbcSize:
+  Max: 18
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+
+# Style
+
 Style/Documentation:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-Metrics/MethodLength:
-  Max: 20
-
-Metrics/ClassLength:
-  Enabled: false
-
 Style/TrailingCommaInArguments:
-  EnforcedStyleForMultiline: consistent_comma
-
-Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
 
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: consistent_comma
 
-Layout/LineEndStringConcatenationIndentation:
-  Enabled: false
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+# RSpec
 
 RSpec/ExampleLength:
   Max: 20
@@ -40,8 +54,8 @@ RSpec/ExampleLength:
 RSpec/MultipleExpectations:
   Max: 3
 
-Layout/LineLength:
-  Max: 130
+RSpec/NestedGroups:
+  Max: 4
 
 RSpec/NoExpectationExample:
   Enabled: false

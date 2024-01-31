@@ -11,6 +11,9 @@ RUN bundle config --local frozen 1 && \
 FROM ruby:3.2.3-alpine
 LABEL maintainer="georg@ledermann.dev"
 
+# Add tzdata to get correct timezone
+RUN apk add --no-cache tzdata
+
 # Decrease memory usage
 ENV MALLOC_ARENA_MAX 2
 
@@ -29,4 +32,4 @@ WORKDIR /senec-collector
 COPY --from=Builder /usr/local/bundle/ /usr/local/bundle/
 COPY . /senec-collector/
 
-ENTRYPOINT bundle exec app/main.rb
+ENTRYPOINT bundle exec app.rb

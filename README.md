@@ -7,7 +7,7 @@
 
 Collect data from SENEC photovoltaics and push it to InfluxDB 2
 
-Tested with SENEC.Home V3 hybrid duo
+Allows accessing a local SENEC device (V2 + V3) as well as the SENEC cloud (V4).
 
 ## Requirements
 
@@ -20,7 +20,12 @@ Tested on:
 
 ## Getting started
 
-1. Make sure that you have a SENEC device in your house that can be reached via the LAN and an in-house Linux box
+0. Decide if you want to use the SENEC cloud or a local SENEC device. If you have a SENEC.Home 4, there is no choice - this device is cloud only.
+
+   - SENEC cloud: You need to have an account at mein-senec.de (email + password)
+   - Local SENEC device: You need to have a SENEC device in your house that can be reached via LAN
+
+1. Prepare a Linux box (Raspberry Pi, Synology NAS, ...) with Docker installed
 
 2. Make sure your InfluxDB2 database is ready (not subject of this README)
 
@@ -29,18 +34,10 @@ Tested on:
 4. Run the Docker container on your Linux box:
 
    ```bash
-   docker-compose up
+   docker compose up
    ```
 
 The Docker image support multiple platforms: `linux/amd64`, `linux/arm64`, `linux/arm/v7`
-
-## Build Docker image by yourself
-
-Example for Raspberry Pi:
-
-```bash
-docker buildx build --platform linux/arm/v7 -t senec-collector .
-```
 
 ## License
 

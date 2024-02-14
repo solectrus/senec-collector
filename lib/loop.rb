@@ -58,7 +58,7 @@ class Loop
 
       break if max_count && senec_pull.count >= max_count
 
-      sleep config.senec_interval
+      sleep_with_heartbeat
     end
   end
 
@@ -74,5 +74,22 @@ class Loop
     end
 
     queue.close
+  end
+
+  def sleep_with_heartbeat
+    start_time = Time.now
+    end_time = start_time + config.senec_interval
+
+    while Time.now < end_time
+      heartbeat
+
+      remaining_time = end_time - Time.now
+      sleep_time = [60, remaining_time].min
+      sleep(sleep_time)
+    end
+  end
+
+  def heartbeat
+    File.write('/tmp/heartbeat.txt', Time.now.to_i)
   end
 end

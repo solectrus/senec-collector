@@ -29,6 +29,10 @@ ENV REVISION ${REVISION}
 
 WORKDIR /senec-collector
 
+# The heartbeat is written at least every 60 seconds, so the container
+# is considered healthy if the last heartbeat was less than 70 seconds ago.
+HEALTHCHECK CMD test $(expr $(date +%s) - $(cat /tmp/heartbeat.txt)) -lt 70 || exit 1
+
 COPY --from=Builder /usr/local/bundle/ /usr/local/bundle/
 COPY . /senec-collector/
 

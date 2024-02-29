@@ -118,6 +118,7 @@ class LocalAdapter
     21, # OWN CONSUMPTION
     54, # ABSORPTION PHASE
     56, # PEAK-SHAVING: WAIT"
+    99, # WAKE-UP CHARGE
   ].freeze
 
   def current_state_ok

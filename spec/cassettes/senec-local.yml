@@ -810,7 +810,8 @@ http_interactions:
             95: "BATTERIEDIAGNOSE",
             96: "BALANCING",
             97: "SICHERHEITSENTLADUNG",
-            98: "BMS FEHLER - MODULUNGLEICHGEWICHT"
+            98: "BMS FEHLER - MODULUNGLEICHGEWICHT",
+            99: "AUFWACHLADUNG"
         };
 
         var system_type_name = {

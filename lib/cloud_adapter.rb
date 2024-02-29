@@ -84,7 +84,7 @@ class CloudAdapter
     Senec::Cloud::TechnicalData[connection].find(system_id)
   end
 
-  def record_hash
+  def raw_record_hash
     {
       current_state:,
       current_state_ok:,
@@ -102,6 +102,10 @@ class CloudAdapter
       case_temp:,
       application_version:,
     }.compact
+  end
+
+  def record_hash
+    raw_record_hash.except(*config.senec_ignore)
   end
 
   def dashboard_record
@@ -192,11 +196,14 @@ class CloudAdapter
   end
 
   def success_message(record)
-    "\nGot record ##{record.id} at " \
-      "#{Time.at(record.measure_time).localtime} " \
-      "#{record.current_state || 'Unknown state'}, " \
-      "Inverter #{record.inverter_power} W, House #{record.house_power} W, " \
-      "Wallbox #{record.wallbox_charge_power} W"
+    [
+      "\nGot record ##{record.id} at " \
+      "#{Time.at(record.measure_time).localtime}",
+      record.current_state || 'Unknown state',
+      ("Inverter #{record.inverter_power} W" unless config.excludes?(:inverter_power)),
+      ("House #{record.house_power} W" unless config.excludes?(:house_power)),
+      ("Wallbox #{record.wallbox_charge_power} W" unless config.excludes?(:wallbox_charge_power)),
+    ].compact.join(', ')
   end
 
   def failure_message(error)

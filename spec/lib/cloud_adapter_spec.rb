@@ -79,6 +79,23 @@ describe CloudAdapter do
       it 'has a valid case_temp' do
         expect(solectrus_record.case_temp).to be > 20
       end
+
+      context 'with senec_ignore' do
+        let(:config) do
+          Config.from_env(
+            senec_adapter: :cloud,
+            senec_ignore: 'wallbox_charge_power,house_power',
+          )
+        end
+
+        it 'removes keys for ignored fields' do
+          expect(solectrus_record.to_hash.keys).not_to include(:wallbox_charge_power, :house_power)
+        end
+
+        it 'contains others' do
+          expect(solectrus_record.to_hash.keys).to include(:inverter_power)
+        end
+      end
     end
 
     shared_examples 'a SolectrusRecord for V3' do

@@ -124,6 +124,10 @@ describe Config do
         expect(config.senec_interval).to eq(5)
       end
 
+      it 'returns default senec_ignore' do
+        expect(config.senec_ignore).to eq([])
+      end
+
       it 'returns correct adapter' do
         expect(config.adapter).to be_a(LocalAdapter)
       end
@@ -142,6 +146,42 @@ describe Config do
 
       it 'returns default senec_interval' do
         expect(config.senec_interval).to eq(60)
+      end
+
+      it 'returns default senec_ignore' do
+        expect(config.senec_ignore).to eq([])
+      end
+    end
+
+    context 'when ignoring single field' do
+      subject(:config) do
+        described_class.new(
+          valid_cloud_options.merge(senec_ignore: 'wallbox_charge_power'),
+        )
+      end
+
+      it 'returns senec_ignore with single element' do
+        expect(config.senec_ignore).to eq([:wallbox_charge_power])
+      end
+    end
+
+    context 'when ignoring multiple fields' do
+      subject(:config) do
+        described_class.new(
+          valid_cloud_options.merge(senec_ignore: 'wallbox_charge_power,house_power'),
+        )
+      end
+
+      it 'returns senec_ignore with multiple elements' do
+        expect(config.senec_ignore).to eq(%i[wallbox_charge_power house_power])
+      end
+    end
+
+    context 'when ignoring non-existing field' do
+      subject(:config) { described_class.new(valid_cloud_options.merge(senec_ignore: 'foo')) }
+
+      it 'fails' do
+        expect { config.senec_ignore }.to raise_error(Exception, /SENEC_IGNORE contains unknown field: foo/)
       end
     end
   end

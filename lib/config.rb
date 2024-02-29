@@ -13,6 +13,7 @@ KEYS = %i[
   senec_password
   senec_token
   senec_system_id
+  senec_ignore
   influx_schema
   influx_host
   influx_port
@@ -26,6 +27,7 @@ DEFAULTS = {
   senec_adapter: :local,
   senec_schema: :https,
   senec_language: :de,
+  senec_ignore: [],
   influx_schema: :http,
   influx_port: 8086,
   influx_measurement: 'SENEC',
@@ -36,30 +38,25 @@ Config =
     def initialize(*options)
       super
 
-      set_defaults_and_types
+      set_types
+      set_defaults
+      limit_senec_interval
       validate!
     end
 
-    def set_defaults_and_types
-      convert_types
-      set_defaults
-      limit_interval
-    end
-
-    def convert_types
-      # Strip blanks
+    def set_types
       KEYS.each do |key|
         self[key] = self[key].presence
-      end
+        next unless self[key]
 
-      # Symbols
-      %i[senec_adapter senec_schema senec_language influx_schema].each do |key|
-        self[key] = self[key]&.to_sym
-      end
-
-      # Integer
-      %i[senec_interval influx_port].each do |key|
-        self[key] = self[key]&.to_i
+        case key
+        when :senec_adapter, :senec_schema, :senec_language, :influx_schema
+          self[key] = self[key].to_sym
+        when :senec_interval, :influx_port
+          self[key] = self[key].to_i
+        when :senec_ignore
+          self[key] = self[key].split(',').map(&:to_sym)
+        end
       end
     end
 
@@ -71,7 +68,7 @@ Config =
       self[:senec_interval] ||= senec_adapter == :local ? 5 : 60
     end
 
-    def limit_interval
+    def limit_senec_interval
       minimum = case senec_adapter
                 when :local
                   # Be careful with your local SENEC device, do not flood it with queries.
@@ -97,7 +94,8 @@ Config =
       end
 
       validate_influx_settings!
-      validate_interval!(senec_interval)
+      validate_senec_interval!
+      validate_senec_ignore!
     end
 
     def influx_url
@@ -118,6 +116,10 @@ Config =
         end
     end
 
+    def excludes?(key)
+      senec_ignore.include?(key)
+    end
+
     attr_writer :logger
 
     def logger
@@ -130,8 +132,8 @@ Config =
       %i[local cloud].include?(senec_adapter) || throw("SENEC_ADAPTER is invalid: #{senec_adapter}")
     end
 
-    def validate_interval!(interval)
-      (interval.is_a?(Integer) && interval.positive?) || throw("SENEC_INTERVAL is invalid: #{interval}")
+    def validate_senec_interval!
+      (senec_interval.is_a?(Integer) && senec_interval.positive?) || throw("SENEC_INTERVAL is invalid: #{senec_interval}")
     end
 
     def validate_senec_credentials!
@@ -140,6 +142,12 @@ Config =
       end
 
       senec_username.include?('@') || throw('SENEC_USERNAME is invalid')
+    end
+
+    def validate_senec_ignore!
+      senec_ignore.all? do |key|
+        SolectrusRecord::KEYS.include?(key) || throw("SENEC_IGNORE contains unknown field: #{key}")
+      end
     end
 
     def validate_influx_settings!
@@ -166,24 +174,9 @@ Config =
 
     def self.from_env(options = {})
       new(
-        {
-          senec_adapter: ENV.fetch('SENEC_ADAPTER', nil),
-          senec_host: ENV.fetch('SENEC_HOST', nil),
-          senec_schema: ENV.fetch('SENEC_SCHEMA', nil),
-          senec_interval: ENV.fetch('SENEC_INTERVAL', nil),
-          senec_language: ENV.fetch('SENEC_LANGUAGE', nil),
-          senec_username: ENV.fetch('SENEC_USERNAME', nil),
-          senec_password: ENV.fetch('SENEC_PASSWORD', nil),
-          senec_token: ENV.fetch('SENEC_TOKEN', nil),
-          senec_system_id: ENV.fetch('SENEC_SYSTEM_ID', nil),
-          influx_host: ENV.fetch('INFLUX_HOST'),
-          influx_schema: ENV.fetch('INFLUX_SCHEMA', nil),
-          influx_port: ENV.fetch('INFLUX_PORT', nil),
-          influx_token: ENV.fetch('INFLUX_TOKEN'),
-          influx_org: ENV.fetch('INFLUX_ORG'),
-          influx_bucket: ENV.fetch('INFLUX_BUCKET', nil),
-          influx_measurement: ENV.fetch('INFLUX_MEASUREMENT', nil),
-        }.merge(options),
+        KEYS.to_h do |key|
+          [key, ENV.fetch(key.to_s.upcase, nil)]
+        end.merge(options),
       )
     end
   end

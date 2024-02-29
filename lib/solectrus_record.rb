@@ -10,7 +10,7 @@ class SolectrusRecord
     @payload
   end
 
-  %i[
+  KEYS = %i[
     measure_time
     case_temp
     inverter_power
@@ -36,7 +36,9 @@ class SolectrusRecord
     current_state_ok
     application_version
     response_duration
-  ].each do |method|
+  ].freeze
+
+  KEYS.each do |method|
     define_method(method) do
       @payload[method]
     end

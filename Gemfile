@@ -12,6 +12,12 @@ gem 'senec'
 # A fast JSON parser and serializer. (http://www.ohler.com/oj)
 gem 'oj'
 
+# CSV Reading and Writing (https://github.com/ruby/csv)
+gem 'csv'
+
+# Support for encoding and decoding binary data using a Base64 representation. (https://github.com/ruby/base64)
+gem 'base64'
+
 group :development do
   # Guard gem for RSpec (https://github.com/guard/guard-rspec)
   gem 'guard-rspec', require: false

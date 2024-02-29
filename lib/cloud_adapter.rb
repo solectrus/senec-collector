@@ -182,6 +182,7 @@ class CloudAdapter
     'EIGENVERBRAUCH',
     'LADESCHLUSSPHASE',
     'PEAK-SHAVING WARTEN',
+    'AUFWACHLADUNG',
   ].freeze
 
   def current_state_ok

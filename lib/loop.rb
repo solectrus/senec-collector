@@ -84,7 +84,7 @@ class Loop
       heartbeat
 
       remaining_time = end_time - Time.now
-      sleep_time = [60, remaining_time].min
+      sleep_time = remaining_time.clamp(0, 60)
       sleep(sleep_time)
     end
   end

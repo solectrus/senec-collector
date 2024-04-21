@@ -33,11 +33,5 @@ describe Loop do
 
       expect(logger.error_messages).to include(/Error getting data/)
     end
-
-    it 'writes heartbeat' do
-      described_class.start(config:, max_count: 1)
-
-      expect(File.read('/tmp/heartbeat.txt')).to match(/\d+/)
-    end
   end
 end

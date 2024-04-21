@@ -65,5 +65,22 @@ describe LocalAdapter do
       solectrus_record
       expect(logger.error_messages).to include(/Error getting data from SENEC at/)
     end
+
+    context 'with senec_ignore' do
+      let(:config) do
+        Config.from_env(
+          senec_adapter: :local,
+          senec_ignore: 'wallbox_charge_power,house_power',
+        )
+      end
+
+      it 'removes keys for ignored fields' do
+        expect(solectrus_record.to_hash.keys).not_to include(:wallbox_charge_power, :house_power)
+      end
+
+      it 'contains others' do
+        expect(solectrus_record.to_hash.keys).to include(:inverter_power, :measure_time, :current_state)
+      end
+    end
   end
 end

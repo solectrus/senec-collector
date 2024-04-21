@@ -28,6 +28,7 @@ logger.info "Using Ruby #{RUBY_VERSION} on platform #{RUBY_PLATFORM}"
 logger.info "Pushing to InfluxDB at #{config.influx_url}, " \
        "bucket #{config.influx_bucket}, " \
        "measurement #{config.influx_measurement}"
+logger.info "Ignoring: #{config.senec_ignore.join(', ')}" if config.senec_ignore.any?
 logger.info "\n"
 
 Loop.start(config:)

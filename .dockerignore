@@ -7,3 +7,8 @@ compose.yml
 spec
 Rakefile
 Dockerfile
+.dockerignore
+.rspec
+.rubocop.yml
+.vscode
+Guardfile

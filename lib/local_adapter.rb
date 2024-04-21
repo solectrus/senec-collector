@@ -45,7 +45,11 @@ class LocalAdapter
 
   private
 
-  def record_hash # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+  def record_hash
+    raw_record_hash.except(*config.senec_ignore)
+  end
+
+  def raw_record_hash # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
     {
       measure_time:,
       case_temp:,
@@ -80,12 +84,15 @@ class LocalAdapter
   end
 
   def success_message(record)
-    "\nGot record ##{record.id} at " \
+    [
+      "\nGot record ##{record.id} at " \
       "#{Time.at(record.measure_time).localtime} " \
-      "within #{record.response_duration} ms, " \
-      "#{record.current_state}, " \
-      "Inverter #{record.inverter_power} W, House #{record.house_power} W, " \
-      "Wallbox #{record.wallbox_charge_power} W"
+      "within #{record.response_duration} ms",
+      record.current_state,
+      ("Inverter #{record.inverter_power} W" unless config.excludes?(:inverter_power)),
+      ("House #{record.house_power} W" unless config.excludes?(:house_power)),
+      ("Wallbox #{record.wallbox_charge_power} W" unless config.excludes?(:wallbox_charge_power)),
+    ].compact.join(', ')
   end
 
   def failure_message(error)

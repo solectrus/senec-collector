@@ -5,7 +5,7 @@
 
 # SENEC collector
 
-Collect data from SENEC photovoltaics and push it to InfluxDB 2
+Collect data from SENEC Solar Battery Storage System and push it to InfluxDB 2
 
 Allows accessing a local SENEC device (V2 + V3) as well as the SENEC cloud (V4).
 
@@ -15,8 +15,9 @@ Linux machine with Docker installed
 
 Tested on:
 
-- Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster) and 11 (bullseye)
-- Synology NAS DS220+ on DSM 7.1
+- Raspberry Pi 4 Model B on Raspbian GNU/Linux 10 (buster) and 11 (bullseye) and 12 (bookworm)
+- Synology NAS DS220+ on DSM 7.1+
+- ... and lots of other Linux machines - if it runs Docker, it should work
 
 ## Getting started
 

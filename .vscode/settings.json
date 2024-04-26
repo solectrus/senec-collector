@@ -1,7 +1,0 @@
-{
-  "ruby.lint": {
-    "rubocop": {
-      "forceExclusion": true
-    }
-  }
-}

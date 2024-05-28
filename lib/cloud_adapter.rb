@@ -176,6 +176,7 @@ class CloudAdapter
   end
 
   # In German, because this seams to be language of the SENEC cloud
+  # TODO: Maybe it is better to check for severity == 'INFO'
   OK_STATES = [
     'AKKU VOLL',
     'LADEN',
@@ -185,6 +186,7 @@ class CloudAdapter
     'NETZ UND ENTLADEN',
     'EIGENVERBRAUCH',
     'LADESCHLUSSPHASE',
+    'PEAK SHAVING',
     'PEAK-SHAVING WARTEN',
     'AUFWACHLADUNG',
   ].freeze

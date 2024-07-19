@@ -124,8 +124,7 @@ class LocalAdapter
     18, # GRID + DISCHARGE
     21, # OWN CONSUMPTION
     54, # ABSORPTION PHASE
-    56, # PEAK-SHAVING: WAIT"
-    99, # WAKE-UP CHARGE
+    56, # PEAK-SHAVING: WAIT
   ].freeze
 
   def current_state_ok

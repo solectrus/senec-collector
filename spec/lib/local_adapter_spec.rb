@@ -40,6 +40,13 @@ describe LocalAdapter do
       expect(logger.info_messages).to include('Getting state names (language: de) from SENEC by parsing source code...')
       expect(logger.info_messages).to include('OK, got 99 state names')
     end
+
+    it 'handles errors' do
+      allow(Senec::Local::State).to receive(:new).and_raise(StandardError)
+
+      (0..98).each { |i| expect(state_names[i]).to eq(i.to_s) }
+      expect(logger.error_messages).to include(/Failed: StandardError/)
+    end
   end
 
   describe '#solectrus_record', vcr: 'senec-local' do

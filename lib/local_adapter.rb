@@ -28,6 +28,11 @@ class LocalAdapter
         )
       logger.info "OK, got #{names.length} state names"
       names
+    rescue StandardError => e
+      logger.error "Failed: #{e}"
+
+      # Return a default hash which just mirrors each key
+      Hash.new { |_, key| key.to_s }
     end
   end
 

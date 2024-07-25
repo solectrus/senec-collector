@@ -14,7 +14,7 @@ GEM
       rexml
     csv (3.3.0)
     diff-lcs (1.5.1)
-    docile (1.4.0)
+    docile (1.4.1)
     dotenv (3.1.2)
     faraday (2.10.0)
       faraday-net_http (>= 2.0, < 3.2)

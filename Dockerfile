@@ -1,4 +1,4 @@
-FROM ruby:3.3.4-alpine AS Builder
+FROM ruby:3.3.4-alpine AS builder
 RUN apk add --no-cache build-base
 
 WORKDIR /senec-collector
@@ -15,21 +15,21 @@ LABEL maintainer="georg@ledermann.dev"
 RUN apk add --no-cache tzdata
 
 # Decrease memory usage
-ENV MALLOC_ARENA_MAX 2
+ENV MALLOC_ARENA_MAX=2
 
 # Move build arguments to environment variables
 ARG BUILDTIME
-ENV BUILDTIME ${BUILDTIME}
+ENV BUILDTIME=${BUILDTIME}
 
 ARG VERSION
-ENV VERSION ${VERSION}
+ENV VERSION=${VERSION}
 
 ARG REVISION
-ENV REVISION ${REVISION}
+ENV REVISION=${REVISION}
 
 WORKDIR /senec-collector
 
-COPY --from=Builder /usr/local/bundle/ /usr/local/bundle/
+COPY --from=builder /usr/local/bundle/ /usr/local/bundle/
 COPY . /senec-collector/
 
-ENTRYPOINT bundle exec app.rb
+ENTRYPOINT ["bundle", "exec", "app.rb"]

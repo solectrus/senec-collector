@@ -8,7 +8,7 @@ http_interactions:
       string: '{"username":"<SENEC_USERNAME>","password":"<SENEC_PASSWORD>"}'
     headers:
       User-Agent:
-      - Faraday v2.9.0
+      - Faraday v2.10.0
       Content-Type:
       - application/json
   response:
@@ -17,7 +17,7 @@ http_interactions:
       message: ''
     headers:
       date:
-      - Tue, 30 Jan 2024 09:18:08 GMT
+      - Sat, 27 Jul 2024 06:37:25 GMT
       content-type:
       - application/json
       transfer-encoding:
@@ -37,13 +37,13 @@ http_interactions:
       expires:
       - '0'
       strict-transport-security:
-      - max-age=15724800; includeSubDomains
+      - max-age=31536000; includeSubDomains
       x-frame-options:
       - DENY
     body:
       encoding: UTF-8
       string: '{"token":"<TOKEN>","refreshToken":""}'
-  recorded_at: Tue, 30 Jan 2024 09:18:08 GMT
+  recorded_at: Sat, 27 Jul 2024 06:37:25 GMT
 - request:
     method: get
     uri: https://app-gateway.prod.senec.dev/v1/senec/systems/<SENEC_SYSTEM_ID>/technical-data
@@ -52,7 +52,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v2.9.0
+      - Faraday v2.10.0
       Authorization:
       - "<TOKEN>"
   response:
@@ -61,7 +61,7 @@ http_interactions:
       message: ''
     headers:
       date:
-      - Tue, 30 Jan 2024 09:18:09 GMT
+      - Sat, 27 Jul 2024 06:37:26 GMT
       content-type:
       - application/json
       transfer-encoding:
@@ -81,13 +81,13 @@ http_interactions:
       expires:
       - '0'
       strict-transport-security:
-      - max-age=15724800; includeSubDomains
+      - max-age=31536000; includeSubDomains
       x-frame-options:
       - DENY
     body:
       encoding: UTF-8
-      string: '{"systemOverview":{"systemId":"<FILTERED>","productName":"<FILTERED>","installationDate":"<FILTERED>"},"casing":{"serial":"<FILTERED>","temperatureInCelsius":32.97578811645508},"mcu":{"mainControllerSerial":"<FILTERED>","mainControllerState":{"name":"AKKU_LEER","severity":"INFO"},"firmwareVersion":"826","guiVersion":966},"warranty":{"endDate":"<FILTERED>","warrantyTermInMonths":"<FILTERED>"},"batteryModules":[{"ordinal":1,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":27.0,"maxTemperature":30.0,"lastContact":{"time":1706606011000,"severity":"INFO"},"flags":[{"flag":"EMPTY","severity":"INFO"}]},{"ordinal":2,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":27.0,"maxTemperature":30.0,"lastContact":{"time":1706606011000,"severity":"INFO"},"flags":[{"flag":"EMPTY","severity":"INFO"}]},{"ordinal":3,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":28.0,"maxTemperature":30.0,"lastContact":{"time":1706606011000,"severity":"INFO"},"flags":[{"flag":"EMPTY","severity":"INFO"}]},{"ordinal":4,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":28.0,"maxTemperature":31.0,"lastContact":{"time":1706606011000,"severity":"INFO"},"flags":[{"flag":"EMPTY","severity":"INFO"}]}],"batteryInverter":{"state":{"name":"RUN_GRID","severity":"INFO"},"vendor":"SENEC_INVERTER_V3_LV","firmware":{"firmwareVersion":null,"firmwareVersionHumanMachineInterface":"3.16.20","firmwareVersionPowerUnit":"4.3.10","firmwareVersionBidirectionalDcConverter":"5.4.6"},"temperatures":{"amb":40.0,"halfBridge1":null,"halfBridge2":null,"throttle":null,"max":46.0},"lastContact":{"time":1706606010000,"severity":"INFO"},"flags":[]},"batteryPack":{"numberOfBatteryModules":4,"technology":"LITHIUM_ION","maxCapacityInKwh":10.0,"maxChargingPowerInKw":2.5,"maxDischargingPowerInKw":3.75,"currentChargingLevelInPercent":0.0,"currentVoltageInV":45.959999084472656,"currentCurrentInA":-1.1299999952316284,"remainingCapacityInPercent":98.0},"installer":{"companyName":"<FILTERED>","email":"<FILTERED>","phoneNumber":"<FILTERED>","address":{"street":"<FILTERED>","houseNumber":"<FILTERED>","postcode":"<FILTERED>","city":"<FILTERED>","countryCode":"DE","region":"<FILTERED>","longitude":"<FILTERED>","latitude":"<FILTERED>","timezone":"Europe/Berlin"},"onlineMonitoringAllowed":true,"website":"<FILTERED>"},"slaveSystemInfoDtos":[]}'
-  recorded_at: Tue, 30 Jan 2024 09:18:09 GMT
+      string: '{"systemOverview":{"systemId":"<FILTERED>","hid":null,"productName":"<FILTERED>","installationDate":"<FILTERED>"},"casing":{"serial":"<FILTERED>","temperatureInCelsius":36.26167678833008},"mcu":{"mainControllerSerial":"<FILTERED>","mainControllerState":{"name":"PV_UND_ENTLADEN","severity":"INFO"},"firmwareVersion":"826","guiVersion":966},"warranty":{"endDate":"<FILTERED>","warrantyTermInMonths":"<FILTERED>"},"batteryModules":[{"ordinal":1,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":26.0,"maxTemperature":28.0,"lastContact":{"time":1722062024000,"timestamp":"2024-07-27T06:33:44Z","severity":"INFO"},"flags":[]},{"ordinal":2,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":26.0,"maxTemperature":28.0,"lastContact":{"time":1722062024000,"timestamp":"2024-07-27T06:33:44Z","severity":"INFO"},"flags":[]},{"ordinal":3,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":27.0,"maxTemperature":29.0,"lastContact":{"time":1722062024000,"timestamp":"2024-07-27T06:33:44Z","severity":"INFO"},"flags":[]},{"ordinal":4,"state":{"state":"OK","severity":"INFO"},"vendor":"BMZ","serialNumber":"<FILTERED>","firmwareVersion":"1.96.37","mainboardHardwareVersion":"1001","mainboardExtensionHardwareVersion":"1","minTemperature":27.0,"maxTemperature":30.0,"lastContact":{"time":1722062024000,"timestamp":"2024-07-27T06:33:44Z","severity":"INFO"},"flags":[]}],"batteryInverter":{"state":{"name":null,"severity":null},"vendor":null,"firmware":{"firmwareVersion":null,"firmwareVersionHumanMachineInterface":null,"firmwareVersionPowerUnit":null,"firmwareVersionBidirectionalDcConverter":null},"temperatures":{"amb":null,"halfBridge1":null,"halfBridge2":null,"throttle":null,"max":null},"lastContact":{"time":61675682400000,"timestamp":"3924-06-04T22:00:00Z","severity":"ERROR"},"flags":[]},"batteryPack":{"numberOfBatteryModules":4,"technology":"LITHIUM_ION","maxCapacityInKwh":10.0,"maxChargingPowerInKw":2.5,"maxDischargingPowerInKw":3.75,"currentChargingLevelInPercent":76.76766967773438,"currentVoltageInV":54.665000915527344,"currentCurrentInA":-11.720000267028809,"remainingCapacityInPercent":99.0},"installer":{"companyName":"<FILTERED>","email":"<FILTERED>","phoneNumber":"<FILTERED>","address":{"street":"<FILTERED>","houseNumber":"<FILTERED>","postcode":"<FILTERED>","city":"<FILTERED>","countryCode":"DE","region":"<FILTERED>","longitude":"<FILTERED>","latitude":"<FILTERED>","timezone":"Europe/Berlin"},"onlineMonitoringAllowed":true,"website":"<FILTERED>"},"slaveSystemInfoDtos":[]}'
+  recorded_at: Sat, 27 Jul 2024 06:37:26 GMT
 - request:
     method: get
     uri: https://app-gateway.prod.senec.dev/v1/senec/systems/<SENEC_SYSTEM_ID>/dashboard
@@ -96,7 +96,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v2.9.0
+      - Faraday v2.10.0
       Authorization:
       - "<TOKEN>"
   response:
@@ -105,7 +105,7 @@ http_interactions:
       message: ''
     headers:
       date:
-      - Tue, 30 Jan 2024 09:18:11 GMT
+      - Sat, 27 Jul 2024 06:37:27 GMT
       content-type:
       - application/json
       transfer-encoding:
@@ -125,11 +125,11 @@ http_interactions:
       expires:
       - '0'
       strict-transport-security:
-      - max-age=15724800; includeSubDomains
+      - max-age=31536000; includeSubDomains
       x-frame-options:
       - DENY
     body:
       encoding: UTF-8
-      string: '{"aktuell":{"stromerzeugung":{"wert":508.84,"einheit":"W"},"stromverbrauch":{"wert":800.0,"einheit":"W"},"netzeinspeisung":{"wert":0.01,"einheit":"W"},"netzbezug":{"wert":271.767,"einheit":"W"},"speicherbeladung":{"wert":0.01,"einheit":"W"},"speicherentnahme":{"wert":57.823,"einheit":"W"},"speicherfuellstand":{"wert":1.0e-05,"einheit":"%"},"autarkie":{"wert":66.43,"einheit":"%"},"wallbox":{"wert":0.01,"einheit":"W"}},"heute":{"stromerzeugung":{"wert":402.34375,"einheit":"Wh"},"stromverbrauch":{"wert":6800.0,"einheit":"Wh"},"netzeinspeisung":{"wert":91.796875,"einheit":"Wh"},"netzbezug":{"wert":3049.31640625,"einheit":"Wh"},"speicherbeladung":{"wert":13.18359375,"einheit":"Wh"},"speicherentnahme":{"wert":3466.30859375,"einheit":"Wh"},"speicherfuellstand":{"wert":9.844344139099121,"einheit":"%"},"autarkie":{"wert":55.22,"einheit":"%"},"wallbox":{"wert":0.0,"einheit":"Wh"}},"zeitstempel":"2024-01-30T09:13:31Z","electricVehicleConnected":false}'
-  recorded_at: Tue, 30 Jan 2024 09:18:11 GMT
+      string: '{"aktuell":{"stromerzeugung":{"wert":698.469,"einheit":"W"},"stromverbrauch":{"wert":1210.0,"einheit":"W"},"netzeinspeisung":{"wert":0.01,"einheit":"W"},"netzbezug":{"wert":5.821,"einheit":"W"},"speicherbeladung":{"wert":0.01,"einheit":"W"},"speicherentnahme":{"wert":529.672,"einheit":"W"},"speicherfuellstand":{"wert":76.76766967773438,"einheit":"%"},"autarkie":{"wert":99.52,"einheit":"%"},"wallbox":{"wert":0.01,"einheit":"W"}},"heute":{"stromerzeugung":{"wert":847.65625,"einheit":"Wh"},"stromverbrauch":{"wert":2700.0,"einheit":"Wh"},"netzeinspeisung":{"wert":111.328125,"einheit":"Wh"},"netzbezug":{"wert":87.890625,"einheit":"Wh"},"speicherbeladung":{"wert":130.37109375,"einheit":"Wh"},"speicherentnahme":{"wert":2009.765625,"einheit":"Wh"},"speicherfuellstand":{"wert":86.12336730957031,"einheit":"%"},"autarkie":{"wert":96.75,"einheit":"%"},"wallbox":{"wert":0.0,"einheit":"Wh"}},"zeitstempel":"2024-07-27T06:33:44Z","electricVehicleConnected":false}'
+  recorded_at: Sat, 27 Jul 2024 06:37:27 GMT
 recorded_with: VCR 6.2.0

@@ -19,7 +19,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Fri, 19 Jul 2024 03:34:39 GMT
+      - Sat, 27 Jul 2024 06:37:31 GMT
       content-type:
       - application/javascript; charset=utf-8
       content-length:
@@ -1144,7 +1144,7 @@ http_interactions:
             2: "NMC",
             3: "NCA-B"
         };
-  recorded_at: Fri, 19 Jul 2024 03:34:39 GMT
+  recorded_at: Sat, 27 Jul 2024 06:37:31 GMT
 - request:
     method: post
     uri: https://<SENEC_HOST>/lala.cgi
@@ -1168,7 +1168,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Fri, 19 Jul 2024 03:34:39 GMT
+      - Sat, 27 Jul 2024 06:37:31 GMT
       content-type:
       - application/json; charset=utf-8
       transfer-encoding:
@@ -1177,6 +1177,6 @@ http_interactions:
       - keep-alive
     body:
       encoding: UTF-8
-      string: '{"ENERGY":{"STAT_STATE":"u8_12","GUI_BAT_DATA_CURRENT":"fl_C0CA3D71","GUI_BAT_DATA_FUEL_CHARGE":"fl_428F6F31","GUI_BAT_DATA_POWER":"fl_C3AB15DC","GUI_BAT_DATA_VOLTAGE":"fl_42589062","GUI_GRID_POW":"fl_3F4CCCCC","GUI_HOUSE_POW":"fl_43AB7C42","GUI_INVERTER_POWER":"fl_80000000","STAT_HOURS_OF_OPERATION":"u3_00007CEE"},"WIZARD":{"APPLICATION_VERSION":"st_0826"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_6699FAEF"},"PV1":{"MPP_POWER":["fl_00000000","fl_00000000","fl_00000000"],"POWER_RATIO":"fl_42C80000"},"TEMPMEASURE":{"CASE_TEMP":"fl_4204AB06"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"]}}'
-  recorded_at: Fri, 19 Jul 2024 03:34:39 GMT
+      string: '{"ENERGY":{"STAT_STATE":"u8_11","GUI_BAT_DATA_CURRENT":"fl_C12E147B","GUI_BAT_DATA_FUEL_CHARGE":"fl_429783E0","GUI_BAT_DATA_POWER":"fl_C41474FC","GUI_BAT_DATA_VOLTAGE":"fl_425A851F","GUI_GRID_POW":"fl_C1A5851E","GUI_HOUSE_POW":"fl_44C7C973","GUI_INVERTER_POWER":"fl_4480138E","STAT_HOURS_OF_OPERATION":"u3_00007DB1"},"WIZARD":{"APPLICATION_VERSION":"st_0826"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_66A4B1CC"},"PV1":{"MPP_POWER":["fl_43FEF2F2","fl_00000000","fl_4400ADA2"],"POWER_RATIO":"fl_42C80000"},"TEMPMEASURE":{"CASE_TEMP":"fl_420D6BE0"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"]}}'
+  recorded_at: Sat, 27 Jul 2024 06:37:31 GMT
 recorded_with: VCR 6.2.0

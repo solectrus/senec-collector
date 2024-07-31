@@ -113,7 +113,7 @@ GEM
     rubocop-rspec (3.0.3)
       rubocop (~> 1.61)
     ruby-progressbar (1.13.0)
-    senec (0.15.0)
+    senec (0.16.0)
       faraday
       faraday-net_http_persistent
       faraday-request-timer

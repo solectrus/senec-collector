@@ -30,15 +30,22 @@ describe LocalAdapter do
 
     it { is_expected.to be_a(Hash) }
 
-    it 'has keys from 0..99' do
-      expect(state_names.keys.sort).to eq((0..99).to_a)
+    it 'has keys from 0..98' do
+      expect(state_names.keys.sort).to eq((0..98).to_a)
     end
 
     it 'writes messages' do
       state_names
 
       expect(logger.info_messages).to include('Getting state names (language: de) from SENEC by parsing source code...')
-      expect(logger.info_messages).to include('OK, got 100 state names')
+      expect(logger.info_messages).to include('OK, got 99 state names')
+    end
+
+    it 'handles errors' do
+      allow(Senec::Local::State).to receive(:new).and_raise(StandardError)
+
+      (0..98).each { |i| expect(state_names[i]).to eq(i.to_s) }
+      expect(logger.error_messages).to include(/Failed: StandardError/)
     end
   end
 

@@ -5,15 +5,16 @@ http_interactions:
     uri: http://<INFLUX_HOST>:8086/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
     body:
       encoding: UTF-8
-      string: my-pv-measurement application_version="0826",bat_charge_current=9.1,bat_fuel_charge=0.0,bat_power_minus=0i,bat_power_plus=427i,bat_voltage=46.8,case_temp=35.2,current_state="LADEN",current_state_code=14i,current_state_ok=true,grid_power_minus=0i,grid_power_plus=165i,house_power=808i,inverter_power=1070i,measure_time=1706091385i,mpp1_power=528i,mpp2_power=0i,mpp3_power=542i,power_ratio=100.0,response_duration=8i,wallbox_charge_power=0i,wallbox_charge_power0=0i,wallbox_charge_power1=0i,wallbox_charge_power2=0i,wallbox_charge_power3=0i
-        1706091385
+      string: my-pv-measurement application_version="0826",bat_charge_current=-10.9,bat_fuel_charge=75.8,bat_power_minus=594i,bat_power_plus=0i,bat_voltage=54.6,case_temp=35.4,current_state="PV
+        + ENTLADEN",current_state_code=17i,current_state_ok=true,grid_power_minus=21i,grid_power_plus=0i,house_power=1598i,inverter_power=1025i,measure_time=1722062252i,mpp1_power=510i,mpp2_power=0i,mpp3_power=515i,power_ratio=100.0,response_duration=9i,wallbox_charge_power=0i,wallbox_charge_power0=0i,wallbox_charge_power1=0i,wallbox_charge_power2=0i,wallbox_charge_power3=0i
+        1722062252
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
       User-Agent:
-      - influxdb-client-ruby/3.0.0
+      - influxdb-client-ruby/3.1.0
       Authorization:
       - Token <INFLUX_TOKEN>
       Content-Type:
@@ -26,11 +27,11 @@ http_interactions:
       X-Influxdb-Build:
       - OSS
       X-Influxdb-Version:
-      - v2.7.5
+      - v2.7.8
       Date:
-      - Wed, 24 Jan 2024 10:16:24 GMT
+      - Sat, 27 Jul 2024 06:37:31 GMT
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Wed, 24 Jan 2024 10:16:24 GMT
+  recorded_at: Sat, 27 Jul 2024 06:37:31 GMT
 recorded_with: VCR 6.2.0

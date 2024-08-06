@@ -10,7 +10,7 @@ http_interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Faraday v2.9.0
+      - Faraday v2.10.0
   response:
     status:
       code: 200
@@ -19,7 +19,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Tue, 30 Jan 2024 09:23:04 GMT
+      - Sat, 27 Jul 2024 06:37:31 GMT
       content-type:
       - application/javascript; charset=utf-8
       content-length:
@@ -810,8 +810,7 @@ http_interactions:
             95: "BATTERIEDIAGNOSE",
             96: "BALANCING",
             97: "SICHERHEITSENTLADUNG",
-            98: "BMS FEHLER - MODULUNGLEICHGEWICHT",
-            99: "AUFWACHLADUNG"
+            98: "BMS FEHLER - MODULUNGLEICHGEWICHT"
         };
 
         var system_type_name = {
@@ -1145,7 +1144,7 @@ http_interactions:
             2: "NMC",
             3: "NCA-B"
         };
-  recorded_at: Tue, 30 Jan 2024 09:23:04 GMT
+  recorded_at: Sat, 27 Jul 2024 06:37:31 GMT
 - request:
     method: post
     uri: https://<SENEC_HOST>/lala.cgi
@@ -1156,7 +1155,7 @@ http_interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Faraday v2.9.0
+      - Faraday v2.10.0
       Content-Type:
       - application/x-www-form-urlencoded; charset=UTF-8
       Accept:
@@ -1169,7 +1168,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Tue, 30 Jan 2024 09:23:04 GMT
+      - Sat, 27 Jul 2024 06:37:31 GMT
       content-type:
       - application/json; charset=utf-8
       transfer-encoding:
@@ -1178,6 +1177,6 @@ http_interactions:
       - keep-alive
     body:
       encoding: UTF-8
-      string: '{"ENERGY":{"STAT_STATE":"u8_0F","GUI_BAT_DATA_CURRENT":"fl_BE947AE1","GUI_BAT_DATA_FUEL_CHARGE":"fl_00000000","GUI_BAT_DATA_POWER":"fl_C1552FED","GUI_BAT_DATA_VOLTAGE":"fl_4237C9BA","GUI_GRID_POW":"fl_43E1E28F","GUI_HOUSE_POW":"fl_445E9251","GUI_INVERTER_POWER":"fl_43D49894","STAT_HOURS_OF_OPERATION":"u3_00006CDE"},"WIZARD":{"APPLICATION_VERSION":"st_0826"},"RTC":{"UTC_OFFSET":"i3_0000003C","WEB_TIME":"u3_65B8CE09"},"PV1":{"MPP_POWER":["fl_43585646","fl_00000000","fl_4350DAE2"],"POWER_RATIO":"fl_42C80000"},"TEMPMEASURE":{"CASE_TEMP":"fl_4204E5F3"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"]}}'
-  recorded_at: Tue, 30 Jan 2024 09:23:04 GMT
+      string: '{"ENERGY":{"STAT_STATE":"u8_11","GUI_BAT_DATA_CURRENT":"fl_C12E147B","GUI_BAT_DATA_FUEL_CHARGE":"fl_429783E0","GUI_BAT_DATA_POWER":"fl_C41474FC","GUI_BAT_DATA_VOLTAGE":"fl_425A851F","GUI_GRID_POW":"fl_C1A5851E","GUI_HOUSE_POW":"fl_44C7C973","GUI_INVERTER_POWER":"fl_4480138E","STAT_HOURS_OF_OPERATION":"u3_00007DB1"},"WIZARD":{"APPLICATION_VERSION":"st_0826"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_66A4B1CC"},"PV1":{"MPP_POWER":["fl_43FEF2F2","fl_00000000","fl_4400ADA2"],"POWER_RATIO":"fl_42C80000"},"TEMPMEASURE":{"CASE_TEMP":"fl_420D6BE0"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"]}}'
+  recorded_at: Sat, 27 Jul 2024 06:37:31 GMT
 recorded_with: VCR 6.2.0

@@ -63,7 +63,7 @@ GEM
     oj (3.16.4)
       bigdecimal (>= 3.0)
     parallel (1.25.1)
-    parser (3.3.4.0)
+    parser (3.3.4.1)
       ast (~> 2.4.1)
       racc
     pry (0.14.2)

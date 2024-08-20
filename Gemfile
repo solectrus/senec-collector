@@ -48,9 +48,6 @@ group :development, :test do
   # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests. (https://benoittgt.github.io/vcr)
   gem 'vcr'
 
-  # Perform multipart-post requests using Faraday. (https://github.com/lostisland/faraday-multipart)
-  gem 'faraday-multipart'
-
   # Library for stubbing HTTP requests in Ruby. (https://github.com/bblimke/webmock)
   gem 'webmock'
 

@@ -19,7 +19,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Wed, 21 Aug 2024 05:46:22 GMT
+      - Fri, 23 Aug 2024 10:17:49 GMT
       content-type:
       - application/javascript; charset=utf-8
       content-length:
@@ -1144,13 +1144,13 @@ http_interactions:
             2: "NMC",
             3: "NCA-B"
         };
-  recorded_at: Wed, 21 Aug 2024 05:46:22 GMT
+  recorded_at: Fri, 23 Aug 2024 10:17:49 GMT
 - request:
     method: post
     uri: https://<SENEC_HOST>/lala.cgi
     body:
       encoding: UTF-8
-      string: '{"ENERGY":{"STAT_STATE":"","GUI_BAT_DATA_CURRENT":"","GUI_BAT_DATA_FUEL_CHARGE":"","GUI_BAT_DATA_POWER":"","GUI_BAT_DATA_VOLTAGE":"","GUI_GRID_POW":"","GUI_HOUSE_POW":"","GUI_INVERTER_POWER":"","STAT_HOURS_OF_OPERATION":""},"WIZARD":{"APPLICATION_VERSION":""},"RTC":{"UTC_OFFSET":"","WEB_TIME":""},"PV1":{"MPP_POWER":"","POWER_RATIO":""},"TEMPMEASURE":{"CASE_TEMP":""},"WALLBOX":{"APPARENT_CHARGING_POWER":""}}'
+      string: '{"ENERGY":{"STAT_STATE":"","GUI_BAT_DATA_CURRENT":"","GUI_BAT_DATA_FUEL_CHARGE":"","GUI_BAT_DATA_POWER":"","GUI_BAT_DATA_VOLTAGE":"","GUI_GRID_POW":"","GUI_HOUSE_POW":"","GUI_INVERTER_POWER":"","STAT_HOURS_OF_OPERATION":""},"WIZARD":{"APPLICATION_VERSION":""},"RTC":{"UTC_OFFSET":"","WEB_TIME":""},"PV1":{"MPP_POWER":"","POWER_RATIO":""},"TEMPMEASURE":{"CASE_TEMP":""},"WALLBOX":{"APPARENT_CHARGING_POWER":"","EV_CONNECTED":""}}'
     headers:
       Connection:
       - keep-alive
@@ -1168,7 +1168,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Wed, 21 Aug 2024 05:46:22 GMT
+      - Fri, 23 Aug 2024 10:17:49 GMT
       content-type:
       - application/json; charset=utf-8
       transfer-encoding:
@@ -1177,6 +1177,6 @@ http_interactions:
       - keep-alive
     body:
       encoding: UTF-8
-      string: '{"ENERGY":{"STAT_STATE":"u8_38","GUI_BAT_DATA_CURRENT":"fl_3F9851EC","GUI_BAT_DATA_FUEL_CHARGE":"fl_427676F2","GUI_BAT_DATA_POWER":"fl_427D6AE8","GUI_BAT_DATA_VOLTAGE":"fl_4254F3B6","GUI_GRID_POW":"fl_C129EB85","GUI_HOUSE_POW":"fl_4386015C","GUI_INVERTER_POWER":"fl_43AAFE15","STAT_HOURS_OF_OPERATION":"u3_00008008"},"WIZARD":{"APPLICATION_VERSION":"st_0826"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_66C59B4E"},"PV1":{"MPP_POWER":["fl_432D851F","fl_00000000","fl_4328770B"],"POWER_RATIO":"fl_42C80000"},"TEMPMEASURE":{"CASE_TEMP":"fl_420142CD"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"]}}'
-  recorded_at: Wed, 21 Aug 2024 05:46:22 GMT
+      string: '{"ENERGY":{"STAT_STATE":"u8_0E","GUI_BAT_DATA_CURRENT":"fl_4239E148","GUI_BAT_DATA_FUEL_CHARGE":"fl_42875A81","GUI_BAT_DATA_POWER":"fl_451EA824","GUI_BAT_DATA_VOLTAGE":"fl_425A8106","GUI_GRID_POW":"fl_C54E628F","GUI_HOUSE_POW":"fl_4447C658","GUI_INVERTER_POWER":"fl_45CF6C36","STAT_HOURS_OF_OPERATION":"u3_0000803D"},"WIZARD":{"APPLICATION_VERSION":"st_0826"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_66C87DF0"},"PV1":{"MPP_POWER":["fl_45552C15","fl_00000000","fl_4549AC57"],"POWER_RATIO":"fl_42C80000"},"TEMPMEASURE":{"CASE_TEMP":"fl_420D10EE"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"],"EV_CONNECTED":["u8_00","u8_00","u8_00","u8_00"]}}'
+  recorded_at: Fri, 23 Aug 2024 10:17:49 GMT
 recorded_with: VCR 6.3.1

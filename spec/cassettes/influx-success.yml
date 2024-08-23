@@ -5,9 +5,8 @@ http_interactions:
     uri: http://<INFLUX_HOST>:8086/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
     body:
       encoding: UTF-8
-      string: 'my-pv-measurement application_version="0826",bat_charge_current=1.2,bat_fuel_charge=61.6,bat_power_minus=0i,bat_power_plus=63i,bat_voltage=53.2,case_temp=32.3,current_state="PEAK-SHAVING:
-        WARTEN",current_state_code=56i,current_state_ok=true,grid_power_minus=11i,grid_power_plus=0i,house_power=268i,inverter_power=342i,measure_time=1724219182i,mpp1_power=174i,mpp2_power=0i,mpp3_power=169i,power_ratio=100.0,response_duration=8i,wallbox_charge_power=0i,wallbox_charge_power0=0i,wallbox_charge_power1=0i,wallbox_charge_power2=0i,wallbox_charge_power3=0i
-        1724219182'
+      string: my-pv-measurement application_version="0826",bat_charge_current=46.5,bat_fuel_charge=67.7,bat_power_minus=0i,bat_power_plus=2539i,bat_voltage=54.6,case_temp=35.3,current_state="LADEN",current_state_code=14i,current_state_ok=true,ev_connected=false,grid_power_minus=3302i,grid_power_plus=0i,house_power=799i,inverter_power=6638i,measure_time=1724408272i,mpp1_power=3411i,mpp2_power=0i,mpp3_power=3227i,power_ratio=100.0,response_duration=0i,wallbox_charge_power=0i,wallbox_charge_power0=0i,wallbox_charge_power1=0i,wallbox_charge_power2=0i,wallbox_charge_power3=0i
+        1724408272
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -29,9 +28,9 @@ http_interactions:
       X-Influxdb-Version:
       - v2.7.10
       Date:
-      - Wed, 21 Aug 2024 05:46:22 GMT
+      - Fri, 23 Aug 2024 10:41:22 GMT
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Wed, 21 Aug 2024 05:46:22 GMT
+  recorded_at: Fri, 23 Aug 2024 10:41:22 GMT
 recorded_with: VCR 6.3.1

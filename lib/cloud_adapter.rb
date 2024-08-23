@@ -99,6 +99,7 @@ class CloudAdapter
       bat_charge_current:,
       bat_voltage:,
       wallbox_charge_power:,
+      ev_connected:,
       case_temp:,
       application_version:,
     }.compact
@@ -130,6 +131,10 @@ class CloudAdapter
 
   def wallbox_charge_power
     dashboard_record.dig('aktuell', 'wallbox', 'wert')&.round
+  end
+
+  def ev_connected
+    dashboard_record['electricVehicleConnected'] == 'true'
   end
 
   def grid_power_minus

@@ -69,6 +69,7 @@ class LocalAdapter
       bat_fuel_charge:,
       bat_charge_current:,
       bat_voltage:,
+      ev_connected:,
       wallbox_charge_power:,
       wallbox_charge_power0: wallbox_charge_power(0),
       wallbox_charge_power1: wallbox_charge_power(1),
@@ -186,6 +187,10 @@ class LocalAdapter
 
   def bat_voltage
     data.bat_voltage
+  end
+
+  def ev_connected
+    data.ev_connected.any?(&:positive?)
   end
 
   def wallbox_charge_power(index = nil)

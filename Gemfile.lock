@@ -141,6 +141,7 @@ PLATFORMS
 
 DEPENDENCIES
   amazing_print
+  base64
   csv
   dotenv
   guard-rspec

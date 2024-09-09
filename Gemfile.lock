@@ -55,7 +55,7 @@ GEM
     nenv (0.3.0)
     net-http (0.4.1)
       uri
-    net-http-persistent (4.0.2)
+    net-http-persistent (4.0.4)
       connection_pool (~> 2.2)
     notiffany (0.1.3)
       nenv (~> 0.1)

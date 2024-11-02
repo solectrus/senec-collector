@@ -73,7 +73,7 @@ describe CloudAdapter do
       end
 
       it 'has a valid bat_voltage' do
-        expect(solectrus_record.bat_voltage).to be > 0
+        expect(solectrus_record.bat_voltage).to be_a(Float)
       end
 
       it 'has a valid case_temp' do

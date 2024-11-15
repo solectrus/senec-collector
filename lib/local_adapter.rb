@@ -131,6 +131,7 @@ class LocalAdapter
     21, # OWN CONSUMPTION
     54, # ABSORPTION PHASE
     56, # PEAK-SHAVING: WAIT
+    88, # DISCHARGE PROHIBITED
     89, # SPARE CAPACITY
   ].freeze
 

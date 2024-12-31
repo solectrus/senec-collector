@@ -27,7 +27,7 @@ GEM
       net-http-persistent (>= 4.0.4, < 5)
     faraday-request-timer (0.2.0)
       faraday (>= 0.9.0)
-    ffi (1.17.0)
+    ffi (1.17.1)
     formatador (1.1.0)
     guard (2.19.0)
       formatador (>= 0.2.4)

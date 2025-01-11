@@ -171,25 +171,36 @@ describe CloudAdapter do
 
         let(:dashboard_data) do
           {
-            aktuell: {
-              stromerzeugung: { wert: 0.01, einheit: 'W' },
-              stromverbrauch: { wert: 0.0, einheit: 'W' },
-              netzeinspeisung: { wert: 0.01, einheit: 'W' },
-              netzbezug: { wert: 0.01, einheit: 'W' },
-              speicherbeladung: { wert: 0.01, einheit: 'W' },
-              speicherentnahme: { wert: 0.01, einheit: 'W' },
-              speicherfuellstand: { wert: 1.0E-5, einheit: '%' },
-              autarkie: { wert: 1.0E-5, einheit: '%' },
-              wallbox: { wert: 0.01, einheit: 'W' },
+            currently: {
+              powerGenerationInW: 185.643564,
+              powerConsumptionInW: 1067.45,
+              gridFeedInInW: 1.0e-05,
+              gridDrawInW: 852.80012376238,
+              batteryChargeInW: 1.0e-05,
+              batteryDischargeInW: 17.40408415842,
+              batteryLevelInPercent: 1.0e-05,
+              selfSufficiencyInPercent: 20.11,
+              wallboxInW: 1.0e-05,
             },
-            zeitstempel: '2023-12-08T11:04:18Z',
+            today: {
+              powerGenerationInWh: 117.1875,
+              powerConsumptionInWh: 11_863.28,
+              gridFeedInInWh: 0.0,
+              gridDrawInWh: 11_608.88671875,
+              batteryChargeInWh: 0.0,
+              batteryDischargeInWh: 141.11328125,
+              batteryLevelInPercent: 1.0e-05,
+              selfSufficiencyInPercent: 2.14,
+              wallboxInWh: 0.0,
+            },
+            timestamp: '2025-01-11T09:11:01Z',
             electricVehicleConnected: false,
           }
         end
 
         before do
           stub_request(:post, 'https://app-gateway.prod.senec.dev/v1/senec/login')
-          stub_request(:get, "https://app-gateway.prod.senec.dev/v1/senec/systems/#{senec_system_id}/dashboard").to_return(
+          stub_request(:get, "https://app-gateway.prod.senec.dev/v2/senec/systems/#{senec_system_id}/dashboard").to_return(
             headers: { content_type: 'application/json' }, body: dashboard_data.to_json,
           )
           stub_request(:get, "https://app-gateway.prod.senec.dev/v1/senec/systems/#{senec_system_id}/technical-data")

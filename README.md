@@ -42,4 +42,4 @@ The Docker image support multiple platforms: `linux/amd64`, `linux/arm64`, `linu
 
 ## License
 
-Copyright (c) 2020-2024 Georg Ledermann, released under the MIT License
+Copyright (c) 2020-2025 Georg Ledermann, released under the MIT License

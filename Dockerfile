@@ -1,4 +1,4 @@
-FROM ruby:3.3.6-alpine AS builder
+FROM ruby:3.4.1-alpine AS builder
 RUN apk add --no-cache build-base
 
 WORKDIR /senec-collector
@@ -8,7 +8,7 @@ RUN bundle config --local frozen 1 && \
     bundle install -j4 --retry 3 && \
     bundle clean --force
 
-FROM ruby:3.3.6-alpine
+FROM ruby:3.4.1-alpine
 LABEL maintainer="georg@ledermann.dev"
 
 # Add tzdata to get correct timezone

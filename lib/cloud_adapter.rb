@@ -110,7 +110,7 @@ class CloudAdapter
   end
 
   def dashboard_record
-    @dashboard_record ||= dashboard.data
+    @dashboard_record ||= dashboard.data(version: 'v2')
   end
 
   def technical_data_record
@@ -118,19 +118,19 @@ class CloudAdapter
   end
 
   def measure_time
-    Time.parse(dashboard_record['zeitstempel']).to_i
+    Time.parse(dashboard_record['timestamp']).to_i
   end
 
   def inverter_power
-    dashboard_record.dig('aktuell', 'stromerzeugung', 'wert')&.round
+    dashboard_record.dig('currently', 'powerGenerationInW')&.round
   end
 
   def house_power
-    dashboard_record.dig('aktuell', 'stromverbrauch', 'wert')&.round
+    dashboard_record.dig('currently', 'powerConsumptionInW')&.round
   end
 
   def wallbox_charge_power
-    dashboard_record.dig('aktuell', 'wallbox', 'wert')&.round
+    dashboard_record.dig('currently', 'wallboxInW')&.round
   end
 
   def ev_connected
@@ -138,23 +138,23 @@ class CloudAdapter
   end
 
   def grid_power_minus
-    dashboard_record.dig('aktuell', 'netzeinspeisung', 'wert')&.round
+    dashboard_record.dig('currently', 'gridFeedInInW')&.round
   end
 
   def grid_power_plus
-    dashboard_record.dig('aktuell', 'netzbezug', 'wert')&.round
+    dashboard_record.dig('currently', 'gridDrawInW')&.round
   end
 
   def bat_power_plus
-    dashboard_record.dig('aktuell', 'speicherbeladung', 'wert')&.round
+    dashboard_record.dig('currently', 'batteryChargeInW')&.round
   end
 
   def bat_power_minus
-    dashboard_record.dig('aktuell', 'speicherentnahme', 'wert')&.round
+    dashboard_record.dig('currently', 'batteryDischargeInW')&.round
   end
 
   def bat_fuel_charge
-    dashboard_record.dig('aktuell', 'speicherfuellstand', 'wert')&.round(1)
+    dashboard_record.dig('currently', 'batteryLevelInPercent')&.round(1)
   end
 
   def bat_charge_current

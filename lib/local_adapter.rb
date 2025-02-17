@@ -134,6 +134,7 @@ class LocalAdapter
     88, # DISCHARGE PROHIBITED
     89, # SPARE CAPACITY
   ].freeze
+  private_constant :OK_STATES
 
   def current_state_ok
     OK_STATES.include? current_state_code

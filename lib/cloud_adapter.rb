@@ -195,6 +195,7 @@ class CloudAdapter
     'PEAK-SHAVING WARTEN',
     'AUFWACHLADUNG',
   ].freeze
+  private_constant :OK_STATES
 
   def current_state_ok
     return unless current_state

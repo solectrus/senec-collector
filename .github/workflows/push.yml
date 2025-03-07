@@ -45,7 +45,7 @@ jobs:
           coverageCommand: true
 
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     needs: test
     if: ${{ github.triggering_actor != 'dependabot[bot]' }}
 

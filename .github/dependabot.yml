@@ -19,6 +19,11 @@ updates:
     labels:
       - 'dependencies'
       - 'ruby'
+    groups:
+      rubocop:
+        patterns:
+          - 'rubocop'
+          - 'rubocop-*'
 
   - package-ecosystem: 'github-actions'
     directory: '/'

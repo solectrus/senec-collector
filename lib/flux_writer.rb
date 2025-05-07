@@ -5,6 +5,10 @@ class FluxWriter
 
   attr_reader :config
 
+  def ready?
+    influx_client.ping.status == 'ok'
+  end
+
   def push(record)
     return unless record
 

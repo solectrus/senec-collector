@@ -13,6 +13,10 @@ class InfluxPush
 
   attr_reader :config, :queue, :flux_writer
 
+  def ready?
+    flux_writer.ready?
+  end
+
   def run
     until queue.closed?
       # Wait for a record to be added to the queue

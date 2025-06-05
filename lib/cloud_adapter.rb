@@ -133,7 +133,7 @@ class CloudAdapter
     dashboard_record.dig('currently', 'wallboxInW')&.round
   end
 
-  def ev_connected
+  def ev_connected # rubocop:disable Naming/PredicateMethod
     dashboard_record['electricVehicleConnected'] == 'true'
   end
 

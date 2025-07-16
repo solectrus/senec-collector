@@ -1,4 +1,4 @@
-FROM ruby:3.4.4-alpine AS builder
+FROM ruby:3.4.5-alpine AS builder
 RUN apk add --no-cache build-base
 
 WORKDIR /senec-collector
@@ -18,7 +18,7 @@ RUN bundle config set path /usr/local/bundle && \
     \) -delete && \
     find /usr/local/bundle -name '*.so' -exec strip --strip-unneeded {} +
 
-FROM ruby:3.4.4-alpine
+FROM ruby:3.4.5-alpine
 LABEL maintainer="georg@ledermann.dev"
 
 # Add tzdata to get correct timezone

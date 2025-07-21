@@ -20,7 +20,6 @@ jobs:
     timeout-minutes: 15
 
     env:
-      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       CI: true
 
     steps:
@@ -38,11 +37,10 @@ jobs:
       - name: Run tests
         run: bundle exec rspec
 
-      - name: Send test coverage to CodeClimate
-        uses: paambaati/codeclimate-action@v9.0.0
-        if: ${{ env.CC_TEST_REPORTER_ID }}
+      - uses: qltysh/qlty-action/coverage@v1
         with:
-          coverageCommand: true
+          token: ${{secrets.QLTY_COVERAGE_TOKEN}}
+          files: coverage/.resultset.json
 
   build:
     runs-on: ubuntu-22.04

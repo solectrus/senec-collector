@@ -79,7 +79,7 @@ describe Config do
       it 'limits SENEC_INTERVAL for cloud adapter' do
         config = described_class.new(valid_cloud_options.merge(senec_adapter: :cloud, senec_interval: 1))
 
-        expect(config.senec_interval).to eq(30)
+        expect(config.senec_interval).to eq(60)
       end
     end
 

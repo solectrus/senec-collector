@@ -6,12 +6,45 @@ describe CloudAdapter do
     described_class.new(config:)
   end
 
-  let(:config) { Config.from_env(senec_adapter: :cloud, senec_interval: 60, senec_system_id:, senec_token:) }
+  let(:config) { Config.from_env(senec_adapter: :cloud, senec_interval: 60, senec_system_id:) }
   let(:senec_system_id) { nil }
-  let(:senec_token) { nil }
+
+  # Mock data for SENEC cloud responses - sunny day scenario
+  let(:mock_stats_overview_data) do
+    {
+      'lastupdated' => 1_700_000_000,
+      'powergenerated' => { 'now' => 4.2 }, # 4200W PV generation
+      'consumption' => { 'now' => 13.3 }, # 13300W total consumption (including wallbox)
+      'gridexport' => { 'now' => 1.6 }, # 1600W export to grid
+      'gridimport' => { 'now' => 0.1 }, # 100W minimal grid import
+      'accuimport' => { 'now' => 0.8 }, # 800W battery charging
+      'accuexport' => { 'now' => 0.0 }, # No battery discharging
+      'acculevel' => { 'now' => 75.3 }, # 75.3% SOC
+      'steuereinheitState' => 'LADEN',
+      'firmwareVersion' => '826',
+    }
+  end
+
+  let(:mock_wallboxes_data) do
+    [
+      {
+        'currentApparentChargingPowerInVa' => 11_000, # 11kW wallbox charging
+        'electricVehicleConnected' => true,
+      },
+    ]
+  end
+
+  let(:mock_connection) { instance_double(Senec::Cloud::Connection) }
+  let(:mock_stats_overview) { instance_double(Senec::Cloud::StatsOverview, data: mock_stats_overview_data) }
+  let(:mock_wallboxes) { instance_double(Senec::Cloud::Wallboxes, data: mock_wallboxes_data) }
 
   before do
     config.logger = MemoryLogger.new
+
+    # Mock the Senec cloud classes
+    allow(Senec::Cloud::Connection).to receive(:new).and_return(mock_connection)
+    allow(Senec::Cloud::StatsOverview).to receive(:new).and_return(mock_stats_overview)
+    allow(Senec::Cloud::Wallboxes).to receive(:new).and_return(mock_wallboxes)
   end
 
   describe '#initialize' do
@@ -23,7 +56,7 @@ describe CloudAdapter do
   describe '#connection' do
     subject { adapter.connection }
 
-    it { is_expected.to be_a(Senec::Cloud::Connection) }
+    it { is_expected.to be(mock_connection) }
   end
 
   describe '#solectrus_record' do
@@ -37,47 +70,55 @@ describe CloudAdapter do
       end
 
       it 'has a valid measure_time' do
-        expect(solectrus_record.measure_time).to be > 1_700_000_000
+        expect(solectrus_record.measure_time).to eq(1_700_000_000)
       end
 
       it 'has a valid inverter_power' do
-        expect(solectrus_record.inverter_power).to be >= 0
+        expect(solectrus_record.inverter_power).to eq(4200)
       end
 
       it 'has a valid house_power' do
-        expect(solectrus_record.house_power).to be >= 0
+        expect(solectrus_record.house_power).to eq(2300)
       end
 
       it 'has a valid grid_power_minus' do
-        expect(solectrus_record.grid_power_minus).to be >= 0
+        expect(solectrus_record.grid_power_minus).to eq(1600) # 1.6kW -> 1600W
       end
 
       it 'has a valid grid_power_plus' do
-        expect(solectrus_record.grid_power_plus).to be >= 0
+        expect(solectrus_record.grid_power_plus).to eq(100) # 0.1kW -> 100W
       end
 
       it 'has a valid bat_power_minus' do
-        expect(solectrus_record.bat_power_minus).to be >= 0
+        expect(solectrus_record.bat_power_minus).to eq(0) # 0kW -> 0W (not discharging)
       end
 
       it 'has a valid bat_power_plus' do
-        expect(solectrus_record.bat_power_plus).to be >= 0
+        expect(solectrus_record.bat_power_plus).to eq(800) # 0.8kW -> 800W
       end
 
       it 'has a valid bat_fuel_charge' do
-        expect(solectrus_record.bat_fuel_charge).to be >= 0
+        expect(solectrus_record.bat_fuel_charge).to eq(75.3)
       end
 
-      it 'has a valid bat_charge_current' do
-        expect(solectrus_record.bat_charge_current).to be_a(Float)
+      it 'has a valid wallbox_charge_power' do
+        expect(solectrus_record.wallbox_charge_power).to eq(11_000)
       end
 
-      it 'has a valid bat_voltage' do
-        expect(solectrus_record.bat_voltage).to be_a(Float)
+      it 'has a valid ev_connected' do
+        expect(solectrus_record.ev_connected).to be(true)
       end
 
-      it 'has a valid case_temp' do
-        expect(solectrus_record.case_temp).to be > 20
+      it 'has a valid current_state' do
+        expect(solectrus_record.current_state).to eq('LADEN')
+      end
+
+      it 'has a valid current_state_ok' do
+        expect(solectrus_record.current_state_ok).to be(true)
+      end
+
+      it 'has a valid application_version' do
+        expect(solectrus_record.application_version).to eq('826')
       end
 
       context 'with senec_ignore' do
@@ -98,130 +139,84 @@ describe CloudAdapter do
       end
     end
 
-    shared_examples 'a SolectrusRecord for V3' do
-      it 'has a valid current_state' do
-        expect(solectrus_record.current_state).to be_a(String)
+    it_behaves_like 'a SolectrusRecord'
+
+    context 'with empty wallboxes data' do
+      let(:mock_wallboxes_data) { [] }
+
+      it 'has nil wallbox_charge_power' do
+        expect(solectrus_record.wallbox_charge_power).to be_nil
       end
 
-      it 'has a valid current_state_ok' do
-        expect(solectrus_record.current_state_ok).to be(true)
+      it 'has nil ev_connected' do
+        expect(solectrus_record.ev_connected).to be_nil
       end
 
-      it 'has a valid application_version' do
-        expect(solectrus_record.application_version.to_i).to be >= 826
+      it 'calculates house_power without change' do
+        expect(solectrus_record.house_power).to eq(13_300) # Full consumption without wallbox
       end
     end
 
-    shared_examples 'a SolectrusRecord for V4' do
-      it 'has no current_state' do
+    context 'with unknown state' do
+      let(:mock_stats_overview_data) do
+        {
+          'lastupdated' => 1_700_000_000,
+          'powergenerated' => { 'now' => 0.05 }, # 50W minimal PV at dawn/dusk
+          'consumption' => { 'now' => 0.8 }, # 800W base load
+          'gridexport' => { 'now' => 0.0 },
+          'gridimport' => { 'now' => 0.75 }, # 750W grid import
+          'accuimport' => { 'now' => 0.0 },
+          'accuexport' => { 'now' => 0.0 },
+          'acculevel' => { 'now' => 45.2 },
+          'steuereinheitState' => 'UNKNOWN',
+          'firmwareVersion' => '826',
+        }
+      end
+
+      it 'has nil current_state' do
         expect(solectrus_record.current_state).to be_nil
       end
 
-      it 'has no current_state_ok' do
+      it 'has nil current_state_ok' do
         expect(solectrus_record.current_state_ok).to be_nil
       end
+    end
 
-      it 'has no application_version' do
-        expect(solectrus_record.application_version).to be_nil
+    context 'with problematic state' do
+      let(:mock_stats_overview_data) do
+        {
+          'lastupdated' => 1_700_000_000,
+          'powergenerated' => { 'now' => 1.2 }, # 1200W reduced PV
+          'consumption' => { 'now' => 1.5 }, # 1500W consumption
+          'gridexport' => { 'now' => 0.0 },
+          'gridimport' => { 'now' => 0.8 }, # 800W grid import due to issue
+          'accuimport' => { 'now' => 0.0 },
+          'accuexport' => { 'now' => 0.0 }, # Battery not working
+          'acculevel' => { 'now' => 25.1 }, # Low battery
+          'steuereinheitState' => 'STOERUNG',
+          'firmwareVersion' => '826',
+        }
+      end
+
+      it 'has the state' do
+        expect(solectrus_record.current_state).to eq('STOERUNG')
+      end
+
+      it 'is not ok' do
+        expect(solectrus_record.current_state_ok).to be(false)
       end
     end
 
-    context 'when SENEC.Home V3' do
-      context 'with a system id', vcr: 'senec-cloud-given-system' do
-        let(:senec_system_id) { ENV.fetch('SENEC_SYSTEM_ID') }
-
-        it_behaves_like 'a SolectrusRecord'
-        it_behaves_like 'a SolectrusRecord for V3'
-      end
-
-      context 'with token', vcr: 'senec-cloud-with-token' do
-        let(:senec_system_id) { nil }
-        let(:senec_token) { ENV.fetch('SENEC_TOKEN') }
-
-        it_behaves_like 'a SolectrusRecord'
-        it_behaves_like 'a SolectrusRecord for V3'
-      end
-
-      context 'without a system id', vcr: 'senec-cloud-first-system' do
-        let(:senec_system_id) { nil }
-
-        it_behaves_like 'a SolectrusRecord'
-        it_behaves_like 'a SolectrusRecord for V3'
-      end
-    end
-
-    context 'when SENEC.Home 4' do
-      context 'with a system id' do
-        let(:senec_system_id) { ENV.fetch('SENEC_SYSTEM_ID') }
-
-        let(:technical_data) do
-          {
-            casing: {
-              temperatureInCelsius: 28.0,
-            },
-            mcu: {
-              mainControllerState: { name: 'UNKNOWN', severity: 'WARNING' },
-            },
-            batteryPack: {
-              currentVoltageInV: 193.0,
-              currentCurrentInA: 0.0299,
-            },
-          }
-        end
-
-        let(:dashboard_data) do
-          {
-            currently: {
-              powerGenerationInW: 185.643564,
-              powerConsumptionInW: 1067.45,
-              gridFeedInInW: 1.0e-05,
-              gridDrawInW: 852.80012376238,
-              batteryChargeInW: 1.0e-05,
-              batteryDischargeInW: 17.40408415842,
-              batteryLevelInPercent: 1.0e-05,
-              selfSufficiencyInPercent: 20.11,
-              wallboxInW: 1.0e-05,
-            },
-            today: {
-              powerGenerationInWh: 117.1875,
-              powerConsumptionInWh: 11_863.28,
-              gridFeedInInWh: 0.0,
-              gridDrawInWh: 11_608.88671875,
-              batteryChargeInWh: 0.0,
-              batteryDischargeInWh: 141.11328125,
-              batteryLevelInPercent: 1.0e-05,
-              selfSufficiencyInPercent: 2.14,
-              wallboxInWh: 0.0,
-            },
-            timestamp: '2025-01-11T09:11:01Z',
-            electricVehicleConnected: false,
-          }
-        end
-
-        before do
-          stub_request(:post, 'https://app-gateway.prod.senec.dev/v1/senec/login')
-          stub_request(:get, "https://app-gateway.prod.senec.dev/v2/senec/systems/#{senec_system_id}/dashboard").to_return(
-            headers: { content_type: 'application/json' }, body: dashboard_data.to_json,
-          )
-          stub_request(:get, "https://app-gateway.prod.senec.dev/v1/senec/systems/#{senec_system_id}/technical-data")
-            .to_return(status: 200, headers: { content_type: 'application/json' }, body: technical_data.to_json)
-        end
-
-        it_behaves_like 'a SolectrusRecord'
-        it_behaves_like 'a SolectrusRecord for V4'
-      end
-    end
-
-    it 'handles error in Dashboard request' do
-      allow(Senec::Cloud::Dashboard).to receive(:new).and_raise(StandardError)
+    it 'handles error in StatsOverview request' do
+      allow(Senec::Cloud::StatsOverview).to receive(:new).and_raise(StandardError)
 
       expect do
         solectrus_record
       end.to change(config.logger, :error_messages).to include(/Error getting data from SENEC cloud/)
     end
 
-    it 'handles error in TechnicalData request' do
-      allow(Senec::Cloud::TechnicalData).to receive(:new).and_raise(StandardError)
+    it 'handles error in Wallboxes request' do
+      allow(Senec::Cloud::Wallboxes).to receive(:new).and_raise(StandardError)
 
       expect do
         solectrus_record

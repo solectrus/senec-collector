@@ -3,6 +3,7 @@ require 'forwardable'
 
 class CloudAdapter
   extend Forwardable
+
   def_delegators :config, :logger
 
   def initialize(config:)
@@ -14,15 +15,19 @@ class CloudAdapter
   attr_reader :config
 
   def connection
-    @connection ||= begin
-      logger.info 'Using SENEC_TOKEN to skip login' if config.senec_token
+    @connection ||= Senec::Cloud::Connection.new(
+      username: config.senec_username,
+      password: config.senec_password,
+      user_agent:,
+    )
+  end
 
-      Senec::Cloud::Connection.new(
-        username: config.senec_username,
-        password: config.senec_password,
-        token: config.senec_token,
-      )
-    end
+  def user_agent
+    app = 'SENEC-Collector'
+    version = ENV.fetch('VERSION', nil)
+    identifier = [app, version].compact.join('/')
+
+    "#{identifier} (+https://github.com/solectrus/senec-collector)"
   end
 
   def system_id
@@ -31,40 +36,15 @@ class CloudAdapter
         logger.info "Using SENEC_SYSTEM_ID #{config.senec_system_id}"
         config.senec_system_id
       else
-        determine_system
+        logger.info 'Using SENEC_SYSTEM_ID 0'
+        0
       end
-  end
-
-  def determine_system
-    logger.info 'No SENEC_SYSTEM_ID given, looking for existing systems...'
-    systems.each do |system|
-      logger.info "Found #{system}"
-    end
-
-    logger.info "Using first system, which is #{systems.first.id}"
-    systems.first.id
-  end
-
-  SYSTEM = Struct.new(:id, :steuereinheitnummer, :gehaeusenummer) do
-    def to_s
-      "SENEC system #{id} (#{steuereinheitnummer}, #{gehaeusenummer})"
-    end
-  end
-
-  def systems
-    @systems ||= connection.systems.map do |system|
-      SYSTEM.new(
-        system['id'],
-        system['steuereinheitnummer'],
-        system['gehaeusenummer'],
-      )
-    end
   end
 
   def solectrus_record(id = 1)
     # Reset data cache to force a new request
-    @dashboard_record = nil
-    @technical_data_record = nil
+    @stats_overview_data = nil
+    @wallboxes_data = nil
 
     SolectrusRecord.new(id, record_hash).tap do |record|
       logger.info success_message(record)
@@ -76,17 +56,18 @@ class CloudAdapter
 
   private
 
-  def dashboard
-    Senec::Cloud::Dashboard[connection].find(system_id)
+  def stats_overview
+    Senec::Cloud::StatsOverview.new(connection:, system_id:)
   end
 
-  def technical_data
-    Senec::Cloud::TechnicalData[connection].find(system_id)
+  def wallboxes
+    Senec::Cloud::Wallboxes.new(connection:, system_id:)
   end
 
-  def raw_record_hash
+  def raw_record_hash # rubocop:disable Metrics/AbcSize
     {
       current_state:,
+      current_state_code:,
       current_state_ok:,
       measure_time:,
       inverter_power:,
@@ -96,11 +77,12 @@ class CloudAdapter
       bat_power_minus:,
       bat_power_plus:,
       bat_fuel_charge:,
-      bat_charge_current:,
-      bat_voltage:,
       wallbox_charge_power:,
+      wallbox_charge_power0:,
+      wallbox_charge_power1:,
+      wallbox_charge_power2:,
+      wallbox_charge_power3:,
       ev_connected:,
-      case_temp:,
       application_version:,
     }.compact
   end
@@ -109,75 +91,87 @@ class CloudAdapter
     raw_record_hash.except(*config.senec_ignore)
   end
 
-  def dashboard_record
-    @dashboard_record ||= dashboard.data(version: 'v2')
+  def stats_overview_data
+    @stats_overview_data ||= stats_overview.data
   end
 
-  def technical_data_record
-    @technical_data_record ||= technical_data.data
+  def wallboxes_data
+    @wallboxes_data ||= wallboxes.data
   end
 
   def measure_time
-    Time.parse(dashboard_record['timestamp']).to_i
+    stats_overview_data['lastupdated']
   end
 
   def inverter_power
-    dashboard_record.dig('currently', 'powerGenerationInW')&.round
+    (stats_overview_data.dig('powergenerated', 'now') * 1000).round
   end
 
   def house_power
-    dashboard_record.dig('currently', 'powerConsumptionInW')&.round
+    [
+      (stats_overview_data.dig('consumption', 'now') * 1000).round - (wallbox_charge_power || 0),
+      0,
+    ].max
   end
 
   def wallbox_charge_power
-    dashboard_record.dig('currently', 'wallboxInW')&.round
+    return unless wallboxes_data.any?
+
+    [
+      wallbox_charge_power0,
+      wallbox_charge_power1,
+      wallbox_charge_power2,
+      wallbox_charge_power3,
+    ].compact.sum
   end
 
-  def ev_connected # rubocop:disable Naming/PredicateMethod
-    dashboard_record['electricVehicleConnected'] == 'true'
+  [0, 1, 2, 3].each do |i|
+    define_method("wallbox_charge_power#{i}") do
+      return unless wallboxes_data.any?
+
+      wallboxes_data.dig(i, 'currentApparentChargingPowerInVa')
+    end
+  end
+
+  def ev_connected
+    return unless wallboxes_data.any?
+
+    wallboxes_data.first['electricVehicleConnected']
   end
 
   def grid_power_minus
-    dashboard_record.dig('currently', 'gridFeedInInW')&.round
+    (stats_overview_data.dig('gridexport', 'now') * 1000).round
   end
 
   def grid_power_plus
-    dashboard_record.dig('currently', 'gridDrawInW')&.round
+    (stats_overview_data.dig('gridimport', 'now') * 1000).round
   end
 
   def bat_power_plus
-    dashboard_record.dig('currently', 'batteryChargeInW')&.round
+    (stats_overview_data.dig('accuimport', 'now') * 1000).round
   end
 
   def bat_power_minus
-    dashboard_record.dig('currently', 'batteryDischargeInW')&.round
+    (stats_overview_data.dig('accuexport', 'now') * 1000).round
   end
 
   def bat_fuel_charge
-    dashboard_record.dig('currently', 'batteryLevelInPercent')&.round(1)
-  end
-
-  def bat_charge_current
-    technical_data_record.dig('batteryPack', 'currentCurrentInA')&.round(2)
-  end
-
-  def bat_voltage
-    technical_data_record.dig('batteryPack', 'currentVoltageInV')&.round(2)
-  end
-
-  def case_temp
-    technical_data_record.dig('casing', 'temperatureInCelsius')&.round(1)
+    stats_overview_data.dig('acculevel', 'now')&.round(1)
   end
 
   def application_version
-    technical_data_record.dig('mcu', 'firmwareVersion')
+    stats_overview_data['firmwareVersion']
   end
 
   def current_state
-    raw_state = technical_data_record.dig('mcu', 'mainControllerState', 'name')
+    raw_state = stats_overview_data['steuereinheitState']
     return if raw_state == 'UNKNOWN'
 
     raw_state.tr('_', ' ')
+  end
+
+  def current_state_code
+    stats_overview_data['state']
   end
 
   # In German, because this seams to be language of the SENEC cloud

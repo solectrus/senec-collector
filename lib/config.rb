@@ -11,7 +11,6 @@ KEYS = %i[
   senec_language
   senec_username
   senec_password
-  senec_token
   senec_system_id
   senec_ignore
   influx_schema
@@ -72,12 +71,12 @@ Config =
       minimum = case senec_adapter
                 when :local
                   # Be careful with your local SENEC device, do not flood it with queries.
-                  # 12 requests/min is the maximum.
+                  # 12 requests/min is the maximum (= 5 seconds interval).
                   5
                 when :cloud
                   # Let's be nice to SENEC.
-                  # 2 requests/min is the maximum.
-                  30
+                  # 1 request/min is the maximum (= 60 seconds interval).
+                  60
                 end
 
       self[:senec_interval] = minimum if senec_interval < minimum

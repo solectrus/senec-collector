@@ -10,7 +10,7 @@ http_interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Faraday v2.13.1
+      - Faraday v2.13.3
   response:
     status:
       code: 200
@@ -19,7 +19,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Wed, 07 May 2025 09:53:16 GMT
+      - Thu, 24 Jul 2025 08:29:25 GMT
       content-type:
       - application/javascript; charset=utf-8
       content-length:
@@ -1144,7 +1144,7 @@ http_interactions:
             2: "NMC",
             3: "NCA-B"
         };
-  recorded_at: Wed, 07 May 2025 09:53:16 GMT
+  recorded_at: Thu, 24 Jul 2025 08:29:25 GMT
 - request:
     method: post
     uri: https://<SENEC_HOST>/lala.cgi
@@ -1155,7 +1155,7 @@ http_interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Faraday v2.13.1
+      - Faraday v2.13.3
       Content-Type:
       - application/x-www-form-urlencoded; charset=UTF-8
       Accept:
@@ -1168,7 +1168,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Wed, 07 May 2025 09:53:16 GMT
+      - Thu, 24 Jul 2025 08:29:25 GMT
       content-type:
       - application/json; charset=utf-8
       transfer-encoding:
@@ -1177,6 +1177,6 @@ http_interactions:
       - keep-alive
     body:
       encoding: UTF-8
-      string: '{"ENERGY":{"STAT_STATE":"u8_38","GUI_BAT_DATA_CURRENT":"fl_408AE148","GUI_BAT_DATA_FUEL_CHARGE":"fl_429D9364","GUI_BAT_DATA_POWER":"fl_436F1AD0","GUI_BAT_DATA_VOLTAGE":"fl_425C5F3B","GUI_GRID_POW":"fl_C5AB9666","GUI_HOUSE_POW":"fl_44E50DE0","GUI_INVERTER_POWER":"fl_45EC52B4","STAT_HOURS_OF_OPERATION":"u3_00009863"},"WIZARD":{"APPLICATION_VERSION":"st_0826"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_681B49AC"},"PV1":{"MPP_POWER":["fl_45831BB3","fl_00000000","fl_45526E01"],"POWER_RATIO":"fl_42C80000"},"TEMPMEASURE":{"CASE_TEMP":"fl_42047555"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"],"EV_CONNECTED":["u8_00","u8_00","u8_00","u8_00"]}}'
-  recorded_at: Wed, 07 May 2025 09:53:16 GMT
+      string: '{"ENERGY":{"STAT_STATE":"u8_38","GUI_BAT_DATA_CURRENT":"fl_3FD33333","GUI_BAT_DATA_FUEL_CHARGE":"fl_42A5A814","GUI_BAT_DATA_POWER":"fl_42B7236C","GUI_BAT_DATA_VOLTAGE":"fl_425DFBE7","GUI_GRID_POW":"fl_C441BC29","GUI_HOUSE_POW":"fl_43B3D8D4","GUI_INVERTER_POWER":"fl_44994680","STAT_HOURS_OF_OPERATION":"u3_00009FB5"},"WIZARD":{"APPLICATION_VERSION":"st_0826"},"RTC":{"UTC_OFFSET":"i3_00000078","WEB_TIME":"u3_68820B06"},"PV1":{"MPP_POWER":["fl_441690A4","fl_00000000","fl_441BFC5B"],"POWER_RATIO":"fl_42C80000"},"TEMPMEASURE":{"CASE_TEMP":"fl_41FC44C0"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"],"EV_CONNECTED":["u8_01","u8_00","u8_00","u8_00"]}}'
+  recorded_at: Thu, 24 Jul 2025 08:29:25 GMT
 recorded_with: VCR 6.3.1

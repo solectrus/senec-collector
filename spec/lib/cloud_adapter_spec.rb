@@ -21,7 +21,7 @@ describe CloudAdapter do
       'accuexport' => { 'now' => 0.0 }, # No battery discharging
       'acculevel' => { 'now' => 75.3 }, # 75.3% SOC
       'steuereinheitState' => 'LADEN',
-      'firmwareVersion' => '826',
+      'firmwareVersion' => 826,
     }
   end
 
@@ -169,7 +169,7 @@ describe CloudAdapter do
           'accuexport' => { 'now' => 0.0 },
           'acculevel' => { 'now' => 45.2 },
           'steuereinheitState' => 'UNKNOWN',
-          'firmwareVersion' => '826',
+          'firmwareVersion' => 826,
         }
       end
 
@@ -194,7 +194,7 @@ describe CloudAdapter do
           'accuexport' => { 'now' => 0.0 }, # Battery not working
           'acculevel' => { 'now' => 25.1 }, # Low battery
           'steuereinheitState' => 'STOERUNG',
-          'firmwareVersion' => '826',
+          'firmwareVersion' => 826,
         }
       end
 

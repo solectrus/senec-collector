@@ -162,7 +162,7 @@ class CloudAdapter
   end
 
   def application_version
-    stats_overview_data['firmwareVersion']
+    stats_overview_data['firmwareVersion']&.to_s
   end
 
   def current_state

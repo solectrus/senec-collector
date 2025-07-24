@@ -4,6 +4,7 @@ require 'forwardable'
 
 class Loop
   extend Forwardable
+
   def_delegators :config, :logger
 
   def self.start(config:, max_count: nil, max_wait: 12, &)

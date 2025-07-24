@@ -3,6 +3,7 @@ require 'forwardable'
 
 class LocalAdapter
   extend Forwardable
+
   def_delegators :config, :logger
 
   def initialize(config:)

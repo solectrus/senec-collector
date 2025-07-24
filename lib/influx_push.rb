@@ -3,6 +3,7 @@ require 'forwardable'
 
 class InfluxPush
   extend Forwardable
+
   def_delegators :config, :logger
 
   def initialize(config:, queue:)

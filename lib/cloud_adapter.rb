@@ -100,7 +100,9 @@ class CloudAdapter
   end
 
   def measure_time
-    stats_overview_data['lastupdated']
+    # The SENEC Home.4 does not provide a timestamp,
+    # so we use the current time as a fallback
+    stats_overview_data['lastupdated'] || Time.now.to_i
   end
 
   def inverter_power

@@ -90,11 +90,11 @@ describe CloudAdapter do
       end
 
       it 'has a valid bat_power_minus' do
-        expect(solectrus_record.bat_power_minus).to eq(0) # 0kW -> 0W (not discharging)
+        expect(solectrus_record.bat_power_minus).to eq(800) # 0.8kW -> 800W (discharging)
       end
 
       it 'has a valid bat_power_plus' do
-        expect(solectrus_record.bat_power_plus).to eq(800) # 0.8kW -> 800W
+        expect(solectrus_record.bat_power_plus).to eq(0) # 0kW -> 0W (not charging)
       end
 
       it 'has a valid bat_fuel_charge' do

@@ -149,11 +149,11 @@ class CloudAdapter
     (stats_overview_data.dig('gridimport', 'now') * 1000).round
   end
 
-  def bat_power_plus
+  def bat_power_minus
     (stats_overview_data.dig('accuimport', 'now') * 1000).round
   end
 
-  def bat_power_minus
+  def bat_power_plus
     (stats_overview_data.dig('accuexport', 'now') * 1000).round
   end
 

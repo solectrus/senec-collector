@@ -15,11 +15,12 @@ class CloudAdapter
   attr_reader :config
 
   def connection
-    @connection ||= Senec::Cloud::Connection.new(
-      username: config.senec_username,
-      password: config.senec_password,
-      user_agent:,
-    )
+    @connection ||=
+      Senec::Cloud::Connection.new(
+        username: config.senec_username,
+        password: config.senec_password,
+        user_agent:,
+      )
   end
 
   def user_agent
@@ -36,19 +37,44 @@ class CloudAdapter
         logger.info "Using SENEC_SYSTEM_ID #{config.senec_system_id}"
         config.senec_system_id
       else
-        logger.info 'Using SENEC_SYSTEM_ID 0'
-        0
+        determine_system
+      end
+  end
+
+  def determine_system
+    logger.info 'No SENEC_SYSTEM_ID given, looking for existing systems...'
+    systems.each { |system| logger.info "Found #{system}" }
+
+    logger.info "Using first system, which is #{systems.first.id}"
+    systems.first.id
+  end
+
+  SYSTEM =
+    Struct.new(:id, :control_unit_number, :case_number) do
+      def to_s
+        "SENEC system #{id} (#{control_unit_number}, #{case_number})"
+      end
+    end
+
+  def systems
+    @systems ||=
+      connection.systems.map do |system|
+        SYSTEM.new(
+          system['id'],
+          system['controlUnitNumber'],
+          system['caseNumber'],
+        )
       end
   end
 
   def solectrus_record(id = 1)
     # Reset data cache to force a new request
-    @stats_overview_data = nil
-    @wallboxes_data = nil
+    @dashboard = nil
+    @system_details = nil
 
-    SolectrusRecord.new(id, record_hash).tap do |record|
-      logger.info success_message(record)
-    end
+    SolectrusRecord
+      .new(id, record_hash)
+      .tap { |record| logger.info success_message(record) }
   rescue StandardError => e
     logger.error failure_message(e)
     nil
@@ -56,18 +82,17 @@ class CloudAdapter
 
   private
 
-  def stats_overview
-    Senec::Cloud::StatsOverview.new(connection:, system_id:)
+  def dashboard
+    @dashboard ||= connection.dashboard(system_id)
   end
 
-  def wallboxes
-    Senec::Cloud::Wallboxes.new(connection:, system_id:)
+  def system_details
+    @system_details ||= connection.system_details(system_id)
   end
 
-  def raw_record_hash # rubocop:disable Metrics/AbcSize
+  def raw_record_hash
     {
       current_state:,
-      current_state_code:,
       current_state_ok:,
       measure_time:,
       inverter_power:,
@@ -78,11 +103,8 @@ class CloudAdapter
       bat_power_plus:,
       bat_fuel_charge:,
       wallbox_charge_power:,
-      wallbox_charge_power0:,
-      wallbox_charge_power1:,
-      wallbox_charge_power2:,
-      wallbox_charge_power3:,
       ev_connected:,
+      case_temp:,
       application_version:,
     }.compact
   end
@@ -91,112 +113,66 @@ class CloudAdapter
     raw_record_hash.except(*config.senec_ignore)
   end
 
-  def stats_overview_data
-    @stats_overview_data ||= stats_overview.data
-  end
-
-  def wallboxes_data
-    @wallboxes_data ||= wallboxes.data
-  end
-
   def measure_time
-    # The SENEC Home.4 does not provide a timestamp,
-    # so we use the current time as a fallback
-    stats_overview_data['lastupdated'] || Time.now.to_i
+    Time.parse(dashboard['timestamp']).to_i
   end
 
   def inverter_power
-    (stats_overview_data.dig('powergenerated', 'now') * 1000).round
+    dashboard.dig('currently', 'powerGenerationInW')&.round
   end
 
   def house_power
-    [
-      (stats_overview_data.dig('consumption', 'now') * 1000).round - (wallbox_charge_power || 0),
-      0,
-    ].max
+    dashboard.dig('currently', 'powerConsumptionInW')&.round
   end
 
   def wallbox_charge_power
-    return unless wallboxes_data.any?
-
-    [
-      wallbox_charge_power0,
-      wallbox_charge_power1,
-      wallbox_charge_power2,
-      wallbox_charge_power3,
-    ].compact.sum
-  end
-
-  [0, 1, 2, 3].each do |i|
-    define_method("wallbox_charge_power#{i}") do
-      return unless wallboxes_data.any?
-
-      wallboxes_data.dig(i, 'currentApparentChargingPowerInVa')
-    end
+    dashboard.dig('currently', 'wallboxInW')&.round
   end
 
   def ev_connected
-    return unless wallboxes_data.any?
-
-    wallboxes_data.first['electricVehicleConnected']
+    dashboard['electricVehicleConnected']
   end
 
   def grid_power_minus
-    (stats_overview_data.dig('gridexport', 'now') * 1000).round
+    dashboard.dig('currently', 'gridFeedInInW')&.round
   end
 
   def grid_power_plus
-    (stats_overview_data.dig('gridimport', 'now') * 1000).round
-  end
-
-  def bat_power_minus
-    (stats_overview_data.dig('accuimport', 'now') * 1000).round
+    dashboard.dig('currently', 'gridDrawInW')&.round
   end
 
   def bat_power_plus
-    (stats_overview_data.dig('accuexport', 'now') * 1000).round
+    dashboard.dig('currently', 'batteryChargeInW')&.round
+  end
+
+  def bat_power_minus
+    dashboard.dig('currently', 'batteryDischargeInW')&.round
   end
 
   def bat_fuel_charge
-    stats_overview_data.dig('acculevel', 'now')&.round(1)
+    dashboard.dig('currently', 'batteryLevelInPercent')&.round(1)
+  end
+
+  def case_temp
+    system_details.dig('casing', 'temperatureInCelsius')&.round(1)
   end
 
   def application_version
-    stats_overview_data['firmwareVersion']&.to_s
+    system_details.dig('mcu', 'firmwareVersion')
   end
 
   def current_state
-    raw_state = stats_overview_data['steuereinheitState']
+    raw_state = system_details.dig('mcu', 'mainControllerUnitState', 'name')
     return if raw_state == 'UNKNOWN'
 
     raw_state.tr('_', ' ')
   end
 
-  def current_state_code
-    stats_overview_data['state']
-  end
-
-  # In German, because this seams to be language of the SENEC cloud
-  # TODO: Maybe it is better to check for severity == 'INFO'
-  OK_STATES = [
-    'AKKU VOLL',
-    'LADEN',
-    'AKKU LEER',
-    'ENTLADEN',
-    'PV UND ENTLADEN',
-    'NETZ UND ENTLADEN',
-    'EIGENVERBRAUCH',
-    'LADESCHLUSSPHASE',
-    'PEAK SHAVING',
-    'PEAK-SHAVING WARTEN',
-    'AUFWACHLADUNG',
-  ].freeze
-  private_constant :OK_STATES
-
   def current_state_ok
-    return unless current_state
+    severity = system_details.dig('mcu', 'mainControllerUnitState', 'severity')
+    return if severity.nil?
 
-    OK_STATES.include? current_state
+    severity == 'INFO'
   end
 
   def success_message(record)

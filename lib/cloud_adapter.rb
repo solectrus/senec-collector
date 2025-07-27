@@ -38,39 +38,13 @@ class CloudAdapter
     "#{identifier} (+https://github.com/solectrus/senec-collector)"
   end
 
-  def system_id
-    @system_id ||=
-      if config.senec_system_id
-        logger.info "Using SENEC_SYSTEM_ID #{config.senec_system_id}"
-        config.senec_system_id
-      else
-        determine_system
-      end
-  end
+  def system
+    @system ||=
+      begin
+        raise 'No systems found' if systems.empty?
 
-  def determine_system
-    logger.info 'No SENEC_SYSTEM_ID given, looking for existing systems...'
-    systems.each { |system| logger.info "Found #{system}" }
-
-    logger.info "Using first system, which is #{systems.first.id}"
-    systems.first.id
-  end
-
-  SYSTEM =
-    Struct.new(:id, :control_unit_number, :case_number) do
-      def to_s
-        "SENEC system #{id} (#{control_unit_number}, #{case_number})"
-      end
-    end
-
-  def systems
-    @systems ||=
-      connection.systems.map do |system|
-        SYSTEM.new(
-          system['id'],
-          system['controlUnitNumber'],
-          system['caseNumber'],
-        )
+        log_available_systems
+        find_system || raise('System not found!')
       end
   end
 
@@ -89,8 +63,32 @@ class CloudAdapter
 
   private
 
+  def systems
+    @systems ||= connection.systems
+  end
+
+  def log_available_systems
+    logger.info "\nAvailable systems:"
+    systems.each do |system|
+      logger.info "- #{system['id']} (#{system['controlUnitNumber']}, #{system['caseNumber']})"
+    end
+  end
+
+  def find_system
+    if config.senec_system_id
+      logger.info "Using SENEC_SYSTEM_ID #{config.senec_system_id}"
+
+      systems.find { |s| s['id'].to_s == config.senec_system_id }
+    else
+      first_system = systems.first
+      logger.info "No SENEC_SYSTEM_ID given, using first available system (#{first_system['id']})"
+
+      first_system
+    end
+  end
+
   def dashboard
-    @dashboard ||= connection.dashboard(system_id)
+    @dashboard ||= connection.dashboard(system['id'])
   end
 
   def system_details
@@ -99,8 +97,23 @@ class CloudAdapter
       when :minimal
         {}
       when :full
-        connection.system_details(system_id)
+        connection.system_details(system['id'])
       end
+  end
+
+  def wallboxes
+    @wallboxes ||=
+      system['wallboxIds'].sort.map do |wallbox_id|
+        connection.wallbox(system['id'], wallbox_id)
+      end
+  end
+
+  def home4_wallbox?
+    system['wallboxIds']&.any? do |wallbox_id|
+      # For V3, the ids are simple numbers as string, like "1", "2", etc.
+      # For Home.4 the ids are UUIDv4 like "abcdef12-1234-42ab-84de-abcdef123456"
+      wallbox_id.include?('-')
+    end
   end
 
   def raw_record_hash
@@ -135,11 +148,30 @@ class CloudAdapter
   end
 
   def house_power
-    dashboard.dig('currently', 'powerConsumptionInW')&.round
+    consumption = dashboard.dig('currently', 'powerConsumptionInW')&.round
+
+    if consumption && home4_wallbox?
+      [consumption - (wallbox_charge_power || 0), 0].max
+    else
+      consumption
+    end
   end
 
   def wallbox_charge_power
-    dashboard.dig('currently', 'wallboxInW')&.round
+    if home4_wallbox?
+      # Separate request needed for each wallbox
+      wallboxes
+        &.filter_map do |wallbox|
+          power_in_kw =
+            wallbox.dig('chargingCurrents', 'currentApparentChargingPowerInKw')
+
+          (power_in_kw * 1000).round if power_in_kw
+        end
+        &.sum
+    else
+      # Total is already available in the dashboard
+      dashboard.dig('currently', 'wallboxInW')&.round
+    end
   end
 
   def ev_connected

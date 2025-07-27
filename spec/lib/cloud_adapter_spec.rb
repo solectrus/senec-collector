@@ -17,7 +17,14 @@ describe CloudAdapter do
   let(:senec_request_mode) { :minimal }
 
   let(:mock_systems) do
-    [{ id: 999_999, controlUnitNumber: '999999', caseNumber: '123456' }]
+    [
+      {
+        'id' => 999_999,
+        'controlUnitNumber' => '999999',
+        'caseNumber' => '123456',
+        'wallboxIds' => ['1'],
+      },
+    ]
   end
 
   let(:mock_dashboard) do
@@ -25,7 +32,7 @@ describe CloudAdapter do
       'systemId' => 999_999,
       'currently' => {
         'powerGenerationInW' => 4200.0,
-        'powerConsumptionInW' => 2300.0,
+        'powerConsumptionInW' => 4300.0,
         'gridFeedInInW' => 1600.0,
         'gridDrawInW' => 100.0,
         'batteryChargeInW' => 0.0,
@@ -40,6 +47,7 @@ describe CloudAdapter do
   end
 
   let(:mock_system_details) { {} }
+  let(:mock_wallbox) { {} }
 
   let(:mock_connection) do
     instance_double(
@@ -47,6 +55,7 @@ describe CloudAdapter do
       systems: mock_systems,
       dashboard: mock_dashboard,
       system_details: mock_system_details,
+      wallbox: mock_wallbox,
     )
   end
 
@@ -90,7 +99,7 @@ describe CloudAdapter do
     end
 
     it 'gets house_power' do
-      expect(solectrus_record.house_power).to eq(2300)
+      expect(solectrus_record.house_power).to eq(4300)
     end
 
     it 'gets grid_power_minus' do
@@ -174,6 +183,44 @@ describe CloudAdapter do
       end
     end
 
+    context 'without wallbox' do
+      let(:mock_systems) do
+        [
+          {
+            'id' => 999_999,
+            'controlUnitNumber' => '999999',
+            'caseNumber' => '123456',
+            'wallboxIds' => [],
+          },
+        ]
+      end
+
+      let(:mock_dashboard) do
+        {
+          'systemId' => 999_999,
+          'currently' => {
+            'powerGenerationInW' => 4200.0,
+            'powerConsumptionInW' => 900.0,
+            'gridFeedInInW' => 1600.0,
+            'gridDrawInW' => 100.0,
+            'batteryChargeInW' => 0.0,
+            'batteryDischargeInW' => 800.0,
+            'batteryLevelInPercent' => 75.3,
+            'selfSufficiencyInPercent' => 100.0,
+          },
+          'timestamp' => '2025-07-25T16:03:08Z',
+        }
+      end
+
+      it 'has no wallbox_charge_power' do
+        expect(solectrus_record.wallbox_charge_power).to be_nil
+      end
+
+      it 'has unmodified house_power' do
+        expect(solectrus_record.house_power).to eq(900)
+      end
+    end
+
     context 'when Home.4' do
       let(:mock_system_details) do
         {
@@ -187,12 +234,35 @@ describe CloudAdapter do
         }
       end
 
+      let(:mock_systems) do
+        [
+          {
+            'id' => 999_999,
+            'controlUnitNumber' => '999999',
+            'caseNumber' => '123456',
+            'wallboxIds' => ['abcdef12-1234-42ab-84de-abcdef123456'],
+          },
+        ]
+      end
+
+      let(:mock_wallbox) do
+        { 'chargingCurrents' => { 'currentApparentChargingPowerInKw' => 2.1 } }
+      end
+
       it 'has no status' do
         expect(solectrus_record.current_state).to be_nil
       end
 
       it 'has no current_state_ok' do
         expect(solectrus_record.current_state_ok).to be_nil
+      end
+
+      it 'has wallbox_charge_power' do
+        expect(solectrus_record.wallbox_charge_power).to eq(2100)
+      end
+
+      it 'has modified house_power' do
+        expect(solectrus_record.house_power).to eq(4300 - 2100)
       end
     end
 
@@ -201,6 +271,7 @@ describe CloudAdapter do
         Config.from_env(
           senec_adapter: :cloud,
           senec_ignore: 'wallbox_charge_power,house_power',
+          senec_system_id: nil,
         )
       end
 

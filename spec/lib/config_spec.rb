@@ -151,6 +151,34 @@ describe Config do
       it 'returns default senec_ignore' do
         expect(config.senec_ignore).to eq([])
       end
+
+      it 'returns default senec_request_mode' do
+        expect(config.senec_request_mode).to eq(:minimal)
+      end
+
+      context 'when senec_request_mode is minimal' do
+        subject(:config) do
+          described_class.new(
+            valid_cloud_options.merge(senec_request_mode: 'minimal'),
+          )
+        end
+
+        it 'returns senec_request_mode as minimal' do
+          expect(config.senec_request_mode).to eq(:minimal)
+        end
+      end
+
+      context 'when senec_request_mode is full' do
+        subject(:config) do
+          described_class.new(
+            valid_cloud_options.merge(senec_request_mode: 'full'),
+          )
+        end
+
+        it 'returns senec_request_mode as full' do
+          expect(config.senec_request_mode).to eq(:full)
+        end
+      end
     end
 
     context 'when ignoring single field' do
@@ -182,6 +210,26 @@ describe Config do
 
       it 'fails' do
         expect { config.senec_ignore }.to raise_error(Exception, /SENEC_IGNORE contains unknown field: foo/)
+      end
+    end
+
+    context 'when senec_request_mode is invalid' do
+      it 'fails with invalid value' do
+        expect do
+          described_class.new(
+            valid_cloud_options.merge(senec_request_mode: 'invalid'),
+          )
+        end.to raise_error(Exception, /SENEC_REQUEST_MODE is invalid: invalid/)
+      end
+    end
+
+    context 'when senec_request_mode is nil' do
+      subject(:config) do
+        described_class.new(valid_cloud_options.merge(senec_request_mode: nil))
+      end
+
+      it 'returns default senec_request_mode as minimal' do
+        expect(config.senec_request_mode).to eq(:minimal)
       end
     end
   end

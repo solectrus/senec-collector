@@ -5,9 +5,16 @@ describe CloudAdapter do
   subject(:adapter) { described_class.new(config:) }
 
   let(:config) do
-    Config.from_env(senec_adapter: :cloud, senec_interval: 60, senec_system_id:)
+    Config.from_env(
+      senec_adapter: :cloud,
+      senec_interval: 60,
+      senec_system_id:,
+      senec_request_mode:,
+    )
   end
+
   let(:senec_system_id) { nil }
+  let(:senec_request_mode) { :minimal }
 
   let(:mock_systems) do
     [{ id: 999_999, controlUnitNumber: '999999', caseNumber: '123456' }]
@@ -32,20 +39,7 @@ describe CloudAdapter do
     }
   end
 
-  let(:mock_system_details) do
-    {
-      'casing' => {
-        'temperatureInCelsius' => 34.451965,
-      },
-      'mcu' => {
-        'mainControllerUnitState' => {
-          'name' => 'AKKU_VOLL',
-          'severity' => 'INFO',
-        },
-        'firmwareVersion' => '826',
-      },
-    }
-  end
+  let(:mock_system_details) { {} }
 
   let(:mock_connection) do
     instance_double(
@@ -127,20 +121,57 @@ describe CloudAdapter do
       expect(solectrus_record.ev_connected).to be(true)
     end
 
-    it 'gets current_state' do
-      expect(solectrus_record.current_state).to eq('AKKU VOLL')
+    context 'when senec_request_mode is :minimal (default)' do
+      it 'gets current_state' do
+        expect(solectrus_record.current_state).to be_nil
+      end
+
+      it 'gets current_state_ok' do
+        expect(solectrus_record.current_state_ok).to be_nil
+      end
+
+      it 'gets case_temp' do
+        expect(solectrus_record.case_temp).to be_nil
+      end
+
+      it 'gets application_version' do
+        expect(solectrus_record.application_version).to be_nil
+      end
     end
 
-    it 'gets current_state_ok' do
-      expect(solectrus_record.current_state_ok).to be(true)
-    end
+    context 'when senec_request_mode is :full' do
+      let(:senec_request_mode) { :full }
 
-    it 'gets case_temp' do
-      expect(solectrus_record.case_temp).to eq(34.5)
-    end
+      let(:mock_system_details) do
+        {
+          'casing' => {
+            'temperatureInCelsius' => 34.451965,
+          },
+          'mcu' => {
+            'mainControllerUnitState' => {
+              'name' => 'AKKU_VOLL',
+              'severity' => 'INFO',
+            },
+            'firmwareVersion' => '826',
+          },
+        }
+      end
 
-    it 'gets application_version' do
-      expect(solectrus_record.application_version).to eq('826')
+      it 'gets current_state' do
+        expect(solectrus_record.current_state).to eq('AKKU VOLL')
+      end
+
+      it 'gets current_state_ok' do
+        expect(solectrus_record.current_state_ok).to be(true)
+      end
+
+      it 'gets case_temp' do
+        expect(solectrus_record.case_temp).to eq(34.5)
+      end
+
+      it 'gets application_version' do
+        expect(solectrus_record.application_version).to eq('826')
+      end
     end
 
     context 'when Home.4' do

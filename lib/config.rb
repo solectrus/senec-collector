@@ -13,6 +13,7 @@ KEYS = %i[
   senec_password
   senec_system_id
   senec_ignore
+  senec_request_mode
   influx_schema
   influx_host
   influx_port
@@ -27,6 +28,7 @@ DEFAULTS = {
   senec_schema: :https,
   senec_language: :de,
   senec_ignore: [],
+  senec_request_mode: :minimal,
   influx_schema: :http,
   influx_port: 8086,
   influx_measurement: 'SENEC',
@@ -49,7 +51,8 @@ Config =
         next unless self[key]
 
         case key
-        when :senec_adapter, :senec_schema, :senec_language, :influx_schema
+        when :senec_adapter, :senec_schema, :senec_language, :influx_schema,
+             :senec_request_mode
           self[key] = self[key].to_sym
         when :senec_interval, :influx_port
           self[key] = self[key].to_i
@@ -95,6 +98,7 @@ Config =
       validate_influx_settings!
       validate_senec_interval!
       validate_senec_ignore!
+      validate_senec_request_mode!
     end
 
     def influx_url
@@ -147,6 +151,11 @@ Config =
       senec_ignore.all? do |key|
         SolectrusRecord::KEYS.include?(key) || throw("SENEC_IGNORE contains unknown field: #{key}")
       end
+    end
+
+    def validate_senec_request_mode!
+      %i[minimal full].include?(senec_request_mode) ||
+        throw("SENEC_REQUEST_MODE is invalid: #{senec_request_mode}")
     end
 
     def validate_influx_settings!

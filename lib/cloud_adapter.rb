@@ -10,6 +10,13 @@ class CloudAdapter
     @config = config
 
     logger.info "Pulling from SENEC cloud every #{config.senec_interval} seconds"
+
+    case config.senec_request_mode
+    when :minimal
+      logger.info 'SENEC_REQUEST_MODE is set to "minimal", so we send just one API request each time'
+    when :full
+      logger.info 'SENEC_REQUEST_MODE is set to "full", so we send two API requests each time to get additional data'
+    end
   end
 
   attr_reader :config
@@ -87,7 +94,13 @@ class CloudAdapter
   end
 
   def system_details
-    @system_details ||= connection.system_details(system_id)
+    @system_details ||=
+      case config.senec_request_mode
+      when :minimal
+        {}
+      when :full
+        connection.system_details(system_id)
+      end
   end
 
   def raw_record_hash
@@ -164,8 +177,8 @@ class CloudAdapter
   def current_state
     raw_state = system_details.dig('mcu', 'mainControllerUnitState', 'name')
 
-    # The Home.4 has two states that are not useful for us
-    return if %w[UNKNOWN RUN_GRID].include?(raw_state)
+    # The Home.4 has two states that are not useful
+    return if ['UNKNOWN', 'RUN_GRID', nil].include?(raw_state)
 
     raw_state.tr('_', ' ')
   end

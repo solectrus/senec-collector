@@ -52,6 +52,7 @@ class CloudAdapter
     # Reset data cache to force a new request
     @dashboard = nil
     @system_details = nil
+    @wallboxes = nil
 
     SolectrusRecord
       .new(id, record_hash)

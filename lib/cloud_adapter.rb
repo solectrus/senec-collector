@@ -163,7 +163,9 @@ class CloudAdapter
 
   def current_state
     raw_state = system_details.dig('mcu', 'mainControllerUnitState', 'name')
-    return if raw_state == 'UNKNOWN'
+
+    # The Home.4 has two states that are not useful for us
+    return if %w[UNKNOWN RUN_GRID].include?(raw_state)
 
     raw_state.tr('_', ' ')
   end

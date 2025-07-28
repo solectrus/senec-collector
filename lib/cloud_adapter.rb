@@ -208,17 +208,22 @@ class CloudAdapter
   end
 
   def current_state
+    # On a Home.4 system, the returned status text is in English with unclear meaning
+    # (e.g. "RUN_GRID" or "TURNING_ON"), and the severity field is always empty.
+    # On a V3 system, the status text is in German (e.g. "NETZ_UND_ENTLADEN") and
+    # severity is always present.
+    #
+    # To avoid confusion, the status text is only returned if severity is set.
+    severity = system_details.dig('mcu', 'mainControllerUnitState', 'severity')
+    return unless severity
+
     raw_state = system_details.dig('mcu', 'mainControllerUnitState', 'name')
-
-    # The Home.4 has two states that are not useful
-    return if ['UNKNOWN', 'RUN_GRID', nil].include?(raw_state)
-
-    raw_state.tr('_', ' ')
+    raw_state&.tr('_', ' ')
   end
 
   def current_state_ok
     severity = system_details.dig('mcu', 'mainControllerUnitState', 'severity')
-    return if severity.nil?
+    return unless severity
 
     severity == 'INFO'
   end

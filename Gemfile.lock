@@ -139,7 +139,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
     ruby-progressbar (1.13.0)
-    senec (0.20.0)
+    senec (0.21.0)
       faraday
       faraday-net_http_persistent
       faraday-request-timer

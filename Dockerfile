@@ -1,21 +1,34 @@
-FROM ruby:3.4.3-alpine AS builder
+FROM ruby:3.4.5-alpine AS builder
 RUN apk add --no-cache build-base
 
 WORKDIR /senec-collector
 COPY Gemfile* /senec-collector/
-RUN bundle config --local frozen 1 && \
-    bundle config --local without 'development test' && \
-    bundle install -j4 --retry 3 && \
-    bundle clean --force
+RUN bundle config set path /usr/local/bundle && \
+    bundle config set without 'development test' && \
+    bundle install --jobs $(nproc) --retry 3 && \
+    bundle clean --force && \
+    # Remove unneeded files from installed gems (cache, .git, *.o, *.c)
+    rm -rf /usr/local/bundle/ruby/*/cache && \
+    rm -rf /usr/local/bundle/ruby/*/gems/*/.git && \
+    find /usr/local/bundle -type f \( \
+    -name '*.c' -o \
+    -name '*.o' -o \
+    -name '*.log' -o \
+    -name 'gem_make.out' \
+    \) -delete && \
+    find /usr/local/bundle -name '*.so' -exec strip --strip-unneeded {} +
 
-FROM ruby:3.4.3-alpine
+FROM ruby:3.4.5-alpine
 LABEL maintainer="georg@ledermann.dev"
 
 # Add tzdata to get correct timezone
 RUN apk add --no-cache tzdata
 
-# Decrease memory usage
-ENV MALLOC_ARENA_MAX=2
+ENV \
+    # Decrease memory usage
+    MALLOC_ARENA_MAX=2 \
+    # Enable YJIT
+    RUBYOPT=--yjit
 
 # Move build arguments to environment variables
 ARG BUILDTIME

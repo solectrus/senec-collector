@@ -3,6 +3,7 @@ require 'forwardable'
 
 class LocalAdapter
   extend Forwardable
+
   def_delegators :config, :logger
 
   def initialize(config:)
@@ -136,7 +137,7 @@ class LocalAdapter
   ].freeze
   private_constant :OK_STATES
 
-  def current_state_ok
+  def current_state_ok # rubocop:disable Naming/PredicateMethod
     OK_STATES.include? current_state_code
   end
 
@@ -192,7 +193,7 @@ class LocalAdapter
     data.bat_voltage
   end
 
-  def ev_connected
+  def ev_connected # rubocop:disable Naming/PredicateMethod
     data.ev_connected.any?(&:positive?)
   end
 

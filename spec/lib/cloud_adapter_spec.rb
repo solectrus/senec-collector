@@ -2,118 +2,254 @@ require 'cloud_adapter'
 require 'config'
 
 describe CloudAdapter do
-  subject(:adapter) do
-    described_class.new(config:)
+  subject(:adapter) { described_class.new(config:) }
+
+  let(:config) do
+    Config.from_env(
+      senec_adapter: :cloud,
+      senec_interval: 60,
+      senec_system_id:,
+      senec_request_mode:,
+    )
   end
 
-  let(:config) { Config.from_env(senec_adapter: :cloud, senec_interval: 60, senec_system_id:, senec_token:) }
   let(:senec_system_id) { nil }
-  let(:senec_token) { nil }
+  let(:senec_request_mode) { :minimal }
+
+  let(:mock_systems) do
+    [
+      {
+        'id' => 999_999,
+        'controlUnitNumber' => '999999',
+        'caseNumber' => '123456',
+        'wallboxIds' => ['1'],
+      },
+    ]
+  end
+
+  let(:mock_dashboard) do
+    {
+      'systemId' => 999_999,
+      'currently' => {
+        'powerGenerationInW' => 4200.0,
+        'powerConsumptionInW' => 4300.0,
+        'gridFeedInInW' => 1600.0,
+        'gridDrawInW' => 100.0,
+        'batteryChargeInW' => 0.0,
+        'batteryDischargeInW' => 800.0,
+        'batteryLevelInPercent' => 75.3,
+        'selfSufficiencyInPercent' => 100.0,
+        'wallboxInW' => 11_000.0,
+      },
+      'timestamp' => '2025-07-25T16:03:08Z',
+      'electricVehicleConnected' => true,
+    }
+  end
+
+  let(:mock_system_details) { {} }
+  let(:mock_wallbox) { {} }
+
+  let(:mock_connection) do
+    instance_double(
+      Senec::Cloud::Connection,
+      systems: mock_systems,
+      dashboard: mock_dashboard,
+      system_details: mock_system_details,
+      wallbox: mock_wallbox,
+    )
+  end
 
   before do
     config.logger = MemoryLogger.new
+
+    allow(Senec::Cloud::Connection).to receive(:new).and_return(mock_connection)
   end
 
   describe '#initialize' do
     before { adapter }
 
-    it { expect(config.logger.info_messages).to include('Pulling from SENEC cloud every 60 seconds') }
+    it do
+      expect(config.logger.info_messages).to include(
+        'Pulling from SENEC cloud every 60 seconds',
+      )
+    end
   end
 
   describe '#connection' do
     subject { adapter.connection }
 
-    it { is_expected.to be_a(Senec::Cloud::Connection) }
+    it { is_expected.to be(mock_connection) }
   end
 
   describe '#solectrus_record' do
     subject(:solectrus_record) { adapter.solectrus_record }
 
-    shared_examples 'a SolectrusRecord' do
-      it { is_expected.to be_a(SolectrusRecord) }
+    it { is_expected.to be_a(SolectrusRecord) }
 
-      it 'has an automatic id' do
-        expect(solectrus_record.id).to eq(1)
+    it 'has an automatic id' do
+      expect(solectrus_record.id).to eq(1)
+    end
+
+    it 'gets measure_time' do
+      expect(solectrus_record.measure_time).to eq(1_753_459_388)
+    end
+
+    it 'gets inverter_power' do
+      expect(solectrus_record.inverter_power).to eq(4200)
+    end
+
+    it 'gets house_power' do
+      expect(solectrus_record.house_power).to eq(4300)
+    end
+
+    it 'gets grid_power_minus' do
+      expect(solectrus_record.grid_power_minus).to eq(1600)
+    end
+
+    it 'gets grid_power_plus' do
+      expect(solectrus_record.grid_power_plus).to eq(100)
+    end
+
+    it 'gets bat_power_minus' do
+      expect(solectrus_record.bat_power_minus).to eq(800)
+    end
+
+    it 'gets bat_power_plus' do
+      expect(solectrus_record.bat_power_plus).to eq(0)
+    end
+
+    it 'gets bat_fuel_charge' do
+      expect(solectrus_record.bat_fuel_charge).to eq(75.3)
+    end
+
+    it 'gets wallbox_charge_power' do
+      expect(solectrus_record.wallbox_charge_power).to eq(11_000)
+    end
+
+    it 'gets ev_connected' do
+      expect(solectrus_record.ev_connected).to be(true)
+    end
+
+    context 'when senec_request_mode is :minimal (default)' do
+      it 'gets current_state' do
+        expect(solectrus_record.current_state).to be_nil
       end
 
-      it 'has a valid measure_time' do
-        expect(solectrus_record.measure_time).to be > 1_700_000_000
+      it 'gets current_state_ok' do
+        expect(solectrus_record.current_state_ok).to be_nil
       end
 
-      it 'has a valid inverter_power' do
-        expect(solectrus_record.inverter_power).to be >= 0
+      it 'gets case_temp' do
+        expect(solectrus_record.case_temp).to be_nil
       end
 
-      it 'has a valid house_power' do
-        expect(solectrus_record.house_power).to be >= 0
-      end
-
-      it 'has a valid grid_power_minus' do
-        expect(solectrus_record.grid_power_minus).to be >= 0
-      end
-
-      it 'has a valid grid_power_plus' do
-        expect(solectrus_record.grid_power_plus).to be >= 0
-      end
-
-      it 'has a valid bat_power_minus' do
-        expect(solectrus_record.bat_power_minus).to be >= 0
-      end
-
-      it 'has a valid bat_power_plus' do
-        expect(solectrus_record.bat_power_plus).to be >= 0
-      end
-
-      it 'has a valid bat_fuel_charge' do
-        expect(solectrus_record.bat_fuel_charge).to be >= 0
-      end
-
-      it 'has a valid bat_charge_current' do
-        expect(solectrus_record.bat_charge_current).to be_a(Float)
-      end
-
-      it 'has a valid bat_voltage' do
-        expect(solectrus_record.bat_voltage).to be_a(Float)
-      end
-
-      it 'has a valid case_temp' do
-        expect(solectrus_record.case_temp).to be > 20
-      end
-
-      context 'with senec_ignore' do
-        let(:config) do
-          Config.from_env(
-            senec_adapter: :cloud,
-            senec_ignore: 'wallbox_charge_power,house_power',
-          )
-        end
-
-        it 'removes keys for ignored fields' do
-          expect(solectrus_record.to_hash.keys).not_to include(:wallbox_charge_power, :house_power)
-        end
-
-        it 'contains others' do
-          expect(solectrus_record.to_hash.keys).to include(:inverter_power)
-        end
+      it 'gets application_version' do
+        expect(solectrus_record.application_version).to be_nil
       end
     end
 
-    shared_examples 'a SolectrusRecord for V3' do
-      it 'has a valid current_state' do
-        expect(solectrus_record.current_state).to be_a(String)
+    context 'when senec_request_mode is :full' do
+      let(:senec_request_mode) { :full }
+
+      let(:mock_system_details) do
+        {
+          'casing' => {
+            'temperatureInCelsius' => 34.451965,
+          },
+          'mcu' => {
+            'mainControllerUnitState' => {
+              'name' => 'AKKU_VOLL',
+              'severity' => 'INFO',
+            },
+            'firmwareVersion' => '826',
+          },
+        }
       end
 
-      it 'has a valid current_state_ok' do
+      it 'gets current_state' do
+        expect(solectrus_record.current_state).to eq('AKKU VOLL')
+      end
+
+      it 'gets current_state_ok' do
         expect(solectrus_record.current_state_ok).to be(true)
       end
 
-      it 'has a valid application_version' do
-        expect(solectrus_record.application_version.to_i).to be >= 826
+      it 'gets case_temp' do
+        expect(solectrus_record.case_temp).to eq(34.5)
+      end
+
+      it 'gets application_version' do
+        expect(solectrus_record.application_version).to eq('826')
       end
     end
 
-    shared_examples 'a SolectrusRecord for V4' do
-      it 'has no current_state' do
+    context 'without wallbox' do
+      let(:mock_systems) do
+        [
+          {
+            'id' => 999_999,
+            'controlUnitNumber' => '999999',
+            'caseNumber' => '123456',
+            'wallboxIds' => [],
+          },
+        ]
+      end
+
+      let(:mock_dashboard) do
+        {
+          'systemId' => 999_999,
+          'currently' => {
+            'powerGenerationInW' => 4200.0,
+            'powerConsumptionInW' => 900.0,
+            'gridFeedInInW' => 1600.0,
+            'gridDrawInW' => 100.0,
+            'batteryChargeInW' => 0.0,
+            'batteryDischargeInW' => 800.0,
+            'batteryLevelInPercent' => 75.3,
+            'selfSufficiencyInPercent' => 100.0,
+          },
+          'timestamp' => '2025-07-25T16:03:08Z',
+        }
+      end
+
+      it 'has no wallbox_charge_power' do
+        expect(solectrus_record.wallbox_charge_power).to be_nil
+      end
+
+      it 'has unmodified house_power' do
+        expect(solectrus_record.house_power).to eq(900)
+      end
+    end
+
+    context 'when Home.4' do
+      let(:mock_system_details) do
+        {
+          'mcu' => {
+            'mainControllerUnitState' => {
+              'name' => 'RUN_GRID',
+              'severity' => nil,
+            },
+            'firmwareVersion' => 'SENEC_OS_V_4_3_2',
+          },
+        }
+      end
+
+      let(:mock_systems) do
+        [
+          {
+            'id' => 999_999,
+            'controlUnitNumber' => '999999',
+            'caseNumber' => '123456',
+            'wallboxIds' => ['abcdef12-1234-42ab-84de-abcdef123456'],
+          },
+        ]
+      end
+
+      let(:mock_wallbox) do
+        { 'chargingCurrents' => { 'currentApparentChargingPowerInKw' => 2.1 } }
+      end
+
+      it 'has no status' do
         expect(solectrus_record.current_state).to be_nil
       end
 
@@ -121,111 +257,34 @@ describe CloudAdapter do
         expect(solectrus_record.current_state_ok).to be_nil
       end
 
-      it 'has no application_version' do
-        expect(solectrus_record.application_version).to be_nil
+      it 'has wallbox_charge_power' do
+        expect(solectrus_record.wallbox_charge_power).to eq(2100)
+      end
+
+      it 'has modified house_power' do
+        expect(solectrus_record.house_power).to eq(4300 - 2100)
       end
     end
 
-    context 'when SENEC.Home V3' do
-      context 'with a system id', vcr: 'senec-cloud-given-system' do
-        let(:senec_system_id) { ENV.fetch('SENEC_SYSTEM_ID') }
-
-        it_behaves_like 'a SolectrusRecord'
-        it_behaves_like 'a SolectrusRecord for V3'
+    context 'with senec_ignore' do
+      let(:config) do
+        Config.from_env(
+          senec_adapter: :cloud,
+          senec_ignore: 'wallbox_charge_power,house_power',
+          senec_system_id: nil,
+        )
       end
 
-      context 'with token', vcr: 'senec-cloud-with-token' do
-        let(:senec_system_id) { nil }
-        let(:senec_token) { ENV.fetch('SENEC_TOKEN') }
-
-        it_behaves_like 'a SolectrusRecord'
-        it_behaves_like 'a SolectrusRecord for V3'
+      it 'removes keys for ignored fields' do
+        expect(solectrus_record.to_hash.keys).not_to include(
+          :wallbox_charge_power,
+          :house_power,
+        )
       end
 
-      context 'without a system id', vcr: 'senec-cloud-first-system' do
-        let(:senec_system_id) { nil }
-
-        it_behaves_like 'a SolectrusRecord'
-        it_behaves_like 'a SolectrusRecord for V3'
+      it 'contains others' do
+        expect(solectrus_record.to_hash.keys).to include(:inverter_power)
       end
-    end
-
-    context 'when SENEC.Home 4' do
-      context 'with a system id' do
-        let(:senec_system_id) { ENV.fetch('SENEC_SYSTEM_ID') }
-
-        let(:technical_data) do
-          {
-            casing: {
-              temperatureInCelsius: 28.0,
-            },
-            mcu: {
-              mainControllerState: { name: 'UNKNOWN', severity: 'WARNING' },
-            },
-            batteryPack: {
-              currentVoltageInV: 193.0,
-              currentCurrentInA: 0.0299,
-            },
-          }
-        end
-
-        let(:dashboard_data) do
-          {
-            currently: {
-              powerGenerationInW: 185.643564,
-              powerConsumptionInW: 1067.45,
-              gridFeedInInW: 1.0e-05,
-              gridDrawInW: 852.80012376238,
-              batteryChargeInW: 1.0e-05,
-              batteryDischargeInW: 17.40408415842,
-              batteryLevelInPercent: 1.0e-05,
-              selfSufficiencyInPercent: 20.11,
-              wallboxInW: 1.0e-05,
-            },
-            today: {
-              powerGenerationInWh: 117.1875,
-              powerConsumptionInWh: 11_863.28,
-              gridFeedInInWh: 0.0,
-              gridDrawInWh: 11_608.88671875,
-              batteryChargeInWh: 0.0,
-              batteryDischargeInWh: 141.11328125,
-              batteryLevelInPercent: 1.0e-05,
-              selfSufficiencyInPercent: 2.14,
-              wallboxInWh: 0.0,
-            },
-            timestamp: '2025-01-11T09:11:01Z',
-            electricVehicleConnected: false,
-          }
-        end
-
-        before do
-          stub_request(:post, 'https://app-gateway.prod.senec.dev/v1/senec/login')
-          stub_request(:get, "https://app-gateway.prod.senec.dev/v2/senec/systems/#{senec_system_id}/dashboard").to_return(
-            headers: { content_type: 'application/json' }, body: dashboard_data.to_json,
-          )
-          stub_request(:get, "https://app-gateway.prod.senec.dev/v1/senec/systems/#{senec_system_id}/technical-data")
-            .to_return(status: 200, headers: { content_type: 'application/json' }, body: technical_data.to_json)
-        end
-
-        it_behaves_like 'a SolectrusRecord'
-        it_behaves_like 'a SolectrusRecord for V4'
-      end
-    end
-
-    it 'handles error in Dashboard request' do
-      allow(Senec::Cloud::Dashboard).to receive(:new).and_raise(StandardError)
-
-      expect do
-        solectrus_record
-      end.to change(config.logger, :error_messages).to include(/Error getting data from SENEC cloud/)
-    end
-
-    it 'handles error in TechnicalData request' do
-      allow(Senec::Cloud::TechnicalData).to receive(:new).and_raise(StandardError)
-
-      expect do
-        solectrus_record
-      end.to change(config.logger, :error_messages).to include(/Error getting data from SENEC cloud/)
     end
   end
 end

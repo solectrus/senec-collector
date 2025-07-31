@@ -3,6 +3,7 @@ require 'forwardable'
 
 class InfluxPush
   extend Forwardable
+
   def_delegators :config, :logger
 
   def initialize(config:, queue:)
@@ -12,6 +13,10 @@ class InfluxPush
   end
 
   attr_reader :config, :queue, :flux_writer
+
+  def ready?
+    flux_writer.ready?
+  end
 
   def run
     until queue.closed?

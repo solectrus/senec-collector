@@ -11,9 +11,9 @@ KEYS = %i[
   senec_language
   senec_username
   senec_password
-  senec_token
   senec_system_id
   senec_ignore
+  senec_request_mode
   influx_schema
   influx_host
   influx_port
@@ -28,6 +28,7 @@ DEFAULTS = {
   senec_schema: :https,
   senec_language: :de,
   senec_ignore: [],
+  senec_request_mode: :minimal,
   influx_schema: :http,
   influx_port: 8086,
   influx_measurement: 'SENEC',
@@ -50,7 +51,8 @@ Config =
         next unless self[key]
 
         case key
-        when :senec_adapter, :senec_schema, :senec_language, :influx_schema
+        when :senec_adapter, :senec_schema, :senec_language, :influx_schema,
+             :senec_request_mode
           self[key] = self[key].to_sym
         when :senec_interval, :influx_port
           self[key] = self[key].to_i
@@ -72,12 +74,12 @@ Config =
       minimum = case senec_adapter
                 when :local
                   # Be careful with your local SENEC device, do not flood it with queries.
-                  # 12 requests/min is the maximum.
+                  # 12 requests/min is the maximum (= 5 seconds interval).
                   5
                 when :cloud
                   # Let's be nice to SENEC.
-                  # 2 requests/min is the maximum.
-                  30
+                  # 1 request/min is the maximum (= 60 seconds interval).
+                  60
                 end
 
       self[:senec_interval] = minimum if senec_interval < minimum
@@ -96,6 +98,7 @@ Config =
       validate_influx_settings!
       validate_senec_interval!
       validate_senec_ignore!
+      validate_senec_request_mode!
     end
 
     def influx_url
@@ -148,6 +151,11 @@ Config =
       senec_ignore.all? do |key|
         SolectrusRecord::KEYS.include?(key) || throw("SENEC_IGNORE contains unknown field: #{key}")
       end
+    end
+
+    def validate_senec_request_mode!
+      %i[minimal full].include?(senec_request_mode) ||
+        throw("SENEC_REQUEST_MODE is invalid: #{senec_request_mode}")
     end
 
     def validate_influx_settings!

@@ -29,6 +29,7 @@ class SolectrusRecord
     wallbox_charge_power1
     wallbox_charge_power2
     wallbox_charge_power3
+    ev_connected
     grid_power_plus
     grid_power_minus
     current_state

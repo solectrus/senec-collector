@@ -1,5 +1,13 @@
 require 'simplecov'
-SimpleCov.start
+require 'simplecov_json_formatter'
+SimpleCov.start do
+  formatter SimpleCov::Formatter::MultiFormatter.new(
+    [
+      SimpleCov::Formatter::JSONFormatter,
+      SimpleCov::Formatter::HTMLFormatter,
+    ],
+  )
+end
 
 require 'bundler/setup'
 Bundler.require
@@ -57,6 +65,8 @@ RSpec.configure do |config|
   # inherited by the metadata hash of host groups and examples, rather than
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
+
+  config.filter_run_when_matching :focus
 
   # The settings below are suggested to provide a good initial experience
   # with RSpec, but feel free to customize to your heart's content.

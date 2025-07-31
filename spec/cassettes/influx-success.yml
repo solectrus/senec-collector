@@ -5,15 +5,16 @@ http_interactions:
     uri: http://<INFLUX_HOST>:8086/api/v2/write?bucket=<INFLUX_BUCKET>&org=<INFLUX_ORG>&precision=s
     body:
       encoding: UTF-8
-      string: my-pv-measurement application_version="0826",bat_charge_current=46.5,bat_fuel_charge=67.7,bat_power_minus=0i,bat_power_plus=2539i,bat_voltage=54.6,case_temp=35.3,current_state="LADEN",current_state_code=14i,current_state_ok=true,ev_connected=false,grid_power_minus=3302i,grid_power_plus=0i,house_power=799i,inverter_power=6638i,measure_time=1724408272i,mpp1_power=3411i,mpp2_power=0i,mpp3_power=3227i,power_ratio=100.0,response_duration=0i,wallbox_charge_power=0i,wallbox_charge_power0=0i,wallbox_charge_power1=0i,wallbox_charge_power2=0i,wallbox_charge_power3=0i
-        1724408272
+      string: my-pv-measurement application_version="0826",bat_charge_current=-1.4,bat_fuel_charge=0.0,bat_power_minus=64i,bat_power_plus=0i,bat_voltage=46.0,case_temp=34.6,current_state="AKKU
+        LEER",current_state_code=15i,current_state_ok=true,ev_connected=false,grid_power_minus=0i,grid_power_plus=1862i,house_power=2739i,inverter_power=812i,measure_time=1730550927i,mpp1_power=411i,mpp2_power=0i,mpp3_power=401i,power_ratio=100.0,response_duration=0i,wallbox_charge_power=0i,wallbox_charge_power0=0i,wallbox_charge_power1=0i,wallbox_charge_power2=0i,wallbox_charge_power3=0i
+        1730550927
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
       User-Agent:
-      - influxdb-client-ruby/3.1.0
+      - influxdb-client-ruby/3.2.0
       Authorization:
       - Token <INFLUX_TOKEN>
       Content-Type:
@@ -26,11 +27,43 @@ http_interactions:
       X-Influxdb-Build:
       - OSS
       X-Influxdb-Version:
-      - v2.7.10
+      - v2.7.11
       Date:
-      - Fri, 23 Aug 2024 10:41:22 GMT
+      - Wed, 07 May 2025 09:50:52 GMT
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Fri, 23 Aug 2024 10:41:22 GMT
+  recorded_at: Wed, 07 May 2025 09:50:52 GMT
+- request:
+    method: get
+    uri: http://<INFLUX_HOST>:8086/ping
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - influxdb-client-ruby/3.2.0
+      Authorization:
+      - Token <INFLUX_TOKEN>
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Vary:
+      - Accept-Encoding
+      X-Influxdb-Build:
+      - OSS
+      X-Influxdb-Version:
+      - v2.7.11
+      Date:
+      - Wed, 07 May 2025 09:51:28 GMT
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Wed, 07 May 2025 09:51:28 GMT
 recorded_with: VCR 6.3.1

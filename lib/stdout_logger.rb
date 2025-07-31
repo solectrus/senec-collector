@@ -4,8 +4,12 @@ class StdoutLogger
     $stdout.sync = true
   end
 
-  def info(message)
-    puts message
+  def info(message, newline: true)
+    if newline
+      puts message
+    else
+      print message
+    end
   end
 
   def error(message)

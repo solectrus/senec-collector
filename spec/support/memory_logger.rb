@@ -6,7 +6,7 @@ class MemoryLogger
 
   attr_reader :info_messages, :error_messages
 
-  def info(message)
+  def info(message, **)
     @info_messages << message
   end
 

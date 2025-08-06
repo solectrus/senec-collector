@@ -146,6 +146,22 @@ Config =
       end
 
       senec_username.include?('@') || throw('SENEC_USERNAME is invalid')
+
+      validate_senec_totp_uri! if senec_totp_uri.present?
+    end
+
+    def validate_senec_totp_uri!
+      uri = URI.parse(senec_totp_uri)
+
+      uri.scheme == 'otpauth' ||
+        throw('SENEC_TOTP_URI must start with otpauth://')
+
+      params = URI.decode_www_form(uri.query || '').to_h
+      secret = params['secret']
+
+      secret.present? || throw('SENEC_TOTP_URI must contain a secret parameter')
+    rescue URI::InvalidURIError
+      throw('SENEC_TOTP_URI is not a valid URI')
     end
 
     def validate_senec_ignore!

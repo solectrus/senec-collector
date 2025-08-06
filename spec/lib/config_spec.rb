@@ -21,13 +21,6 @@ describe Config do
       senec_adapter: 'cloud',
       senec_username: 'mail@example.com',
       senec_password: 'secret',
-      senec_totp_uri:
-        'otpauth://totp/SENEC:mail%40example.com' \
-          '?secret=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' \
-          '&digits=6' \
-          '&algorithm=SHA1' \
-          '&issuer=SENEC' \
-          '&period=30',
     )
   end
 
@@ -107,6 +100,36 @@ describe Config do
         expect do
           described_class.new(valid_cloud_options.merge(senec_password: nil))
         end.to raise_error(Exception, /SENEC_PASSWORD is missing/)
+      end
+
+      it 'raises an error for invalid SENEC_TOTP_URI' do
+        expect do
+          described_class.new(valid_cloud_options.merge(senec_totp_uri: 'this is not a URI'))
+        end.to raise_error(Exception, /SENEC_TOTP_URI is not a valid URI/)
+
+        expect do
+          described_class.new(valid_cloud_options.merge(senec_totp_uri: 'ftp://example.com'))
+        end.to raise_error(Exception, %r{SENEC_TOTP_URI must start with otpauth://})
+
+        expect do
+          described_class.new(valid_cloud_options.merge(senec_totp_uri: 'otpauth://totp/SENEC:mail%40example.com'))
+        end.to raise_error(Exception, /SENEC_TOTP_URI must contain a secret parameter/)
+      end
+
+      it 'accepts valid SENEC_TOTP_URI' do
+        senec_totp_uri =
+          'otpauth://totp/SENEC:mail%40example.com' \
+            '?secret=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' \
+            '&digits=6' \
+            '&algorithm=SHA1' \
+            '&issuer=SENEC' \
+            '&period=30'
+
+        config = described_class.new(
+          valid_cloud_options.merge(senec_totp_uri:),
+        )
+
+        expect(config.senec_totp_uri).to eq(senec_totp_uri)
       end
     end
   end

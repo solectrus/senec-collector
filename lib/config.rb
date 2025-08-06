@@ -11,6 +11,7 @@ KEYS = %i[
   senec_language
   senec_username
   senec_password
+  senec_totp_uri
   senec_system_id
   senec_ignore
   senec_request_mode

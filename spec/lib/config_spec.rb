@@ -21,6 +21,13 @@ describe Config do
       senec_adapter: 'cloud',
       senec_username: 'mail@example.com',
       senec_password: 'secret',
+      senec_totp_uri:
+        'otpauth://totp/SENEC:mail%40example.com' \
+          '?secret=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' \
+          '&digits=6' \
+          '&algorithm=SHA1' \
+          '&issuer=SENEC' \
+          '&period=30',
     )
   end
 

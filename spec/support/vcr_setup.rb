@@ -14,6 +14,7 @@ VCR.configure do |config|
     SENEC_HOST
     SENEC_USERNAME
     SENEC_PASSWORD
+    SENEC_TOTP_URI
     SENEC_SYSTEM_ID
   ]
   sensitive_environment_variables.each do |key_name|

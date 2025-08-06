@@ -26,6 +26,7 @@ class CloudAdapter
       Senec::Cloud::Connection.new(
         username: config.senec_username,
         password: config.senec_password,
+        totp_uri: config.senec_totp_uri,
         user_agent:,
       )
   end

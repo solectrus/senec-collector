@@ -28,7 +28,8 @@ GEM
     faraday-request-timer (0.2.0)
       faraday (>= 0.9.0)
     ffi (1.17.2)
-    formatador (1.1.1)
+    formatador (1.2.0)
+      reline
     guard (2.19.1)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -49,6 +50,7 @@ GEM
     hashie (5.0.0)
     influxdb-client (3.2.0)
       csv
+    io-console (0.8.1)
     json (2.13.2)
     jwt (3.1.2)
       base64
@@ -99,6 +101,8 @@ GEM
     rb-inotify (0.11.1)
       ffi (~> 1.0)
     regexp_parser (2.11.1)
+    reline (0.6.2)
+      io-console (~> 0.5)
     rexml (3.4.1)
     rotp (6.3.0)
     rspec (3.13.1)

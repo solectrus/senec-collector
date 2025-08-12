@@ -22,7 +22,7 @@ describe CloudAdapter do
         'id' => 999_999,
         'controlUnitNumber' => '999999',
         'caseNumber' => '123456',
-        'wallboxIds' => ['1'],
+        'wallboxIds' => [],
       },
     ]
   end
@@ -39,7 +39,6 @@ describe CloudAdapter do
         'batteryDischargeInW' => 800.0,
         'batteryLevelInPercent' => 75.3,
         'selfSufficiencyInPercent' => 100.0,
-        'wallboxInW' => 11_000.0,
       },
       'timestamp' => '2025-07-25T16:03:08Z',
       'electricVehicleConnected' => true,
@@ -98,10 +97,6 @@ describe CloudAdapter do
       expect(solectrus_record.inverter_power).to eq(4200)
     end
 
-    it 'gets house_power' do
-      expect(solectrus_record.house_power).to eq(4300)
-    end
-
     it 'gets grid_power_minus' do
       expect(solectrus_record.grid_power_minus).to eq(1600)
     end
@@ -120,10 +115,6 @@ describe CloudAdapter do
 
     it 'gets bat_fuel_charge' do
       expect(solectrus_record.bat_fuel_charge).to eq(75.3)
-    end
-
-    it 'gets wallbox_charge_power' do
-      expect(solectrus_record.wallbox_charge_power).to eq(11_000)
     end
 
     it 'gets ev_connected' do
@@ -183,41 +174,48 @@ describe CloudAdapter do
       end
     end
 
-    context 'without wallbox' do
-      let(:mock_systems) do
-        [
+    describe 'wallbox_charge_power' do
+      context 'with wallbox' do
+        let(:mock_systems) do
+          [
+            {
+              'id' => 999_999,
+              'controlUnitNumber' => '999999',
+              'caseNumber' => '123456',
+              'wallboxIds' => ['1'],
+            },
+          ]
+        end
+
+        let(:mock_wallbox) do
           {
-            'id' => 999_999,
-            'controlUnitNumber' => '999999',
-            'caseNumber' => '123456',
-            'wallboxIds' => [],
-          },
-        ]
+            'id' => '1',
+            'chargingCurrents' => {
+              'currentApparentChargingPowerInKw' => 11.0,
+            },
+          }
+        end
+
+        it 'calculates total wallbox power' do
+          expect(solectrus_record.wallbox_charge_power).to eq(11_000)
+        end
       end
 
-      let(:mock_dashboard) do
-        {
-          'systemId' => 999_999,
-          'currently' => {
-            'powerGenerationInW' => 4200.0,
-            'powerConsumptionInW' => 900.0,
-            'gridFeedInInW' => 1600.0,
-            'gridDrawInW' => 100.0,
-            'batteryChargeInW' => 0.0,
-            'batteryDischargeInW' => 800.0,
-            'batteryLevelInPercent' => 75.3,
-            'selfSufficiencyInPercent' => 100.0,
-          },
-          'timestamp' => '2025-07-25T16:03:08Z',
-        }
-      end
+      context 'without wallbox' do
+        let(:mock_systems) do
+          [
+            {
+              'id' => 999_999,
+              'controlUnitNumber' => '999999',
+              'caseNumber' => '123456',
+              'wallboxIds' => [],
+            },
+          ]
+        end
 
-      it 'has no wallbox_charge_power' do
-        expect(solectrus_record.wallbox_charge_power).to be_nil
-      end
-
-      it 'has unmodified house_power' do
-        expect(solectrus_record.house_power).to eq(900)
+        it 'returns nil' do
+          expect(solectrus_record.wallbox_charge_power).to be_nil
+        end
       end
     end
 
@@ -234,21 +232,6 @@ describe CloudAdapter do
         }
       end
 
-      let(:mock_systems) do
-        [
-          {
-            'id' => 999_999,
-            'controlUnitNumber' => '999999',
-            'caseNumber' => '123456',
-            'wallboxIds' => ['abcdef12-1234-42ab-84de-abcdef123456'],
-          },
-        ]
-      end
-
-      let(:mock_wallbox) do
-        { 'chargingCurrents' => { 'currentApparentChargingPowerInKw' => 2.1 } }
-      end
-
       it 'has no status' do
         expect(solectrus_record.current_state).to be_nil
       end
@@ -256,13 +239,68 @@ describe CloudAdapter do
       it 'has no current_state_ok' do
         expect(solectrus_record.current_state_ok).to be_nil
       end
+    end
 
-      it 'has wallbox_charge_power' do
-        expect(solectrus_record.wallbox_charge_power).to eq(2100)
+    describe 'house_power' do
+      context 'with wallbox' do
+        let(:mock_systems) do
+          [
+            {
+              'id' => 999_999,
+              'controlUnitNumber' => '999999',
+              'caseNumber' => '123456',
+              'wallboxIds' => ['1'],
+            },
+          ]
+        end
+
+        let(:mock_wallbox) do
+          {
+            'id' => '1',
+            'chargingCurrents' => {
+              'currentApparentChargingPowerInKw' => 11.0,
+            },
+          }
+        end
+
+        it 'subtracts wallbox power from consumption' do
+          # With consumption 4300W and wallbox 11000W: max(4300 - 11000, 0) = 0
+          expect(solectrus_record.house_power).to eq(0)
+        end
       end
 
-      it 'has modified house_power' do
-        expect(solectrus_record.house_power).to eq(4300 - 2100)
+      context 'without wallbox' do
+        let(:mock_systems) do
+          [
+            {
+              'id' => 999_999,
+              'controlUnitNumber' => '999999',
+              'caseNumber' => '123456',
+              'wallboxIds' => [],
+            },
+          ]
+        end
+
+        let(:mock_dashboard) do
+          {
+            'systemId' => 999_999,
+            'currently' => {
+              'powerGenerationInW' => 4200.0,
+              'powerConsumptionInW' => 900.0,
+              'gridFeedInInW' => 1600.0,
+              'gridDrawInW' => 100.0,
+              'batteryChargeInW' => 0.0,
+              'batteryDischargeInW' => 800.0,
+              'batteryLevelInPercent' => 75.3,
+              'selfSufficiencyInPercent' => 100.0,
+            },
+            'timestamp' => '2025-07-25T16:03:08Z',
+          }
+        end
+
+        it 'returns unmodified consumption' do
+          expect(solectrus_record.house_power).to eq(900)
+        end
       end
     end
 

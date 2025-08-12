@@ -26,6 +26,7 @@ class CloudAdapter
       Senec::Cloud::Connection.new(
         username: config.senec_username,
         password: config.senec_password,
+        totp_uri: config.senec_totp_uri,
         user_agent:,
       )
   end
@@ -109,14 +110,6 @@ class CloudAdapter
       end
   end
 
-  def home4_wallbox?
-    system['wallboxIds']&.any? do |wallbox_id|
-      # For V3, the ids are simple numbers as string, like "1", "2", etc.
-      # For Home.4 the ids are UUIDv4 like "abcdef12-1234-42ab-84de-abcdef123456"
-      wallbox_id.include?('-')
-    end
-  end
-
   def raw_record_hash
     {
       current_state:,
@@ -150,29 +143,23 @@ class CloudAdapter
 
   def house_power
     consumption = dashboard.dig('currently', 'powerConsumptionInW')&.round
+    return unless consumption
 
-    if consumption && home4_wallbox?
-      [consumption - (wallbox_charge_power || 0), 0].max
-    else
-      consumption
-    end
+    [consumption - (wallbox_charge_power || 0), 0].max
   end
 
   def wallbox_charge_power
-    if home4_wallbox?
-      # Separate request needed for each wallbox
-      wallboxes
-        &.filter_map do |wallbox|
-          power_in_kw =
-            wallbox.dig('chargingCurrents', 'currentApparentChargingPowerInKw')
+    # Separate request needed for each wallbox
+    return if wallboxes.empty?
 
-          (power_in_kw * 1000).round if power_in_kw
-        end
-        &.sum
-    else
-      # Total is already available in the dashboard
-      dashboard.dig('currently', 'wallboxInW')&.round
-    end
+    wallboxes
+      .filter_map do |wallbox|
+        power_in_kw =
+          wallbox.dig('chargingCurrents', 'currentApparentChargingPowerInKw')
+
+        (power_in_kw * 1000).round if power_in_kw
+      end
+      .sum
   end
 
   def ev_connected

@@ -23,7 +23,7 @@ Tested on:
 
 0. Decide if you want to use the SENEC cloud or a local SENEC device. If you have a SENEC.Home 4, there is no choice - this device is cloud only.
 
-   - SENEC cloud: You need to have an account at mein-senec.de (email + password)
+   - SENEC cloud: You need to have an account at mein-senec.de (email + password + TOTP uri for MFA)
    - Local SENEC device: You need to have a SENEC device in your house that can be reached via LAN
 
 1. Prepare a Linux box (Raspberry Pi, Synology NAS, ...) with Docker installed

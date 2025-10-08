@@ -3,7 +3,7 @@ GEM
   specs:
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    amazing_print (1.8.1)
+    amazing_print (2.0.0)
     ast (2.4.3)
     base64 (0.3.0)
     bigdecimal (3.3.0)

@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+# SSL/TLS and general-purpose cryptography for Ruby (https://github.com/ruby/openssl)
+gem 'openssl'
+
 # Loads environment variables from `.env`. (https://github.com/bkeepers/dotenv)
 gem 'dotenv'
 

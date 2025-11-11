@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+# SSL/TLS and general-purpose cryptography for Ruby (https://github.com/ruby/openssl)
+gem 'openssl'
+
 # Loads environment variables from `.env`. (https://github.com/bkeepers/dotenv)
 gem 'dotenv'
 
@@ -27,7 +30,7 @@ group :development do
 end
 
 group :development, :test do
-  # rspec-3.13.0 (http://github.com/rspec)
+  # rspec-3.13.2 (https://rspec.info)
   gem 'rspec'
 
   # Rake is a Make-like program implemented in Ruby (https://github.com/ruby/rake)

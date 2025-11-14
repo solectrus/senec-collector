@@ -65,8 +65,8 @@ GEM
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
     nenv (0.3.0)
-    net-http (0.7.0)
-      uri
+    net-http (0.8.0)
+      uri (>= 0.11.1)
     net-http-persistent (4.0.6)
       connection_pool (~> 2.2, >= 2.2.4)
     notiffany (0.1.3)

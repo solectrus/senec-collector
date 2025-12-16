@@ -83,7 +83,7 @@ GEM
     oj (3.16.13)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
-    openssl (3.3.2)
+    openssl (4.0.0)
     ostruct (0.6.3)
     parallel (1.27.0)
     parser (3.3.10.0)

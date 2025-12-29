@@ -1,10 +1,5 @@
-FROM ruby:3.4.8-alpine AS builder
+FROM ruby:4.0.0-alpine AS builder
 RUN apk add --no-cache build-base
-
-# Required for installing gem "openssl" on Alpine Linux
-# Remove this after upgrading to Ruby 3.4.8
-RUN apk add --no-cache openssl-dev
-####
 
 WORKDIR /senec-collector
 COPY Gemfile* /senec-collector/
@@ -23,17 +18,11 @@ RUN bundle config set path /usr/local/bundle && \
     \) -delete && \
     find /usr/local/bundle -name '*.so' -exec strip --strip-unneeded {} +
 
-FROM ruby:3.4.8-alpine
+FROM ruby:4.0.0-alpine
 LABEL maintainer="georg@ledermann.dev"
 
 # Add tzdata to get correct timezone
 RUN apk add --no-cache tzdata
-
-# Required for using gem "openssl" on Alpine Linux
-# Remove this after upgrading to Ruby 3.4.8
-RUN apk add --no-cache openssl ca-certificates && \
-    update-ca-certificates
-####
 
 ENV \
     # Decrease memory usage

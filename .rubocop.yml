@@ -4,7 +4,7 @@ plugins:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 3.4
+  TargetRubyVersion: 4.0
   Exclude:
     - Gemfile
     - 'vendor/**/*'

@@ -9,9 +9,6 @@ gem 'influxdb-client'
 # Unofficial Ruby Client for SENEC Home (https://github.com/solectrus/senec)
 gem 'senec'
 
-# A fast JSON parser and serializer. (http://www.ohler.com/oj)
-gem 'oj'
-
 # CSV Reading and Writing (https://github.com/ruby/csv)
 gem 'csv'
 

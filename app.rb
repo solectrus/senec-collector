@@ -10,8 +10,6 @@ require 'loop'
 require 'config'
 require 'stdout_logger'
 
-Oj.mimic_JSON
-
 logger = StdoutLogger.new
 
 logger.info 'SENEC collector for SOLECTRUS, ' \

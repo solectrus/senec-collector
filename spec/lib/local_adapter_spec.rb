@@ -16,7 +16,7 @@ describe LocalAdapter do
   describe '#initialize' do
     before { adapter }
 
-    it { expect(logger.info_messages).to include('Pulling from your local SENEC at https://192.168.178.29 every 5 seconds') }
+    it { expect(logger.info_messages).to include('Pulling from your local SENEC at https://senec.home.arpa every 5 seconds') }
   end
 
   describe '#connection' do

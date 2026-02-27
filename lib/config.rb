@@ -36,8 +36,8 @@ DEFAULTS = {
 }.freeze
 
 Config =
-  Struct.new(*KEYS, keyword_init: true) do
-    def initialize(*options)
+  Struct.new(*KEYS) do
+    def initialize(**)
       super
 
       set_types
@@ -197,11 +197,8 @@ Config =
       (uri.is_a?(URI::HTTP) && uri.host.present?) || throw("URL is invalid: #{url}")
     end
 
-    def self.from_env(options = {})
-      new(
-        KEYS.to_h do |key|
-          [key, ENV.fetch(key.to_s.upcase, nil)]
-        end.merge(options),
-      )
+    def self.from_env(**)
+      env_options = KEYS.to_h { |key| [key, ENV.fetch(key.to_s.upcase, nil)] }
+      new(**env_options, **)
     end
   end

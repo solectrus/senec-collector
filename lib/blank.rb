@@ -1,6 +1,7 @@
 # To not depend on ActiveSupport, we copy the following methods from ActiveSupport:
 # https://github.com/rails/rails/blob/v7.1.3/activesupport/lib/active_support/core_ext/object/blank.rb
 
+# rubocop:disable Style/OneClassPerFile
 class Object
   def blank?
     respond_to?(:empty?) ? !!empty? : !self
@@ -22,3 +23,4 @@ class String
     empty? || BLANK_RE.match?(self)
   end
 end
+# rubocop:enable Style/OneClassPerFile

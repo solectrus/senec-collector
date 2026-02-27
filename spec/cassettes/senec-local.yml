@@ -10,7 +10,7 @@ http_interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Faraday v2.14.0
+      - Faraday v2.14.1
   response:
     status:
       code: 200
@@ -19,7 +19,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Thu, 05 Feb 2026 04:15:58 GMT
+      - Fri, 27 Feb 2026 04:48:53 GMT
       content-type:
       - application/javascript; charset=utf-8
       content-length:
@@ -1144,7 +1144,7 @@ http_interactions:
             2: "NMC",
             3: "NCA-B"
         };
-  recorded_at: Thu, 05 Feb 2026 04:15:58 GMT
+  recorded_at: Fri, 27 Feb 2026 04:48:54 GMT
 - request:
     method: post
     uri: https://<SENEC_HOST>/lala.cgi
@@ -1155,7 +1155,7 @@ http_interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Faraday v2.14.0
+      - Faraday v2.14.1
       Content-Type:
       - application/x-www-form-urlencoded; charset=UTF-8
       Accept:
@@ -1168,7 +1168,7 @@ http_interactions:
       server:
       - nginx/1.17.7
       date:
-      - Thu, 05 Feb 2026 04:15:58 GMT
+      - Fri, 27 Feb 2026 04:48:54 GMT
       content-type:
       - application/json; charset=utf-8
       transfer-encoding:
@@ -1177,8 +1177,8 @@ http_interactions:
       - keep-alive
     body:
       encoding: UTF-8
-      string: '{"ENERGY":{"STAT_STATE":"u8_46","GUI_BAT_DATA_CURRENT":"fl_00000000","GUI_BAT_DATA_FUEL_CHARGE":"fl_00000000","GUI_BAT_DATA_POWER":"fl_00000000","GUI_BAT_DATA_VOLTAGE":"fl_00000000","GUI_GRID_POW":"fl_44D6DEB8","GUI_HOUSE_POW":"fl_44D6DEB8","GUI_INVERTER_POWER":"fl_80000000","STAT_HOURS_OF_OPERATION":"u3_0000B21B"},"WIZARD":{"APPLICATION_VERSION":"st_0826"},"RTC":{"UTC_OFFSET":"i3_0000003C","WEB_TIME":"u3_6984278F"},"PV1":{"MPP_POWER":["fl_00000000","fl_00000000","fl_00000000"],"POWER_RATIO":"fl_42C80000"},"TEMPMEASURE":{"CASE_TEMP":"fl_41D13C5D"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"],"EV_CONNECTED":["u8_01","u8_00","u8_00","u8_00"]}}'
-  recorded_at: Thu, 05 Feb 2026 04:15:58 GMT
+      string: '{"ENERGY":{"STAT_STATE":"u8_46","GUI_BAT_DATA_CURRENT":"fl_00000000","GUI_BAT_DATA_FUEL_CHARGE":"fl_00000000","GUI_BAT_DATA_POWER":"fl_00000000","GUI_BAT_DATA_VOLTAGE":"fl_00000000","GUI_GRID_POW":"fl_43A08CCD","GUI_HOUSE_POW":"fl_43A08CCD","GUI_INVERTER_POWER":"fl_80000000","STAT_HOURS_OF_OPERATION":"u3_0000B42F"},"WIZARD":{"APPLICATION_VERSION":"st_0826"},"RTC":{"UTC_OFFSET":"i3_0000003C","WEB_TIME":"u3_69A13045"},"PV1":{"MPP_POWER":["fl_00000000","fl_00000000","fl_00000000"],"POWER_RATIO":"fl_42C80000"},"TEMPMEASURE":{"CASE_TEMP":"fl_41C2ED9A"},"WALLBOX":{"APPARENT_CHARGING_POWER":["fl_00000000","fl_00000000","fl_00000000","fl_00000000"],"EV_CONNECTED":["u8_00","u8_00","u8_00","u8_00"]}}'
+  recorded_at: Fri, 27 Feb 2026 04:48:54 GMT
 - request:
     method: get
     uri: http://<INFLUX_HOST>:8086/ping
@@ -1206,9 +1206,9 @@ http_interactions:
       X-Influxdb-Version:
       - v2.8.0
       Date:
-      - Thu, 05 Feb 2026 04:16:00 GMT
+      - Fri, 27 Feb 2026 04:48:56 GMT
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Thu, 05 Feb 2026 04:16:00 GMT
+  recorded_at: Fri, 27 Feb 2026 04:48:56 GMT
 recorded_with: VCR 6.4.0

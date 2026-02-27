@@ -26,58 +26,58 @@ describe Config do
 
   describe '#initialize' do
     it 'raises an error for empty options' do
-      expect { described_class.new({}) }.to raise_error(Exception)
+      expect { described_class.new }.to raise_error(Exception)
     end
 
     it 'raises an error for invalid INFLUX_SCHEMA' do
       expect do
-        described_class.new(valid_local_options.merge(influx_schema: 'foo'))
+        described_class.new(**valid_local_options, influx_schema: 'foo')
       end.to raise_error(Exception, /URL is invalid/)
     end
 
     it 'raises an error for missing INFLUX_HOST' do
       expect do
-        described_class.new(valid_local_options.merge(influx_host: nil))
+        described_class.new(**valid_local_options, influx_host: nil)
       end.to raise_error(Exception, /INFLUX_HOST is missing/)
     end
 
     it 'raises an error for missing INFLUX_ORG' do
       expect do
-        described_class.new(valid_local_options.merge(influx_org: nil))
+        described_class.new(**valid_local_options, influx_org: nil)
       end.to raise_error(Exception, /INFLUX_ORG is missing/)
     end
 
     it 'raises an error for missing INFLUX_BUCKET' do
       expect do
-        described_class.new(valid_local_options.merge(influx_bucket: nil))
+        described_class.new(**valid_local_options, influx_bucket: nil)
       end.to raise_error(Exception, /INFLUX_BUCKET is missing/)
     end
 
     it 'raises an error for missing INFLUX_TOKEN' do
       expect do
-        described_class.new(valid_local_options.merge(influx_token: nil))
+        described_class.new(**valid_local_options, influx_token: nil)
       end.to raise_error(Exception, /INFLUX_TOKEN is missing/)
     end
 
     context 'when local' do
       it 'initializes with valid options' do
-        expect { described_class.new(valid_local_options) }.not_to raise_error
+        expect { described_class.new(**valid_local_options) }.not_to raise_error
       end
 
       it 'raises an error for invalid SENEC_SCHEMA' do
         expect do
-          described_class.new(valid_local_options.merge(senec_schema: 'httpss'))
+          described_class.new(**valid_local_options, senec_schema: 'httpss')
         end.to raise_error(Exception, /URL is invalid/)
       end
 
       it 'limits SENEC_INTERVAL for local adapter' do
-        config = described_class.new(valid_local_options.merge(senec_adapter: :local, senec_interval: 1))
+        config = described_class.new(**valid_local_options, senec_adapter: :local, senec_interval: 1)
 
         expect(config.senec_interval).to eq(5)
       end
 
       it 'limits SENEC_INTERVAL for cloud adapter' do
-        config = described_class.new(valid_cloud_options.merge(senec_adapter: :cloud, senec_interval: 1))
+        config = described_class.new(**valid_cloud_options, senec_adapter: :cloud, senec_interval: 1)
 
         expect(config.senec_interval).to eq(60)
       end
@@ -86,33 +86,33 @@ describe Config do
     context 'when cloud' do
       it 'raises an error for missing SENEC_USERNAME' do
         expect do
-          described_class.new(valid_cloud_options.merge(senec_username: nil))
+          described_class.new(**valid_cloud_options, senec_username: nil)
         end.to raise_error(Exception, /SENEC_USERNAME is missing/)
       end
 
       it 'raises an error for invalid SENEC_USERNAME' do
         expect do
-          described_class.new(valid_cloud_options.merge(senec_username: 'foo'))
+          described_class.new(**valid_cloud_options, senec_username: 'foo')
         end.to raise_error(Exception, /SENEC_USERNAME is invalid/)
       end
 
       it 'raises an error for missing SENEC_PASSWORD' do
         expect do
-          described_class.new(valid_cloud_options.merge(senec_password: nil))
+          described_class.new(**valid_cloud_options, senec_password: nil)
         end.to raise_error(Exception, /SENEC_PASSWORD is missing/)
       end
 
       it 'raises an error for invalid SENEC_TOTP_URI' do
         expect do
-          described_class.new(valid_cloud_options.merge(senec_totp_uri: 'this is not a URI'))
+          described_class.new(**valid_cloud_options, senec_totp_uri: 'this is not a URI')
         end.to raise_error(Exception, /SENEC_TOTP_URI is not a valid URI/)
 
         expect do
-          described_class.new(valid_cloud_options.merge(senec_totp_uri: 'ftp://example.com'))
+          described_class.new(**valid_cloud_options, senec_totp_uri: 'ftp://example.com')
         end.to raise_error(Exception, %r{SENEC_TOTP_URI must start with otpauth://})
 
         expect do
-          described_class.new(valid_cloud_options.merge(senec_totp_uri: 'otpauth://totp/SENEC:mail%40example.com'))
+          described_class.new(**valid_cloud_options, senec_totp_uri: 'otpauth://totp/SENEC:mail%40example.com')
         end.to raise_error(Exception, /SENEC_TOTP_URI must contain a secret parameter/)
       end
 
@@ -125,9 +125,7 @@ describe Config do
             '&issuer=SENEC' \
             '&period=30'
 
-        config = described_class.new(
-          valid_cloud_options.merge(senec_totp_uri:),
-        )
+        config = described_class.new(**valid_cloud_options, senec_totp_uri:)
 
         expect(config.senec_totp_uri).to eq(senec_totp_uri)
       end
@@ -136,7 +134,7 @@ describe Config do
 
   describe 'senec methods' do
     context 'when local' do
-      subject(:config) { described_class.new(valid_local_options) }
+      subject(:config) { described_class.new(**valid_local_options) }
 
       it 'returns correct senec_adapter' do
         expect(config.senec_adapter).to eq(:local)
@@ -164,7 +162,7 @@ describe Config do
     end
 
     context 'when cloud' do
-      subject(:config) { described_class.new(valid_cloud_options) }
+      subject(:config) { described_class.new(**valid_cloud_options) }
 
       it 'returns correct senec_adapter' do
         expect(config.senec_adapter).to eq(:cloud)
@@ -188,9 +186,7 @@ describe Config do
 
       context 'when senec_request_mode is minimal' do
         subject(:config) do
-          described_class.new(
-            valid_cloud_options.merge(senec_request_mode: 'minimal'),
-          )
+          described_class.new(**valid_cloud_options, senec_request_mode: 'minimal')
         end
 
         it 'returns senec_request_mode as minimal' do
@@ -200,9 +196,7 @@ describe Config do
 
       context 'when senec_request_mode is full' do
         subject(:config) do
-          described_class.new(
-            valid_cloud_options.merge(senec_request_mode: 'full'),
-          )
+          described_class.new(**valid_cloud_options, senec_request_mode: 'full')
         end
 
         it 'returns senec_request_mode as full' do
@@ -213,9 +207,7 @@ describe Config do
 
     context 'when ignoring single field' do
       subject(:config) do
-        described_class.new(
-          valid_cloud_options.merge(senec_ignore: 'wallbox_charge_power'),
-        )
+        described_class.new(**valid_cloud_options, senec_ignore: 'wallbox_charge_power')
       end
 
       it 'returns senec_ignore with single element' do
@@ -225,9 +217,7 @@ describe Config do
 
     context 'when ignoring multiple fields' do
       subject(:config) do
-        described_class.new(
-          valid_cloud_options.merge(senec_ignore: 'wallbox_charge_power,house_power'),
-        )
+        described_class.new(**valid_cloud_options, senec_ignore: 'wallbox_charge_power,house_power')
       end
 
       it 'returns senec_ignore with multiple elements' do
@@ -236,7 +226,7 @@ describe Config do
     end
 
     context 'when ignoring non-existing field' do
-      subject(:config) { described_class.new(valid_cloud_options.merge(senec_ignore: 'foo')) }
+      subject(:config) { described_class.new(**valid_cloud_options, senec_ignore: 'foo') }
 
       it 'fails' do
         expect { config.senec_ignore }.to raise_error(Exception, /SENEC_IGNORE contains unknown field: foo/)
@@ -246,16 +236,14 @@ describe Config do
     context 'when senec_request_mode is invalid' do
       it 'fails with invalid value' do
         expect do
-          described_class.new(
-            valid_cloud_options.merge(senec_request_mode: 'invalid'),
-          )
+          described_class.new(**valid_cloud_options, senec_request_mode: 'invalid')
         end.to raise_error(Exception, /SENEC_REQUEST_MODE is invalid: invalid/)
       end
     end
 
     context 'when senec_request_mode is nil' do
       subject(:config) do
-        described_class.new(valid_cloud_options.merge(senec_request_mode: nil))
+        described_class.new(**valid_cloud_options, senec_request_mode: nil)
       end
 
       it 'returns default senec_request_mode as minimal' do
@@ -265,7 +253,7 @@ describe Config do
   end
 
   describe 'influx methods' do
-    subject(:config) { described_class.new(valid_local_options) }
+    subject(:config) { described_class.new(**valid_local_options) }
 
     it 'returns correct influx_host' do
       expect(config.influx_host).to eq('influx.example.com')

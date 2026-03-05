@@ -78,7 +78,7 @@ jobs:
             ghcr.io/solectrus/senec-collector
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
         if: matrix.platform == 'linux/arm/v7'
 
       - name: Set up Docker Buildx

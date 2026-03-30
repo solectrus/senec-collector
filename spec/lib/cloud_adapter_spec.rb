@@ -304,6 +304,21 @@ describe CloudAdapter do
       end
     end
 
+    context 'when cloud is not responding' do
+      let(:mock_dashboard) { nil }
+
+      it 'returns nil' do
+        expect(solectrus_record).to be_nil
+      end
+
+      it 'logs a clear error message' do
+        solectrus_record
+        expect(config.logger.error_messages).to include(
+          'Error getting data from SENEC cloud: SENEC cloud not responding',
+        )
+      end
+    end
+
     context 'with senec_ignore' do
       let(:config) do
         Config.from_env(

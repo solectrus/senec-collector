@@ -55,6 +55,8 @@ class CloudAdapter
     @system_details = nil
     @wallboxes = nil
 
+    raise 'SENEC cloud not responding' unless dashboard && system_details
+
     SolectrusRecord
       .new(id, record_hash)
       .tap { |record| logger.info success_message(record) }

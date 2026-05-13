@@ -41,11 +41,51 @@ describe LocalAdapter do
       expect(logger.info_messages).to include('OK, got 99 state names')
     end
 
-    it 'handles errors' do
-      allow(Senec::Local::State).to receive(:new).and_raise(StandardError)
+    context 'when retrying' do
+      before do
+        stub_const('LocalAdapter::MAX_RETRIES', 5)
+        allow(adapter).to receive(:sleep) # rubocop:disable RSpec/SubjectStub
+      end
 
-      (0..98).each { |i| expect(state_names[i]).to eq(i.to_s) }
-      expect(logger.error_messages).to include(/Failed: StandardError/)
+      it 'retries on failure until it succeeds' do
+        state_instance = instance_double(Senec::Local::State)
+        allow(Senec::Local::State).to receive(:new).and_return(state_instance)
+        call_count = 0
+        allow(state_instance).to receive(:names) do
+          call_count += 1
+          raise StandardError, 'boom' if call_count == 1
+
+          { 0 => 'OK', 1 => 'CHARGE' }
+        end
+
+        expect(state_names).to eq({ 0 => 'OK', 1 => 'CHARGE' })
+        expect(logger.error_messages).to include(/Failed \(attempt 1\): boom\. Retrying in 1s/)
+      end
+
+      it 'falls back to numeric codes when names returns nil (regex did not match)' do
+        state_instance = instance_double(Senec::Local::State)
+        allow(Senec::Local::State).to receive(:new).and_return(state_instance)
+        allow(state_instance).to receive(:names).and_return(nil)
+
+        (0..98).each { |i| expect(state_names[i]).to eq(i.to_s) }
+        expect(logger.error_messages).to include(/No state names found in source code/)
+      end
+
+      it 'falls back to numeric codes when names returns an empty hash' do
+        state_instance = instance_double(Senec::Local::State)
+        allow(Senec::Local::State).to receive(:new).and_return(state_instance)
+        allow(state_instance).to receive(:names).and_return({})
+
+        (0..98).each { |i| expect(state_names[i]).to eq(i.to_s) }
+        expect(logger.error_messages).to include(/No state names found in source code/)
+      end
+
+      it 'gives up after MAX_RETRIES and re-raises' do
+        stub_const('LocalAdapter::MAX_RETRIES', 2)
+        allow(Senec::Local::State).to receive(:new).and_raise(StandardError, 'boom')
+
+        expect { state_names }.to raise_error(StandardError, 'boom')
+      end
     end
   end
 

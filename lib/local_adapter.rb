@@ -20,21 +20,7 @@ class LocalAdapter
   end
 
   def state_names
-    @state_names ||= begin
-      logger.info "Getting state names (language: #{config.senec_language}) from SENEC by parsing source code..."
-
-      names =
-        Senec::Local::State.new(connection:).names(
-          language: config.senec_language,
-        )
-      logger.info "OK, got #{names.length} state names"
-      names
-    rescue StandardError => e
-      logger.error "Failed: #{e}"
-
-      # Return a default hash which just mirrors each key
-      Hash.new { |_, key| key.to_s }
-    end
+    @state_names ||= fetch_state_names
   end
 
   def solectrus_record(id = 1)
@@ -50,6 +36,54 @@ class LocalAdapter
   end
 
   private
+
+  # Maximum delay (seconds) between retries. Backoff caps here.
+  MAX_RETRY_DELAY = 60
+
+  # Maximum number of retry attempts; nil means unlimited.
+  # Tests override this via stub_const to avoid blocking on missing fixtures.
+  MAX_RETRIES = nil
+
+  private_constant :MAX_RETRY_DELAY, :MAX_RETRIES
+
+  def fetch_state_names
+    attempt = 0
+
+    begin
+      attempt += 1
+      names = request_state_names
+      return fallback_state_names if names.nil? || names.empty?
+
+      logger.info "OK, got #{names.length} state names"
+      names
+    rescue StandardError => e
+      max = self.class.const_get(:MAX_RETRIES)
+      raise if max && attempt > max
+
+      delay = retry_delay(attempt)
+      logger.error "Failed (attempt #{attempt}): #{e}. Retrying in #{delay}s..."
+      sleep delay
+      retry
+    end
+  end
+
+  def request_state_names
+    logger.info "Getting state names (language: #{config.senec_language}) from SENEC by parsing source code..."
+
+    Senec::Local::State.new(connection:).names(language: config.senec_language)
+  end
+
+  # If the request itself succeeded but no state names could be parsed,
+  # retrying would not help (SENEC must have changed the JS format).
+  # Fall back to numeric codes so InfluxDB at least gets measurements.
+  def fallback_state_names
+    logger.error 'No state names found in source code - falling back to numeric codes'
+    Hash.new { |_, key| key.to_s }
+  end
+
+  def retry_delay(attempt)
+    [2**[attempt - 1, 5].min, MAX_RETRY_DELAY].min
+  end
 
   def record_hash
     raw_record_hash.except(*config.senec_ignore)

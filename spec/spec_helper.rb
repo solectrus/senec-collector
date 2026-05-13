@@ -35,7 +35,13 @@ require 'webmock/rspec'
 # it.
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require 'local_adapter'
+
 RSpec.configure do |config|
+  # Prevent LocalAdapter from retrying state_name fetches forever in tests.
+  # Individual specs that exercise the retry path raise the cap themselves.
+  config.before { stub_const('LocalAdapter::MAX_RETRIES', 0) }
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

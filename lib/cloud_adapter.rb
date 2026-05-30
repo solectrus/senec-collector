@@ -42,6 +42,7 @@ class CloudAdapter
   def system
     @system ||=
       begin
+        raise 'SENEC cloud not responding' unless systems
         raise 'No systems found' if systems.empty?
 
         log_available_systems
@@ -108,7 +109,8 @@ class CloudAdapter
   def wallboxes
     @wallboxes ||=
       system['wallboxIds'].sort.map do |wallbox_id|
-        connection.wallbox(system['id'], wallbox_id)
+        connection.wallbox(system['id'], wallbox_id) ||
+          raise('SENEC cloud not responding')
       end
   end
 

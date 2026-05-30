@@ -217,6 +217,32 @@ describe CloudAdapter do
           expect(solectrus_record.wallbox_charge_power).to be_nil
         end
       end
+
+      context 'when wallbox request is not responding' do
+        let(:mock_systems) do
+          [
+            {
+              'id' => 999_999,
+              'controlUnitNumber' => '999999',
+              'caseNumber' => '123456',
+              'wallboxIds' => ['1'],
+            },
+          ]
+        end
+
+        let(:mock_wallbox) { nil }
+
+        it 'returns nil instead of crashing' do
+          expect(solectrus_record).to be_nil
+        end
+
+        it 'logs a clear error message' do
+          solectrus_record
+          expect(config.logger.error_messages).to include(
+            'Error getting data from SENEC cloud: SENEC cloud not responding',
+          )
+        end
+      end
     end
 
     context 'when Home.4' do
@@ -308,6 +334,21 @@ describe CloudAdapter do
       let(:mock_dashboard) { nil }
 
       it 'returns nil' do
+        expect(solectrus_record).to be_nil
+      end
+
+      it 'logs a clear error message' do
+        solectrus_record
+        expect(config.logger.error_messages).to include(
+          'Error getting data from SENEC cloud: SENEC cloud not responding',
+        )
+      end
+    end
+
+    context 'when systems endpoint is not responding' do
+      let(:mock_systems) { nil }
+
+      it 'returns nil instead of crashing' do
         expect(solectrus_record).to be_nil
       end
 

@@ -1,3 +1,6 @@
+# Literals are the subject under test here: we verify String#blank?/#present?
+# behavior directly on string literals.
+# rubocop:disable RSpec/ExpectActual
 require 'blank'
 
 describe 'String' do
@@ -29,3 +32,4 @@ describe 'String' do
     end
   end
 end
+# rubocop:enable RSpec/ExpectActual

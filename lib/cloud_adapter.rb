@@ -1,4 +1,5 @@
 require 'solectrus_record'
+require 'app_version'
 require 'forwardable'
 
 class CloudAdapter
@@ -33,8 +34,7 @@ class CloudAdapter
 
   def user_agent
     app = 'SENEC-Collector'
-    version = ENV.fetch('VERSION', nil)
-    identifier = [app, version].compact.join('/')
+    identifier = [app, AppVersion.current].compact.join('/')
 
     "#{identifier} (+https://github.com/solectrus/senec-collector)"
   end

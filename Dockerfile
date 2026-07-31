@@ -40,6 +40,11 @@ ENV VERSION=${VERSION}
 ARG REVISION
 ENV REVISION=${REVISION}
 
+# Git-describe version (e.g. v0.10.1-3-g2d8f177), which - unlike VERSION -
+# is a real version on branch builds, too. Used by HELIOS to show the version.
+ARG COMMIT_VERSION
+ENV COMMIT_VERSION=${COMMIT_VERSION}
+
 WORKDIR /senec-collector
 
 COPY --from=builder /usr/local/bundle/ /usr/local/bundle/

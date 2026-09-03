@@ -147,7 +147,7 @@ GEM
       regexp_parser (>= 2.0)
       rubocop (~> 1.86, >= 1.86.2)
     ruby-progressbar (1.13.0)
-    senec (0.23.0)
+    senec (0.24.0)
       faraday
       faraday-net_http_persistent
       faraday-request-timer

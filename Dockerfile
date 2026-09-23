@@ -22,7 +22,8 @@ RUN bundle config set path /usr/local/bundle && \
     find /usr/local/bundle -name '*.so' -exec strip --strip-unneeded {} +
 
 FROM ruby:4.0.7-alpine
-LABEL maintainer="georg@ledermann.dev"
+LABEL org.opencontainers.image.authors="georg@ledermann.dev"
+LABEL org.opencontainers.image.description="Collects data from a SENEC power storage system"
 
 # Add tzdata to get correct timezone
 RUN apk add --no-cache tzdata

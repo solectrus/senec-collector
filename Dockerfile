@@ -24,11 +24,8 @@ LABEL maintainer="georg@ledermann.dev"
 # Add tzdata to get correct timezone
 RUN apk add --no-cache tzdata
 
-ENV \
-    # Decrease memory usage
-    MALLOC_ARENA_MAX=2 \
-    # Enable YJIT
-    RUBYOPT=--yjit
+# Decrease memory usage
+ENV MALLOC_ARENA_MAX=2
 
 # Move build arguments to environment variables
 ARG BUILDTIME

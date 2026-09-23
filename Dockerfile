@@ -24,6 +24,10 @@ LABEL maintainer="georg@ledermann.dev"
 # Add tzdata to get correct timezone
 RUN apk add --no-cache tzdata
 
+# Create non-root user
+RUN addgroup -g 1000 -S app && \
+    adduser -u 1000 -S app -G app
+
 # Move build arguments to environment variables
 ARG BUILDTIME
 ENV BUILDTIME=${BUILDTIME}
@@ -43,5 +47,7 @@ WORKDIR /senec-collector
 
 COPY --from=builder /usr/local/bundle/ /usr/local/bundle/
 COPY . /senec-collector/
+
+USER app
 
 ENTRYPOINT ["bundle", "exec", "app.rb"]

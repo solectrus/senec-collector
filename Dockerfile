@@ -3,7 +3,10 @@ RUN apk add --no-cache build-base
 
 WORKDIR /senec-collector
 COPY Gemfile* /senec-collector/
+# The config goes to /usr/local/bundle, which the final stage copies. Build
+# and run time then use the same groups, which `bundle exec` requires.
 RUN bundle config set path /usr/local/bundle && \
+    bundle config set frozen true && \
     bundle config set without 'development test' && \
     bundle install --jobs $(nproc) --retry 3 && \
     bundle clean --force && \

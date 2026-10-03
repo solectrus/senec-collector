@@ -9,11 +9,11 @@ class FluxWriter
     influx_client.ping.status == 'ok'
   end
 
-  def push(record)
-    return unless record
+  def push(records)
+    return if records.empty?
 
     write_api.write(
-      data: point(record),
+      data: records.map { |record| point(record) },
       bucket: config.influx_bucket,
       org: config.influx_org,
     )

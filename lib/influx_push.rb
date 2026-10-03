@@ -4,6 +4,13 @@ require 'forwardable'
 class InfluxPush
   extend Forwardable
 
+  # Maximum number of records to push in one request
+  BATCH_SIZE = 1000
+
+  # HTTP status codes for data that InfluxDB will never accept (e.g. field type conflict).
+  # Retrying such records would block all other records.
+  REJECTED_CODES = %w[400 422].freeze
+
   def_delegators :config, :logger
 
   def initialize(config:, queue:)
@@ -25,39 +32,72 @@ class InfluxPush
 
   def run
     until queue.closed?
-      # Wait for a record to be added to the queue
-      record = queue.pop
+      records = next_batch
 
       # Push (unless queue has been closed)
-      push(record) if record
+      push(records) if records.any?
     end
   end
 
   private
 
-  def push(record)
-    flux_writer.push(record)
-    logger.info "Successfully pushed record ##{record.id} to InfluxDB"
-    log_recovery if @failing_since
-  rescue StandardError => e
-    error_handling(record, e)
+  def next_batch
+    # Wait for a record to be added to the queue (nil if the queue has been closed)
+    record = queue.pop
+    return [] unless record
 
-    # Wait a bit before trying again
-    sleep(5)
+    # Add more records if available (e.g. buffered during an outage)
+    records = [record]
+    while records.size < BATCH_SIZE && (record = queue.pop(timeout: 0))
+      records << record
+    end
+    records
   end
 
-  def error_handling(record, error)
+  def push(records)
+    flux_writer.push(records)
+    logger.info "Successfully pushed #{description(records)} to InfluxDB"
+    log_recovery if @failing_since
+  rescue StandardError => e
+    if rejected_by_influx?(e)
+      drop_rejected(records, e)
+    else
+      retry_later(records, e)
+    end
+  end
+
+  def rejected_by_influx?(error)
+    error.is_a?(InfluxDB2::InfluxError) && REJECTED_CODES.include?(error.code.to_s)
+  end
+
+  # Push the records one by one to drop the rejected ones only
+  def drop_rejected(records, error)
+    if records.one?
+      logger.error "InfluxDB rejected record ##{records.first.id}, dropping it: #{error.message}"
+    else
+      records.each { |record| push([record]) }
+    end
+  end
+
+  def retry_later(records, error)
     # Log the first failure only, so a long outage does not flood the log
     unless @failing_since
       @failing_since = Time.now
-      logger.error "Error while pushing record ##{record.id} to InfluxDB: #{error.message}"
+      logger.error "Error while pushing #{description(records)} to InfluxDB: #{error.message}"
       logger.error 'Records will be buffered and pushed when InfluxDB is available again.'
     end
 
     return if queue.closed?
 
-    # Put the record back into the queue
-    queue << record
+    # Put the records back into the queue
+    records.each { |record| queue << record }
+
+    # Wait a bit before trying again
+    sleep(5)
+  end
+
+  def description(records)
+    records.one? ? "record ##{records.first.id}" : "#{records.size} records"
   end
 
   def log_recovery

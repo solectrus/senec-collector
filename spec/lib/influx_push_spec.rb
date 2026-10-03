@@ -19,7 +19,7 @@ describe InfluxPush do
       before { fill_queue }
 
       it 'successfully pushes a record to InfluxDB' do
-        assert_success(1) do
+        assert_success('record #1') do
           run_influx_push
         end
       end
@@ -28,8 +28,21 @@ describe InfluxPush do
     context 'with multiple records' do
       before { fill_queue(3) }
 
-      it 'successfully pushes multiple records to InfluxDB' do
-        assert_success(3) do
+      it 'successfully pushes multiple records to InfluxDB in one batch' do
+        assert_success('3 records') do
+          run_influx_push
+        end
+      end
+    end
+
+    context 'with more records than the batch size' do
+      before do
+        stub_const('InfluxPush::BATCH_SIZE', 2)
+        fill_queue(3)
+      end
+
+      it 'successfully pushes records in multiple batches' do
+        assert_success('2 records', 'record #3') do
           run_influx_push
         end
       end
@@ -49,6 +62,23 @@ describe InfluxPush do
       end
     end
 
+    context 'when InfluxDB rejects a record' do
+      before do
+        fill_queue(3)
+
+        allow(FluxWriter).to receive(:new).and_return(RejectingFluxWriter.new(rejected_id: 2))
+      end
+
+      it 'drops the rejected record and pushes the others' do
+        assert_success('record #1', 'record #3') do
+          run_influx_push
+        end
+
+        expect(logger.error_messages).to include(/InfluxDB rejected record #2, dropping it/)
+        expect(logger.info_messages).not_to include(/Successfully pushed record #2/)
+      end
+    end
+
     context 'when InfluxDB recovers' do
       before do
         fill_queue(2)
@@ -61,10 +91,11 @@ describe InfluxPush do
         allow(pusher).to receive(:sleep)
 
         thread = Thread.new { pusher.run }
-        Timeout.timeout(1) { sleep 0.01 while logger.info_messages.grep(/Successfully pushed/).size < 2 }
+        Timeout.timeout(1) { sleep 0.01 until logger.info_messages.grep(/Successfully pushed/).any? }
         queue.close
         thread.join
 
+        expect(logger.info_messages).to include('Successfully pushed 2 records to InfluxDB')
         expect(logger.error_messages.grep(/Error while pushing/).size).to eq(1)
         expect(logger.info_messages).to include(/InfluxDB is available again/)
       end
@@ -75,7 +106,7 @@ describe InfluxPush do
         pusher.mark_unavailable
 
         thread = Thread.new { pusher.run }
-        Timeout.timeout(1) { sleep 0.01 while logger.info_messages.grep(/Successfully pushed/).size < 2 }
+        Timeout.timeout(1) { sleep 0.01 until logger.info_messages.grep(/Successfully pushed/).any? }
         queue.close
         thread.join
 
@@ -106,11 +137,11 @@ describe InfluxPush do
     thread.join
   end
 
-  def assert_success(num_records)
+  def assert_success(*descriptions)
     yield
 
-    (1..num_records).each do |i|
-      expect(logger.info_messages).to include "Successfully pushed record ##{i} to InfluxDB"
+    descriptions.each do |description|
+      expect(logger.info_messages).to include "Successfully pushed #{description} to InfluxDB"
     end
 
     expect(queue.length).to eq(0)
@@ -124,7 +155,7 @@ describe InfluxPush do
 end
 
 class FailingFluxWriter
-  def push(_record)
+  def push(_records)
     raise InfluxDB2::InfluxError.new(message: nil, code: nil, reference: nil, retry_after: nil)
   end
 end
@@ -134,9 +165,21 @@ class RecoveringFluxWriter
     @failures = 2
   end
 
-  def push(_record)
+  def push(_records)
     return if (@failures -= 1).negative?
 
     raise InfluxDB2::InfluxError.new(message: nil, code: nil, reference: nil, retry_after: nil)
+  end
+end
+
+class RejectingFluxWriter
+  def initialize(rejected_id:)
+    @rejected_id = rejected_id
+  end
+
+  def push(records)
+    return if records.none? { |record| record.id == @rejected_id }
+
+    raise InfluxDB2::InfluxError.new(message: 'field type conflict', code: '422', reference: nil, retry_after: nil)
   end
 end

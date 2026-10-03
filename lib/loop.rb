@@ -1,3 +1,4 @@
+require 'buffer_store'
 require 'influx_push'
 require 'senec_pull'
 require 'forwardable'
@@ -23,6 +24,9 @@ class Loop
   def start
     self.queue = Queue.new
 
+    # Restore records buffered before the last shutdown
+    restore_buffer
+
     # Start pulling even if InfluxDB is not ready (e.g. internet outage).
     # Records are buffered in the queue and pushed as soon as InfluxDB is available.
     wait_for_influx(max_wait)
@@ -39,16 +43,7 @@ class Loop
     # Wait for the push thread to finish (will happen because queue is closed)
     push_thread.join
   rescue SystemExit, SignalException # SignalException covers SIGTERM (docker stop) and SIGINT
-    logger.error 'Exiting...'
-
-    # Stop pulling data from SENEC (thread is nil if the signal arrives while waiting for InfluxDB)
-    pull_thread&.exit
-
-    # Push any remaining records to InfluxDB (can take a while)
-    close_queue
-
-    # Stop pushing data to InfluxDB
-    push_thread&.exit
+    shutdown(pull_thread, push_thread)
   end
 
   private
@@ -94,6 +89,37 @@ class Loop
 
   def influx_push
     @influx_push ||= InfluxPush.new(config:, queue:)
+  end
+
+  def buffer_store
+    @buffer_store ||= BufferStore.new(logger:)
+  end
+
+  # Threads are nil if the signal arrives while waiting for InfluxDB
+  def shutdown(pull_thread, push_thread)
+    logger.error 'Exiting...'
+
+    # Stop pulling data from SENEC
+    pull_thread&.exit
+
+    # Stop pushing data to InfluxDB
+    push_thread&.exit
+    push_thread&.join
+
+    # Save the records that could not be pushed
+    save_buffer
+  end
+
+  def restore_buffer
+    buffer_store.load.each { |record| queue << record }
+  end
+
+  def save_buffer
+    records = influx_push.pending_records
+    records << queue.pop until queue.empty?
+
+    # Records can be in both places if the thread was killed while waiting to retry
+    buffer_store.save(records.uniq)
   end
 
   def close_queue

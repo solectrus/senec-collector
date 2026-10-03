@@ -30,12 +30,21 @@ class InfluxPush
     @failing_since = Time.now
   end
 
+  # Records taken from the queue, but not pushed yet.
+  # They are lost if the thread is killed during a push, so the caller must save them.
+  def pending_records
+    @pending.to_a
+  end
+
   def run
     until queue.closed?
-      records = next_batch
+      # Defer Thread#exit until the next blocking call (waiting for the queue),
+      # so records taken from the queue are always tracked as pending
+      Thread.handle_interrupt(Object => :on_blocking) { @pending = next_batch }
 
       # Push (unless queue has been closed)
-      push(records) if records.any?
+      push(@pending) if @pending.any?
+      @pending = []
     end
   end
 

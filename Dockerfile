@@ -52,6 +52,9 @@ WORKDIR /senec-collector
 COPY --from=builder /usr/local/bundle/ /usr/local/bundle/
 COPY . /senec-collector/
 
+# Directory for the buffer, which is saved on shutdown and restored on start
+RUN mkdir -p data && chown app:app data
+
 USER app
 
 ENTRYPOINT ["bundle", "exec", "app.rb"]

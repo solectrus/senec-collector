@@ -89,12 +89,7 @@ class InfluxPush
   end
 
   def retry_later(records, error)
-    # Log the first failure only, so a long outage does not flood the log
-    unless @failing_since
-      @failing_since = Time.now
-      logger.error "Error while pushing #{description(records)} to InfluxDB: #{error.message}"
-      logger.error 'Records will be buffered and pushed when InfluxDB is available again.'
-    end
+    report_outage(records, error)
 
     return if queue.closed?
 
@@ -109,9 +104,35 @@ class InfluxPush
     records.one? ? "record ##{records.first.id}" : "#{records.size} records"
   end
 
+  # Log the details of the first failure only. Every retry after it adds a single line,
+  # so a glance at the end of the log shows that collecting goes on while InfluxDB is unreachable.
+  def report_outage(records, error)
+    if @failing_since
+      # The records are not back in the queue yet
+      logger.error "InfluxDB unreachable for #{outage_duration} (#{error.message}) - " \
+                   "#{queue.size + records.size} records buffered, collecting continues"
+    else
+      @failing_since = Time.now
+      logger.error "Error while pushing #{description(records)} to InfluxDB: #{error.message}"
+      logger.error 'Records will be buffered and pushed when InfluxDB is available again.'
+    end
+  end
+
   def log_recovery
-    logger.info "InfluxDB is available again after #{(Time.now - @failing_since).round} seconds, " \
+    logger.info "InfluxDB is available again after #{outage_duration}, " \
                 "#{queue.size} buffered records remaining"
     @failing_since = nil
+  end
+
+  # An outage can take seconds or days, so the unit follows its length
+  def outage_duration
+    seconds = (Time.now - @failing_since).round
+    return "#{seconds}s" if seconds < 60
+
+    minutes, seconds = seconds.divmod(60)
+    return "#{minutes}m #{seconds}s" if minutes < 60
+
+    hours, minutes = minutes.divmod(60)
+    "#{hours}h #{minutes}m"
   end
 end

@@ -86,7 +86,7 @@ describe InfluxPush do
         allow(FluxWriter).to receive(:new).and_return(RecoveringFluxWriter.new)
       end
 
-      it 'pushes buffered records and logs the failure only once' do
+      it 'pushes buffered records, logs the failure once and a status line for every retry' do
         pusher = described_class.new(config:, queue:)
         allow(pusher).to receive(:sleep)
 
@@ -96,8 +96,14 @@ describe InfluxPush do
         thread.join
 
         expect(logger.info_messages).to include('Successfully pushed 2 records to InfluxDB')
-        expect(logger.error_messages.grep(/Error while pushing/).size).to eq(1)
-        expect(logger.info_messages).to include(/InfluxDB is available again/)
+        expect(logger.error_messages).to match(
+          [
+            /Error while pushing/,
+            /Records will be buffered/,
+            /InfluxDB unreachable for \d+s .* - 2 records buffered, collecting continues/,
+          ],
+        )
+        expect(logger.info_messages).to include(/InfluxDB is available again after \d+s, 0 buffered records remaining/)
       end
 
       it 'does not log the failure if InfluxDB is already known to be unavailable' do
@@ -110,8 +116,30 @@ describe InfluxPush do
         queue.close
         thread.join
 
-        expect(logger.error_messages).to be_empty
+        expect(logger.error_messages.grep(/Error while pushing/)).to be_empty
+        expect(logger.error_messages.grep(/InfluxDB unreachable for/).size).to eq(2)
         expect(logger.info_messages).to include(/InfluxDB is available again/)
+      end
+    end
+
+    describe 'the duration of an outage' do
+      {
+        59 => '59s',
+        60 => '1m 0s',
+        3599 => '59m 59s',
+        3600 => '1h 0m',
+        90_061 => '25h 1m',
+      }.each do |seconds, text|
+        it "names #{seconds} seconds as #{text}" do
+          pusher = described_class.new(config:, queue:)
+          allow(Time).to receive(:now).and_return(Time.at(0))
+          pusher.mark_unavailable
+          allow(Time).to receive(:now).and_return(Time.at(seconds))
+
+          pusher.send(:log_recovery)
+
+          expect(logger.info_messages).to include(/available again after #{text},/)
+        end
       end
     end
   end

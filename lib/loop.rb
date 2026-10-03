@@ -7,7 +7,7 @@ class Loop
 
   def_delegators :config, :logger
 
-  def self.start(config:, max_count: nil, max_wait: 12, &)
+  def self.start(config:, max_count: nil, max_wait: 6, &)
     new(config:, max_count:, max_wait:, &).start
   end
 
@@ -23,7 +23,9 @@ class Loop
   def start
     self.queue = Queue.new
 
-    return unless influx_ready?(max_wait)
+    # Start pulling even if InfluxDB is not ready (e.g. internet outage).
+    # Records are buffered in the queue and pushed as soon as InfluxDB is available.
+    wait_for_influx(max_wait)
 
     pull_thread = Thread.new { pull_loop }
     push_thread = Thread.new { push_loop }
@@ -66,7 +68,7 @@ class Loop
     end
   end
 
-  def influx_ready?(max_wait)
+  def wait_for_influx(max_wait)
     logger.info 'Wait until InfluxDB is ready ...', newline: false
 
     count = 0
@@ -78,12 +80,11 @@ class Loop
 
     if ready
       logger.info ' OK'
-      logger.info ''
-      true
     else
-      logger.error "\nInfluxDB not ready after #{count * 5} seconds - aborting."
-      false
+      logger.error "\nInfluxDB not ready after #{count * 5} seconds, records will be buffered until it is available"
+      influx_push.mark_unavailable
     end
+    logger.info ''
   end
 
   # Push data from queue to InfluxDB

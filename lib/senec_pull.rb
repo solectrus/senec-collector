@@ -9,6 +9,8 @@ class SenecPull
 
   def next
     record = config.adapter.solectrus_record(@count += 1)
+    return unless record
+
     queue << record
 
     record

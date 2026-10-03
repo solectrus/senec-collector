@@ -14,12 +14,22 @@ describe SenecPull do
     config.logger = logger
   end
 
-  describe '#next' do
+  describe '#next', vcr: 'senec-local' do
     context 'when successful' do
       it 'increments the queue length' do
         senec_pull.next
 
         expect(queue.length).to eq(1)
+      end
+    end
+
+    context 'when SENEC returns no record' do
+      it 'does not increment the queue length' do
+        allow(config.adapter).to receive(:solectrus_record).and_return(nil)
+
+        senec_pull.next
+
+        expect(queue.length).to eq(0)
       end
     end
 

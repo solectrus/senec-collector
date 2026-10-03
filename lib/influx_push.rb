@@ -18,6 +18,11 @@ class InfluxPush
     flux_writer.ready?
   end
 
+  # Avoid logging the first failed push if InfluxDB is already known to be unavailable
+  def mark_unavailable
+    @failing_since = Time.now
+  end
+
   def run
     until queue.closed?
       # Wait for a record to be added to the queue
@@ -33,6 +38,7 @@ class InfluxPush
   def push(record)
     flux_writer.push(record)
     logger.info "Successfully pushed record ##{record.id} to InfluxDB"
+    log_recovery if @failing_since
   rescue StandardError => e
     error_handling(record, e)
 
@@ -41,14 +47,22 @@ class InfluxPush
   end
 
   def error_handling(record, error)
-    # Log the error
-    logger.error "Error while pushing record ##{record.id} to InfluxDB: #{error.message}"
+    # Log the first failure only, so a long outage does not flood the log
+    unless @failing_since
+      @failing_since = Time.now
+      logger.error "Error while pushing record ##{record.id} to InfluxDB: #{error.message}"
+      logger.error 'Records will be buffered and pushed when InfluxDB is available again.'
+    end
 
     return if queue.closed?
 
     # Put the record back into the queue
     queue << record
+  end
 
-    logger.info "The record has been queued. Will retry to push #{queue.size} records later."
+  def log_recovery
+    logger.info "InfluxDB is available again after #{(Time.now - @failing_since).round} seconds, " \
+                "#{queue.size} buffered records remaining"
+    @failing_since = nil
   end
 end

@@ -33,6 +33,23 @@ describe SenecPull do
       end
     end
 
+    context 'when the buffer is full' do
+      before { stub_const('SenecPull::MAX_QUEUE_SIZE', 2) }
+
+      it 'drops the oldest record' do
+        3.times { senec_pull.next }
+
+        expect(queue.length).to eq(2)
+        expect(queue.pop.id).to eq(2)
+      end
+
+      it 'logs only once' do
+        4.times { senec_pull.next }
+
+        expect(logger.error_messages.grep(/Buffer is full/).size).to eq(1)
+      end
+    end
+
     context 'when it fails' do
       it 'raises Senec::Local::Error and does not increment queue length' do
         allow(queue).to receive(:<<).and_raise(Senec::Local::Error)

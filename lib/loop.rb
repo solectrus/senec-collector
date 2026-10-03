@@ -36,17 +36,17 @@ class Loop
 
     # Wait for the push thread to finish (will happen because queue is closed)
     push_thread.join
-  rescue SystemExit, Interrupt
+  rescue SystemExit, SignalException # SignalException covers SIGTERM (docker stop) and SIGINT
     logger.error 'Exiting...'
 
-    # Stop pulling data from SENEC
-    pull_thread.exit
+    # Stop pulling data from SENEC (thread is nil if the signal arrives while waiting for InfluxDB)
+    pull_thread&.exit
 
     # Push any remaining records to InfluxDB (can take a while)
     close_queue
 
     # Stop pushing data to InfluxDB
-    push_thread.exit
+    push_thread&.exit
   end
 
   private

@@ -30,6 +30,18 @@ describe Loop do
       expect(logger.error_messages).to include(/Exiting/)
     end
 
+    it 'handles SIGTERM' do
+      allow(config.adapter).to receive(:solectrus_record) { send_sigterm }
+
+      VCR.use_cassette('influx-success') do
+        VCR.use_cassette('senec-local') do
+          described_class.start(config:, max_wait: 1)
+        end
+      end
+
+      expect(logger.error_messages).to include(/Exiting/)
+    end
+
     it 'handles errors' do
       allow(config.adapter).to receive(:data).and_raise(StandardError)
 
@@ -39,5 +51,11 @@ describe Loop do
 
       expect(logger.error_messages).to include(/Error getting data/)
     end
+  end
+
+  # Docker sends SIGTERM to the process, so Ruby raises it in the main thread
+  def send_sigterm
+    Thread.main.raise(SignalException, 'TERM')
+    nil
   end
 end

@@ -1,4 +1,4 @@
-FROM ruby:4.0.7-alpine AS builder
+FROM ruby:4.0.9-alpine AS builder
 RUN apk add --no-cache build-base
 
 WORKDIR /senec-collector
@@ -21,7 +21,7 @@ RUN bundle config set path /usr/local/bundle && \
     \) -delete && \
     find /usr/local/bundle -name '*.so' -exec strip --strip-unneeded {} +
 
-FROM ruby:4.0.7-alpine
+FROM ruby:4.0.9-alpine
 LABEL org.opencontainers.image.authors="georg@ledermann.dev"
 LABEL org.opencontainers.image.description="Collects data from a SENEC power storage system"
 

@@ -16,9 +16,6 @@ gem 'csv'
 gem 'base64'
 
 group :development do
-  # Guard gem for RSpec (https://github.com/guard/guard-rspec)
-  gem 'guard-rspec', require: false
-
   # Pretty print Ruby objects with proper indentation and colors (https://github.com/amazing-print/amazing_print)
   gem 'amazing_print'
 end
